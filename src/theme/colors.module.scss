@@ -1,0 +1,320 @@
+// B&W
+$B0: #f5f5f5;
+$B1: #e9e9e9;
+$B2: #d9d9d9;
+$B3: #c4c4c4;
+$B4: #9d9d9d;
+$B5: #7b7b7b;
+$B6: #555555;
+$B7: #434343;
+$B8: #262626;
+$B9: #000000;
+
+$C0: #e1f3fb;
+$C1: #b4e2f4;
+$C2: #82cfed;
+$C3: #4fbce5;
+$C4: #11c5f5;
+$C5: #049fda;
+$C6: #0397d6;
+$C7: #038dd0;
+$C8: #0283cb;
+$C9: #0172c2;
+
+// Navy
+$N0: #e0e9ef;
+$N1: #b3c8d7;
+$N2: #80a4bd;
+$N3: #4d80a3;
+$N4: #26648f;
+$N5: #00497b;
+$N6: #004273;
+$N7: #003968;
+$N8: #00315e;
+$N9: #00214b;
+
+// Success States
+$SS0: #e8f5e6;
+$SS1: #c5e6bf;
+$SS2: #9ed695;
+$SS3: #77c66b;
+$SS4: #5ab94b;
+$SS5: #3dad2b;
+$SS6: #37a626;
+$SS7: #2f9c20;
+$SS8: #27931a;
+$SS9: #1a8310;
+
+// Error States / Snapshot
+$ES0: #fce6e5;
+$ES1: #f7c1bf;
+$ES2: #f19794;
+$ES3: #eb6d69;
+$ES4: #e74e49;
+$ES5: #e32f29;
+$ES6: #e02a24;
+$ES7: #dc231f;
+$ES8: #d81d19;
+$ES9: #d0120f;
+
+// Warning States
+$WS0: #fffae5;
+$WS1: #fef4be;
+$WS2: #feec93;
+$WS3: #fee468;
+$WS4: #fddf47;
+$Ws5: #fdd927;
+$WS6: #fdd523;
+$WS7: #fccf1d;
+$WS8: #fcca17;
+$WS9: #fcc00e;
+
+//  Teal
+$T0: #e1f4f5;
+$T1: #b5e3e7;
+$T2: #84d1d7;
+$T3: #53bfc6;
+$T4: #2eb1ba;
+$T5: #09a3ae;
+$T6: #089ba7;
+$T7: #06919d;
+$T8: #058894;
+$T9: #027784;
+
+// Shades
+$Black16: #000000;
+$Black24: #000000;
+$Black40: #000000;
+$Black64: #000000;
+$Black80: #000000;
+$LightBlack: #2a112e;
+$ShadowBlack: #645b66;
+$White: #ffffff;
+
+// Atome Payment Provider
+$Atome: #e7ff30;
+$PayPal: #ffc43a;
+
+$PaleBlue: #38b1e990;
+$LightCyan: #f3fafd;
+$PastelYellow: #ffe68c;
+$LightCeruleanBlue: #2ba0da;
+$SnowFlurry: #f0ffd6;
+$HalfDutchWhite: #fcf0d3;
+$PaleAqua: #def5f5;
+$Selago: #fbebfe;
+$Solitude: #dde4f6;
+$WhiteSmoke: #f4f4f4;
+$LightGrayishOrange: #f8f6f2;
+$Transparent: transparent;
+$Green: #3cae2a;
+$SteelBlue: #95a7b0;
+$AliceBlue: #f3fafd;
+$Alabaster: #f3f3ed;
+$CreamyYellow: #ffeec3;
+$GreenishGray: #515750;
+$DarkCharcoal: #333333;
+$DeepRed: #bd0e09;
+$SaffronOrange: #f8a563;
+$DarkRed: #bd0e09;
+$SkyBlue: #c7d8ed;
+$SemiTransparentBlack: rgba(0, 0, 0, 0.7);
+$Amber: #f57e20;
+$DeepRose: #ef4861;
+$BrightBlue: #49c8f5;
+$LightPurple: #bb99e5;
+$LightSkyBlue: #dbeaf1;
+$MildGreen: rgba(94, 184, 135, 0.1);
+$SilveringGray: #bad1dc;
+$LightGreen: #5eb887;
+$SimplePink: #f7a0ad;
+$LotusPink: #ead0d6;
+$Purple: #8453bd;
+$PaleGreen: #94cc5c;
+$PastelBlue: #c9efff;
+$DarkNight: #0c103b;
+$NavalNight: #35003d;
+$CornSilk: #fff9e5;
+$AquariusBlues: #d7f3ff;
+$MildPink: #f2ecff;
+$Yellow: hsl(65, 100%, 93%);
+$MildRose: rgba(245, 140, 145, 0.1);
+$LightPink: #f58c91;
+$MildOrange: #ffe9d9;
+$DarkOrange: #dc4d01;
+$Saffron: #f79141;
+$LinkTextColor: #00e;
+$InkBlue: #15c;
+$DnaExpressAtfBg: #b1cbeb;
+$HurryRed: #bd0e09;
+$PureOrange: #fe784f;
+$BlueCue: #6594c6;
+$ShadeOrange: #fd9666;
+$GradientColorPink: #f7a48b;
+$GradientColorBlue: #6e96c2;
+$PremiumBundleBg1: #fbd6cb;
+$LeadOrange: #f4761c;
+$SunflowerYellow: #ffea8f;
+$Violet: #9b59b6;
+$PulpOrange: #ff6f61;
+$Gray1: #c6d6de;
+$Gray2: #658192;
+$Gray3: #254156;
+
+:export {
+  // B&W
+  B0: $B0;
+  B1: $B1;
+  B2: $B2;
+  B3: $B3;
+  B4: $B4;
+  B5: $B5;
+  B6: $B6;
+  B7: $B7;
+  B8: $B8;
+  B9: $B9;
+  // Blue
+  C0: $C0;
+  C1: $C1;
+  C2: $C2;
+  C3: $C3;
+  C4: $C4;
+  C5: $C5;
+  C6: $C6;
+  C7: $C7;
+  C8: $C8;
+  C9: $C9;
+  // Navy
+  N0: $N0;
+  N1: $N1;
+  N2: $N2;
+  N3: $N3;
+  N4: $N4;
+  N5: $N5;
+  N6: $N6;
+  N7: $N7;
+  N8: $N8;
+  N9: $N9;
+  // Success States /
+  SS0: $SS0;
+  SS1: $SS1;
+  SS2: $SS2;
+  SS3: $SS3;
+  SS4: $SS4;
+  SS5: $SS5;
+  SS6: $SS6;
+  SS7: $SS7;
+  SS8: $SS8;
+  SS9: $SS9;
+  // Error States /
+  ES0: $ES0;
+  ES1: $ES1;
+  ES2: $ES2;
+  ES3: $ES3;
+  ES4: $ES4;
+  ES5: $ES5;
+  ES6: $ES6;
+  ES7: $ES7;
+  ES8: $ES8;
+  ES9: $ES9;
+  // Warning States
+  WS0: $WS0;
+  WS1: $WS1;
+  WS2: $WS2;
+  WS3: $WS3;
+  WS4: $WS4;
+  Ws5: $Ws5;
+  WS6: $WS6;
+  WS7: $WS7;
+  WS8: $WS8;
+  WS9: $WS9;
+  // Teal
+  T0: $T0;
+  T1: $T1;
+  T2: $T2;
+  T3: $T3;
+  T4: $T4;
+  T5: $T5;
+  T6: $T6;
+  T7: $T7;
+  T8: $T8;
+  T9: $T9;
+  // Shades
+  Black16: $Black16;
+  Black24: $Black24;
+  Black40: $Black40;
+  Black64: $Black64;
+  Black80: $Black80;
+  White: $White;
+
+  // Atome Payment Provider
+  Atome: $Atome;
+  PayPal: $PayPal;
+
+  PaleBlue: $PaleBlue;
+  LightCyan: $LightCyan;
+  PastelYellow: $PastelYellow;
+  LightCeruleanBlue: $LightCeruleanBlue;
+  SnowFlurry: $SnowFlurry;
+  HalfDutchWhite: $HalfDutchWhite;
+  PaleAqua: $PaleAqua;
+  Selago: $Selago;
+  Solitude: $Solitude;
+  WhiteSmoke: $WhiteSmoke;
+  LightGrayishOrange: $LightGrayishOrange;
+  Transparent: $Transparent;
+  Green: $Green;
+  SteelBlue: $SteelBlue;
+  AliceBlue: $AliceBlue;
+  Alabaster: $Alabaster;
+  CreamyYellow: $CreamyYellow;
+  GreenishGray: $GreenishGray;
+  DarkCharcoal: $DarkCharcoal;
+  DeepRed: $DeepRed;
+  SaffronOrange: $SaffronOrange;
+  DarkRed: $DarkRed;
+  SkyBlue: $SkyBlue;
+  SemiTransparentBlack: $SemiTransparentBlack;
+  Amber: $Amber;
+  DeepRose: $DeepRose;
+  BrightBlue: $BrightBlue;
+  LightPurple: $LightPurple;
+  LightSkyBlue: $LightSkyBlue;
+  MildGreen: $MildGreen;
+  SilveringGray: $SilveringGray;
+  LightGreen: $LightGreen;
+  SimplePink: $SimplePink;
+  LotusPink: $LotusPink;
+  Purple: $Purple;
+  PaleGreen: $PaleGreen;
+  PastelBlue: $PastelBlue;
+  DarkNight: $DarkNight;
+  NavalNight: $NavalNight;
+  CornSilk: $CornSilk;
+  AquariusBlues: $AquariusBlues;
+  MildPink: $MildPink;
+  Yellow: $Yellow;
+  MildRose: $MildRose;
+  LightPink: $LightPink;
+  MildOrange: $MildOrange;
+  DarkOrange: $DarkOrange;
+  Saffron: $Saffron;
+  LinkTextColor: $LinkTextColor;
+  DefaultLink2: $InkBlue;
+  DnaExpressAtfBg: $DnaExpressAtfBg;
+  HurryRed: $HurryRed;
+  PureOrange: $PureOrange;
+  BlueCue: $BlueCue;
+  ShadeOrange: $ShadeOrange;
+  GradientColorPink: $GradientColorPink;
+  GradientColorBlue: $GradientColorBlue;
+  PremiumBundleBg1: $PremiumBundleBg1;
+  LeadOrange: $LeadOrange;
+  SunflowerYellow: $SunflowerYellow;
+  Violet: $Violet;
+  PulpOrange: $PulpOrange;
+  InkBlue: $InkBlue;
+  Gray1: $Gray1;
+  Gray2: $Gray2;
+  Gray3: $Gray3;
+}

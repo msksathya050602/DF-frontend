@@ -1,0 +1,27 @@
+$header-height-desktop: 72px;
+$banner-height: 36px;
+$header-height-mobile: 62px;
+$header-footer-height-mobile: 62px;
+$view-width: 1280px;
+
+@mixin flex-model($direction, $alignitems, $justifycontent, $gap) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $alignitems;
+  justify-content: $justifycontent;
+  gap: $gap;
+  @content;
+}
+@mixin flex-model-nogap($direction, $alignitems, $justifycontent) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $alignitems;
+  justify-content: $justifycontent;
+  @content;
+}
+
+:export {
+  HeaderHeightMobile: $header-height-mobile;
+  HeaderFooterHeightMobile: $header-footer-height-mobile;
+  BannerHeight: $banner-height;
+}

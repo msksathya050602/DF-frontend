@@ -1,0 +1,123 @@
+@use "@theme/colors.module.scss" as *;
+@use "@theme/viewport.scss" as *;
+@use "@theme/common.module.scss" as *;
+@use "@theme/gradient.module.scss" as *;
+
+@use "@theme/colors.module.scss" as *;
+@use "@theme/viewport.scss" as *;
+@use "@theme/common.module.scss" as *;
+@use "@theme/gradient.module.scss" as *;
+
+.tooltip-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tooltip {
+  --tooltip-bg: black; // fallback
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+  padding: 8px;
+  border-radius: 4px;
+  position: absolute;
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+  background-color: var(--tooltip-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  line-height: 1.3rem;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.bottom {
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.bottom.open {
+    bottom: 140%;
+  }
+
+  &.top {
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.top.open {
+    top: 140%;
+  }
+
+  &.left {
+    left: 125%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &.left.open {
+    left: 140%;
+  }
+
+  &.right {
+    right: 125%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &.right.open {
+    right: 140%;
+  }
+}
+
+.tooltip-arrow {
+  width: 0;
+  height: 0;
+  position: absolute;
+
+  &.bottom {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--tooltip-bg);
+  }
+
+  &.top {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid var(--tooltip-bg);
+  }
+
+  &.left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid var(--tooltip-bg);
+    margin-left: -6px;
+  }
+
+  &.right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 6px solid var(--tooltip-bg);
+    margin-right: -6px;
+  }
+}

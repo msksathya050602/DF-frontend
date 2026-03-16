@@ -1,0 +1,50 @@
+@use "@theme/colors.module.scss" as *;
+
+$bggradient1: linear-gradient(0deg, $C0 0%, $White 100%);
+$bg-gradient-2: linear-gradient(
+  180deg,
+  $GradientColorPink 4.44%,
+  $GradientColorBlue 94%
+);
+$bg-gradient-3: linear-gradient(90deg, #ff9457 0%, #dea5f9 100%);
+$bg-gradient-4: linear-gradient(135deg, #2b1556 0%, #8b6be3 94%);
+$GrayShades: linear-gradient(45deg, #c6d6de 0%, #658192 50%, #254156 100%);
+
+// D2C Gradients
+$wavyRose: linear-gradient(
+  180deg,
+  #ffffff 1.68%,
+  #f0e2dc 26.26%,
+  #e2e2e2 50.84%,
+  #ffe1d7 75.91%,
+  #f8f0ee 99.51%
+);
+$grayBtnGradient: linear-gradient(90deg, #7a9c9f 0%, #496a71 100%);
+$wavyGrayRose: linear-gradient(
+  90deg,
+  #81a8a4 15.03%,
+  #658789 49.12%,
+  #f1a68f 82.18%
+);
+$VioletToWhite: radial-gradient(
+  89.99% 86.14% at 50% 7.63%,
+  #ad00d0 0%,
+  rgba(171, 171, 171, 0) 89.5%
+);
+$WhitishGray: linear-gradient(180deg, #ffffff 52%, #faf7fa 100%);
+$RosyWhite: linear-gradient(176.87deg, #ffedff 9.49%, #ffffff 114.65%);
+
+:export {
+  bggradient1: $bggradient1;
+  bg-gradient-2: $bg-gradient-2;
+  bg-gradient-3: $bg-gradient-3;
+  bg-gradient-3: $bg-gradient-3;
+  bg-gradient-4: $bg-gradient-4;
+  wavyRose: $wavyRose;
+  grayBtnGradient: $grayBtnGradient;
+  wavyGrayRose: $wavyGrayRose;
+  VioletToWhite: $VioletToWhite;
+  WhitishGray: $WhitishGray;
+  RosyWhite: $RosyWhite;
+  GrayShades: $GrayShades;
+}

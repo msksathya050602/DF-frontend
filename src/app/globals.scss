@@ -1,0 +1,107 @@
+@use "@theme/colors.module.scss" as *;
+@use "@theme/viewport.scss" as *;
+@use "@theme/common.module.scss" as *;
+@use "@theme/gradient.module.scss" as *;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --scroll-behavior: smooth;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: $Gray1;
+  -moz-tap-highlight-color: $Gray1;
+  -o-tap-highlight-color: $Gray1;
+  background-color: white;
+
+  &.menu-opened {
+    @include tablet {
+      overflow: hidden;
+    }
+  }
+
+  &.overflow-hidden {
+    overflow: hidden;
+  }
+
+  svg {
+    overflow: inherit;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+button {
+  border: none;
+  font-family: "DM Sans" !important;
+}
+
+input,
+textarea {
+  font-family: "DM Sans" !important;
+  padding-left: 2.3rem;
+  font-size: 1rem;
+  font-weight: 400 !important;
+  outline: none;
+  border: none;
+
+  &::placeholder,
+  &::-webkit-input-placeholder {
+    font-family: "DM Sans" !important;
+    font-size: 0.9rem;
+  }
+}
+
+.swipe-btn {
+  border-radius: 10rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  width: 100%;
+  margin-top: 1rem;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #658192;
+    border-radius: 10rem;
+    z-index: -2;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: rgb(69.7186234818, 89.0465587045, 100.7813765182);
+    transition: all 0.3s;
+    border-radius: 10rem;
+    z-index: -1;
+  }
+
+  &:hover {
+    color: #fff;
+
+    &:before {
+      width: 100%;
+    }
+  }
+}

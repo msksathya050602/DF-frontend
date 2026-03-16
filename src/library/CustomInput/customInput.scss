@@ -1,0 +1,107 @@
+@use "@theme/colors.module.scss" as *;
+@use "@theme/viewport.scss" as *;
+@use "@theme/common.module.scss" as *;
+@use "@theme/gradient.module.scss" as *;
+
+.form-group-wrapper {
+  @include flex-model(column, flex-start, flex-start, 0.5rem);
+  width: 100%;
+
+  &.error {
+    border: 1px solid red;
+  }
+
+  > .info-wrapper {
+    @include flex-model(row, center, center, 5px);
+
+    > svg {
+      transform: scale(0.9);
+    }
+
+    > .custom-label {
+      font-size: 0.9rem;
+
+      &.required {
+        &::before {
+          content: "*";
+          color: red;
+        }
+      }
+    }
+  }
+}
+
+.form-group {
+  @include flex-model(column, flex-start, flex-start, 0.5rem);
+  width: 100%;
+  border: 1px solid $Gray1;
+  border-radius: 10px;
+  padding: 0.6rem;
+  position: relative;
+  transition: border-color 0.3s ease-in-out;
+
+  &.error {
+    border: 1px solid red !important;
+  }
+
+  &:focus-within {
+    border: 1.5px solid $Gray3;
+  }
+
+  > input {
+    height: 25px !important;
+    width: 100%;
+    padding-left: 1rem;
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus ~ .form-group {
+      border: 1px solid black;
+    }
+  }
+
+  @include mobile {
+    width: 100%;
+  }
+
+  > .fall-back-wrapper {
+    > .fall-back-line {
+      background-image: linear-gradient(
+        90deg,
+        #d3d3d3 0px,
+        #c3c3c3 40px,
+        #d3d3d3 80px
+      );
+    }
+  }
+
+  > textarea {
+    resize: none;
+  }
+
+  > .form-editors {
+    align-self: flex-end;
+    @include flex-model(row, center, center, 0.5rem);
+
+    > svg {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+
+  > .eye {
+    position: absolute;
+    bottom: 4px;
+    right: 10px;
+    cursor: pointer;
+
+    > svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

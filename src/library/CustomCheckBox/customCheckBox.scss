@@ -1,0 +1,107 @@
+@use "@theme/colors.module.scss" as *;
+@use "@theme/viewport.scss" as *;
+@use "@theme/common.module.scss" as *;
+@use "@theme/gradient.module.scss" as *;
+
+.checkbox-group-card {
+  width: 100%;
+
+  #error-message {
+    margin-left: 2px;
+    margin-top: 0.5rem;
+  }
+
+  .checkbox-group-wrapper {
+    border-radius: 10px;
+    @include flex-model(column, flex-start, flex-start, 1rem);
+    width: 100%;
+
+    > p {
+      @include mobile {
+        font-size: 0.85rem;
+      }
+    }
+
+    .info-wrapper {
+      @include flex-model(row, center, center, 5px);
+
+      &.required {
+        > p {
+          &::before {
+            content: "*";
+            color: red;
+          }
+        }
+      }
+
+      > svg {
+        transform: scale(0.9);
+      }
+    }
+
+    .checkbox-group {
+      width: 100%;
+      @include flex-model(row, center, flex-start, 0.7rem);
+      flex-wrap: wrap;
+
+      .checkbox-title-description-wrapper {
+        @include flex-model(row, center, flex-start, 0.5rem);
+
+        > .checkbox-group-item {
+          width: auto;
+          cursor: pointer;
+          border-radius: 100px;
+          padding: 0.5rem;
+          position: relative;
+          @include flex-model(row, center, center, 0rem);
+
+          > span {
+            color: $Gray3 !important;
+            font-size: 0.65rem;
+          }
+
+          &:not(.skip) {
+            border: 1px solid $Gray3;
+
+            &:hover {
+              background-color: $Gray1 !important;
+            }
+
+            &.selected {
+              background-color: $Gray3 !important;
+
+              > span {
+                color: white !important;
+              }
+            }
+          }
+
+          > .form-group-wrapper {
+            width: auto !important;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            > .form-group {
+              padding: 0;
+              border: none;
+              background: transparent;
+
+              > input {
+                width: 100%;
+                accent-color: hsl(290, 55%, 63%);
+              }
+            }
+          }
+
+          > label {
+            @include mobile {
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+@use "@theme/colors.module.scss" as *;
+@use "@theme/viewport.scss" as *;
+@use "@theme/common.module.scss" as *;
+@use "@theme/gradient.module.scss" as *;
+
+.typing-text {
+  > span {
+    display: inline-block;
+  }
+
+  .cursor {
+    display: inline-block;
+    background-color: currentColor;
+    animation: blink 1s steps(2, start) infinite;
+  }
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}

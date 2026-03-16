@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@assets/*": ["public/*"],
+      "@components/*": ["src/components/*"],
+      "@theme/*": ["./src/theme/*"],
+      "@Customtypes/*": ["src/types/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@library/*": ["./src/library/*"],
+      "@functions/*": ["./src/functions/*"],
+      "@helpers/*": ["./src/helpers/*"],
+      "@services/*": ["./src/services/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@routes/*": ["./src/routes/*"],
+      "@type/*": ["./src/type/*"],
+      "@provider/*": ["./src/provider/*"],
+      "@store/*": ["./src/store/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/scripts/createCipher.mjs"
+  ],
+  "exclude": ["node_modules"]
+}

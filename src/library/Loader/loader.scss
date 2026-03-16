@@ -1,0 +1,27 @@
+@use "@theme/colors.module.scss" as *;
+@use "@theme/viewport.scss" as *;
+@use "@theme/common.module.scss" as *;
+@use "@theme/gradient.module.scss" as *;
+
+.loader-wrapper {
+  width: 100%;
+  @include flex-model(column, center, center, 1rem);
+
+  > .loader {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    animation: spin 1s infinite;
+
+    @include mobile {
+      width: 60px;
+      height: 60px;
+    }
+  }
+}
+
+@keyframes spin {
+  100% {
+    rotate: 360deg;
+  }
+}
