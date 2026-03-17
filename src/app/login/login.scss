@@ -71,3 +71,18 @@
 .login-button:hover {
   background: #1d4ed8;
 }
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-error {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.login-success {
+  color: #15803d;
+  font-size: 12px;
+}
