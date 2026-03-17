@@ -1,7 +1,7 @@
 .dashboard-page {
   min-height: 100vh;
   padding: 24px;
-  background: linear-gradient(135deg, #ecfeff 0%, #eef2ff 50%, #fff7ed 100%);
+  background: #ffffff;
 }
 
 .dashboard-header {
@@ -18,14 +18,14 @@
 
   p {
     margin: 4px 0 0;
-    color: #0f766e;
+    color: #64748b;
   }
 
   button {
     border: none;
-    border-radius: 10px;
+    border-radius: 999px;
     padding: 10px 14px;
-    background: linear-gradient(90deg, #f97316 0%, #ef4444 100%);
+    background: #000000;
     color: #fff;
     cursor: pointer;
   }
@@ -42,12 +42,12 @@
   background: #ffffff;
   border-radius: 12px;
   padding: 16px;
-  border: 1px solid #c4b5fd;
-  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.12);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 
   h3 {
     margin: 0 0 8px;
-    color: #6d28d9;
+    color: #64748b;
     font-size: 14px;
     font-weight: 500;
   }
@@ -55,7 +55,7 @@
   p {
     margin: 0;
     font-size: 24px;
-    color: #1d4ed8;
+    color: #1f2937;
     font-weight: 700;
   }
 }
@@ -64,12 +64,12 @@
   background: #ffffff;
   border-radius: 12px;
   padding: 18px;
-  border: 1px solid #bae6fd;
-  box-shadow: 0 8px 22px rgba(14, 116, 144, 0.12);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 
   h2 {
     margin: 0 0 14px;
-    color: #155e75;
+    color: #0f172a;
   }
 
   .branch-form {
@@ -79,18 +79,18 @@
     margin-bottom: 12px;
 
     input {
-      border: 1px solid #a5f3fc;
+      border: 1px solid #d1d5db;
       border-radius: 8px;
       padding: 10px;
       font-size: 14px;
-      background: #ecfeff;
+      background: #ffffff;
     }
 
     button {
       border: none;
-      border-radius: 8px;
+      border-radius: 999px;
       padding: 10px 14px;
-      background: linear-gradient(90deg, #0ea5e9 0%, #14b8a6 100%);
+      background: #000000;
       color: #fff;
       cursor: pointer;
     }
@@ -110,12 +110,12 @@
   td {
     text-align: left;
     padding: 10px 8px;
-    border-bottom: 1px solid #dbeafe;
+    border-bottom: 1px solid #e2e8f0;
     color: #0f172a;
   }
 
   th {
-    color: #0369a1;
+    color: #475569;
     font-weight: 600;
   }
 
