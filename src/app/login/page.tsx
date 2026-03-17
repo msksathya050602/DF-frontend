@@ -3,15 +3,18 @@
 import "./login.scss";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import { LocalStorage, setStorageKey } from "@/helpers/storage";
+import { ROUTES } from "@/routes";
 import { basicAuthLogin } from "@/services/api/auth";
 import { loginSchema } from "@/utils/schema";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const {
@@ -28,12 +31,17 @@ export default function LoginPage() {
     setServerError("");
     setSuccessMessage("");
     try {
-      const { accessToken, refreshToken } = await basicAuthLogin({
+      const { accessToken, refreshToken, roles } = await basicAuthLogin({
         email: data.email,
         password: data.password,
       });
       setStorageKey(LocalStorage.ACCESS_TOKEN, accessToken);
       setStorageKey(LocalStorage.REFRESH_TOKEN, refreshToken);
+      if (roles?.includes("admin")) {
+        router.push(ROUTES.DASHBOARD);
+        return;
+      }
+
       setSuccessMessage("Login successful.");
       reset();
     } catch (error: any) {

@@ -7,6 +7,15 @@ export type LoginResponse = {
   roles: string[];
 };
 
+export type CurrentUserResponse = {
+  status: number;
+  message: string;
+  id: string;
+  userName: string;
+  email: string;
+  roles: string[];
+};
+
 export const basicAuthLogin = async ({
   email,
   password,
@@ -15,5 +24,10 @@ export const basicAuthLogin = async ({
   password: string;
 }): Promise<LoginResponse> => {
   const response = await apiClient.post<LoginResponse>("/login", { email, password });
+  return response.data;
+};
+
+export const getCurrentUser = async (): Promise<CurrentUserResponse> => {
+  const response = await apiClient.get<CurrentUserResponse>("/users/me");
   return response.data;
 };

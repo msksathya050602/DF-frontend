@@ -1,0 +1,140 @@
+.dashboard-page {
+  min-height: 100vh;
+  padding: 24px;
+  background: linear-gradient(135deg, #ecfeff 0%, #eef2ff 50%, #fff7ed 100%);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: #0f766e;
+  }
+
+  button {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    background: linear-gradient(90deg, #f97316 0%, #ef4444 100%);
+    color: #fff;
+    cursor: pointer;
+  }
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #c4b5fd;
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.12);
+
+  h3 {
+    margin: 0 0 8px;
+    color: #6d28d9;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+    font-size: 24px;
+    color: #1d4ed8;
+    font-weight: 700;
+  }
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px;
+  border: 1px solid #bae6fd;
+  box-shadow: 0 8px 22px rgba(14, 116, 144, 0.12);
+
+  h2 {
+    margin: 0 0 14px;
+    color: #155e75;
+  }
+
+  .branch-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+
+    input {
+      border: 1px solid #a5f3fc;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 14px;
+      background: #ecfeff;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: linear-gradient(90deg, #0ea5e9 0%, #14b8a6 100%);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid #dbeafe;
+    color: #0f172a;
+  }
+
+  th {
+    color: #0369a1;
+    font-weight: 600;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .status-badge.active {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .status-badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
