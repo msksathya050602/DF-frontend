@@ -3,13 +3,35 @@
 import "./billing.scss";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CalendarDays,
+  FilePlus,
+  History,
+  LogOut,
+  Minus,
+  Package,
+  Plus,
+  Printer,
+  Receipt,
+  Save,
+  Search,
+  Settings,
+  ShoppingBasket,
+  ShoppingCart,
+  Trash2,
+  TrendingUp,
+  User,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
 import { getStorageKey, LocalStorage, removeStorageKey, setStorageKey } from "@/helpers/storage";
 import { ROUTES } from "@/routes";
 import { getCurrentUser } from "@/services/api/auth";
 import { type Branch, getBranches } from "@/services/api/branches";
-import { type Pricing, getPricing } from "@/services/api/catalog";
+import { getPricing,type Pricing } from "@/services/api/catalog";
 import { createCustomer, type Customer, getCustomerOrders, getCustomers } from "@/services/api/customers";
 import { createOrder, getOrders, type Order } from "@/services/api/orders";
 
@@ -46,6 +68,37 @@ type CreateStep = 1 | 2 | 3;
 
 const toNumber = (value: string | number | null | undefined) => Number(value || 0);
 
+/** Local calendar date string (YYYY-MM-DD) to ISO 8601 for the API */
+const dateInputToISO8601 = (value: string): string | undefined => {
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  const d = new Date(`${trimmed}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return undefined;
+  return d.toISOString();
+};
+
+const formatOrderDate = (value: string | null | undefined): string => {
+  if (value == null || value === "") return "-";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "-";
+  return d.toLocaleDateString(undefined, { weekday: "short", year: "numeric", month: "short", day: "numeric" });
+};
+
+const orderStatusChipClass = (status: string): string => {
+  const u = String(status).toUpperCase();
+  if (u === "DELIVERED") return "history-chip--tone-success";
+  if (u === "CANCELLED") return "history-chip--tone-danger";
+  return "history-chip--tone-info";
+};
+
+const paymentStatusChipClass = (status: string): string => {
+  const u = String(status).toUpperCase();
+  if (u === "PAID") return "history-chip--tone-success";
+  if (u === "REFUNDED") return "history-chip--tone-muted";
+  if (u === "PARTIAL") return "history-chip--tone-warning";
+  return "history-chip--tone-warning";
+};
+
 export default function BillingPage() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
@@ -74,6 +127,7 @@ export default function BillingPage() {
   const [newLastName, setNewLastName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newAddress, setNewAddress] = useState("");
+  const [expectedDeliveryDateInput, setExpectedDeliveryDateInput] = useState("");
 
   const selectedBranch = useMemo(
     () => branches.find((item) => item.id === selectedBranchId) || null,
@@ -412,7 +466,7 @@ export default function BillingPage() {
     setScreenError("");
     setScreenSuccess("");
     if (!normalizedPhone) {
-      setScreenError("Enter customer phone number.");
+      setScreenError("Please enter the customer's phone number.");
       return;
     }
     const matched = customers.find((item) => (item.customerPhone || "").trim() === normalizedPhone);
@@ -420,7 +474,7 @@ export default function BillingPage() {
       setSelectedCustomerId("");
       setOrders([]);
       setShowOnboardCustomer(true);
-      setScreenError("Customer not found. Please onboard customer.");
+      setScreenError("No customer with this phone. Add their details in the form below.");
       return;
     }
     setShowOnboardCustomer(false);
@@ -432,7 +486,7 @@ export default function BillingPage() {
   const onboardCustomer = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!customerPhoneInput.trim() || !newFirstName.trim()) {
-      setScreenError("First name and phone are required for onboarding.");
+      setScreenError("First name and phone number are required.");
       return;
     }
     try {
@@ -456,7 +510,7 @@ export default function BillingPage() {
       setOrders([]);
       setCreateStep(2);
     } catch (error: any) {
-      setScreenError(error?.response?.data?.error_message || "Failed to onboard customer.");
+      setScreenError(error?.response?.data?.error_message || "Could not save the customer. Try again.");
     } finally {
       setIsCreatingCustomer(false);
     }
@@ -464,21 +518,22 @@ export default function BillingPage() {
 
   const placeOrder = async () => {
     if (!selectedBranchId) {
-      setScreenError("Please choose a branch first.");
+      setScreenError("Select a branch in the sidebar first.");
       return;
     }
     if (!selectedCustomerId) {
-      setScreenError("Please select customer.");
+      setScreenError("Choose a customer in step 1.");
       return;
     }
     if (!cart.length) {
-      setScreenError("Add at least one item to cart.");
+      setScreenError("Add at least one item to the basket.");
       return;
     }
     try {
       setIsPlacingOrder(true);
       setScreenError("");
       setScreenSuccess("");
+      const expectedISO = dateInputToISO8601(expectedDeliveryDateInput);
       const response = await createOrder({
         customerId: selectedCustomerId,
         branchId: selectedBranchId,
@@ -489,22 +544,24 @@ export default function BillingPage() {
         })),
         discountAmount: 0,
         taxAmount: 0,
+        ...(expectedISO ? { expectedDeliveryDate: expectedISO } : {}),
       });
       setLastPlacedOrder(response.order || null);
       setCart([]);
+      setExpectedDeliveryDateInput("");
       await loadOrders(selectedCustomerId);
       const latestOrders = await getOrders();
       setOrders(latestOrders.orders || []);
       const createdId = response.order?.id;
       const isVisibleInOrders = !!createdId && (latestOrders.orders || []).some((order) => order.id === createdId);
       if (!isVisibleInOrders) {
-        setScreenError("Bill created, but latest order list not refreshed yet. Please open Order History once.");
+        setScreenError("Bill saved. Open Order history if the list does not update.");
       } else {
-        setScreenSuccess(`Bill created successfully. Order #${response.order.orderNumber}`);
+        setScreenSuccess(`Bill saved. Order ${response.order.orderNumber}`);
       }
       setCreateStep(3);
     } catch (error: any) {
-      setScreenError(error?.response?.data?.error_message || "Failed to place order.");
+      setScreenError(error?.response?.data?.error_message || "Could not save the bill. Try again.");
     } finally {
       setIsPlacingOrder(false);
     }
@@ -524,10 +581,38 @@ export default function BillingPage() {
               </div>
             </div>
 
+            <div className="billing-sidebarBranch">
+              <label className="billing-sidebarBranch-label" htmlFor="sidebar-branch-select">
+                Branch
+              </label>
+              <div className="billing-sidebarBranch-box">
+                <select
+                  id="sidebar-branch-select"
+                  className="billing-sidebarBranch-select"
+                  value={selectedBranchId}
+                  onChange={(e) => onSelectBranch(e.target.value)}
+                  aria-label="Select branch"
+                >
+                  <option value="">Select branch</option>
+                  {branches.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.branchName}
+                    </option>
+                  ))}
+                </select>
+                <div className="billing-sidebarBranch-display">
+                  <div>
+                    <p className="billing-sidebarBranch-name">{selectedBranch?.branchName || "Select branch"}</p>
+                    <p className="billing-sidebarBranch-sub">
+                      {selectedBranch?.branchAddress?.trim() || (selectedBranch ? "Billing location" : "Choose location")}
+                    </p>
+                  </div>
+                  <span className="billing-sidebarBranch-chevron" aria-hidden />
+                </div>
+              </div>
+            </div>
+
             <nav className="billing-nav">
-              <button type="button" onClick={() => router.push(ROUTES.DASHBOARD)}>
-                Dashboard
-              </button>
               <button
                 type="button"
                 className={selectedTab === "create" ? "active" : ""}
@@ -536,12 +621,15 @@ export default function BillingPage() {
                   setCreateStep(1);
                 }}
               >
-                Create Bill
+                <Receipt size={18} strokeWidth={2} aria-hidden />
+                New bill
               </button>
               <button type="button" className={selectedTab === "history" ? "active" : ""} onClick={() => setSelectedTab("history")}>
-                Order History
+                <History size={18} strokeWidth={2} aria-hidden />
+                Order history
               </button>
               <button type="button" onClick={() => router.push(ROUTES.DASHBOARD)}>
+                <Settings size={18} strokeWidth={2} aria-hidden />
                 Settings
               </button>
             </nav>
@@ -549,6 +637,7 @@ export default function BillingPage() {
 
           <div className="billing-sidebarFoot">
             <button type="button" className="billing-logout" onClick={logout}>
+              <LogOut size={18} strokeWidth={2} aria-hidden />
               Logout
             </button>
           </div>
@@ -557,13 +646,18 @@ export default function BillingPage() {
         <section className="billing-main">
           <header className="billing-topbar">
             <div>
-              <h1>{selectedTab === "create" ? "New Bill Creation" : "Order History"}</h1>
-              <p>Branch: {selectedBranch?.branchName || "-"}</p>
+              <h1>{selectedTab === "create" ? "Create a bill" : "Order history"}</h1>
+              <p className="billing-topbar-sub">
+                {selectedTab === "create"
+                  ? "Find the customer, add items, then review and print."
+                  : `Orders at ${selectedBranch?.branchName || "the branch you selected"}.`}
+              </p>
             </div>
             {selectedTab === "create" && (
               <div className="billing-topTabs">
                 <button type="button" className={createStep === 1 ? "active" : ""} onClick={() => setCreateStep(1)}>
-                  1 Customer Setup
+                  <User size={14} strokeWidth={2} aria-hidden />
+                  1 Find customer
                 </button>
                 <button
                   type="button"
@@ -572,7 +666,8 @@ export default function BillingPage() {
                     if (selectedCustomerId) setCreateStep(2);
                   }}
                 >
-                  2 Item Selection
+                  <ShoppingCart size={14} strokeWidth={2} aria-hidden />
+                  2 Add items
                 </button>
                 <button
                   type="button"
@@ -581,7 +676,8 @@ export default function BillingPage() {
                     if (lastPlacedOrder) setCreateStep(3);
                   }}
                 >
-                  3 Billing & Print
+                  <Printer size={14} strokeWidth={2} aria-hidden />
+                  3 Review and print
                 </button>
               </div>
             )}
@@ -598,22 +694,16 @@ export default function BillingPage() {
             <>
               {createStep === 1 && (
                 <section className="billing-card">
-                <h2 className="billing-step-title">Customer Context</h2>
-                <p className="billing-muted">Identify existing customer by phone or onboard a new customer before billing.</p>
+                <h2 className="billing-step-title">Find or add a customer</h2>
+                <p className="billing-muted">
+                  Search by phone, or pick a name from the list. If this is a new customer, fill in the form that appears
+                  below.
+                </p>
 
-                <div className="billing-form-row billing-form-row--four">
-                  <select value={selectedBranchId} onChange={(e) => onSelectBranch(e.target.value)}>
-                    <option value="">Select branch</option>
-                    {branches.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.branchName}
-                      </option>
-                    ))}
-                  </select>
-
+                <div className="billing-form-row billing-form-row--customer">
                   <input
                     type="text"
-                    placeholder="Enter customer phone"
+                    placeholder="Customer phone number"
                     value={customerPhoneInput}
                     onChange={(e) => {
                       setCustomerPhoneInput(e.target.value);
@@ -621,10 +711,11 @@ export default function BillingPage() {
                     }}
                   />
                   <button type="button" className="billing-inline-button" onClick={() => void searchCustomerByPhone()}>
-                    Find
+                    <Search size={16} strokeWidth={2} aria-hidden />
+                    Search
                   </button>
                   <select value={selectedCustomerId} onChange={(e) => void onCustomerChange(e)}>
-                    <option value="">Select matched customer</option>
+                    <option value="">— Choose customer —</option>
                     {customers.map((item) => (
                       <option key={item.id} value={item.id}>
                         {`${item.firstName}${item.lastName ? ` ${item.lastName}` : ""}${item.customerPhone ? ` (${item.customerPhone})` : ""}`}
@@ -643,14 +734,15 @@ export default function BillingPage() {
                 {!!selectedCustomerId && createStep === 1 && (
                   <div className="billing-nextAction">
                     <button type="button" onClick={() => setCreateStep(2)}>
-                      Continue to Item Selection
+                      Continue to add items
+                      <ArrowRight size={16} strokeWidth={2} aria-hidden />
                     </button>
                   </div>
                 )}
 
                 {showOnboardCustomer && (
                   <form className="onboard-form" onSubmit={(e) => void onboardCustomer(e)}>
-                    <h3>New Registration</h3>
+                    <h3>New customer</h3>
                     <div className="billing-form-row billing-form-row--two">
                       <input
                         type="text"
@@ -680,7 +772,14 @@ export default function BillingPage() {
                       />
                     </div>
                     <button type="submit" disabled={isCreatingCustomer}>
-                      {isCreatingCustomer ? "Creating..." : "Create Customer & Start Bill"}
+                      {isCreatingCustomer ? (
+                        "Saving…"
+                      ) : (
+                        <>
+                          <Save size={16} strokeWidth={2} aria-hidden />
+                          Save customer and continue
+                        </>
+                      )}
                     </button>
                   </form>
                 )}
@@ -698,7 +797,7 @@ export default function BillingPage() {
                         setSelectedServiceId("");
                       }}
                     >
-                      <option value="">Category: All</option>
+                      <option value="">All categories</option>
                       {categoryOptions.map((category) => (
                         <option key={category.id} value={category.categoryCode}>
                           {category.categoryName}
@@ -706,7 +805,7 @@ export default function BillingPage() {
                       ))}
                     </select>
                     <select value={selectedServiceId} onChange={(e) => setSelectedServiceId(e.target.value)}>
-                      <option value="">Service: All</option>
+                      <option value="">All services</option>
                       {serviceOptions.map((service) => (
                         <option key={service.id} value={service.id}>
                           {service.serviceName}
@@ -715,7 +814,7 @@ export default function BillingPage() {
                     </select>
                     <input
                       type="text"
-                      placeholder="Search catalog items..."
+                      placeholder="Search by product name…"
                       value={productSearch}
                       onChange={(e) => setProductSearch(e.target.value)}
                     />
@@ -727,19 +826,22 @@ export default function BillingPage() {
                     ))}
                   </div>
                   {!catalogProducts.length && (
-                    <p className="billing-muted">No matching products. Try changing category/service/search filters.</p>
+                    <p className="billing-muted">Nothing matches your search. Try another category or search word.</p>
                   )}
                 </div>
 
                 <aside className="billing-workspaceRight billing-card">
                   <div className="basket-head">
-                    <h3>Order Basket</h3>
+                    <div className="basket-head-title">
+                      <ShoppingBasket size={18} strokeWidth={2} aria-hidden />
+                      <h3>Basket</h3>
+                    </div>
                     <span>{cart.length} items</span>
                   </div>
 
                   <div className="basket-customer">
-                    <p>{selectedCustomer ? `${selectedCustomer.firstName} ${selectedCustomer.lastName || ""}`.trim() : "No customer selected"}</p>
-                    <small>{selectedCustomer?.customerPhone || "Find customer to continue"}</small>
+                    <p>{selectedCustomer ? `${selectedCustomer.firstName} ${selectedCustomer.lastName || ""}`.trim() : "No customer yet"}</p>
+                    <small>{selectedCustomer?.customerPhone || "Choose a customer in step 1"}</small>
                   </div>
 
                   <div className="basket-lines">
@@ -747,21 +849,14 @@ export default function BillingPage() {
                       <div key={`${line.productId}-${line.serviceId}`} className="basket-line">
                         <div>
                           <p>{line.productName}</p>
-                          <small>
-                            Qty:
-                            <input
-                              type="number"
-                              min={1}
+                          <div className="basket-line-qty">
+                            <span className="basket-line-qty-label">Qty</span>
+                            <QuantityStepper
                               value={line.quantity}
-                              onChange={(e) =>
-                                updateLineQuantity(
-                                  line.productId,
-                                  line.serviceId,
-                                  Math.max(1, Number(e.target.value) || 1),
-                                )
-                              }
+                              onChange={(next) => updateLineQuantity(line.productId, line.serviceId, next)}
+                              ariaLabel={`Quantity for ${line.productName}`}
                             />
-                          </small>
+                          </div>
                         </div>
                         <div className="basket-lineRight">
                           <select
@@ -775,36 +870,38 @@ export default function BillingPage() {
                             ))}
                           </select>
                           <strong>
-                            {line.currency} {(line.quantity * line.unitPrice).toFixed(2)}
+                            {currencyDisplayLabel(line.currency)} {(line.quantity * line.unitPrice).toFixed(2)}
                           </strong>
                           <button type="button" onClick={() => removeLine(line.productId, line.serviceId)}>
+                            <Trash2 size={14} strokeWidth={2} aria-hidden />
                             Remove
                           </button>
                         </div>
                       </div>
                     ))}
-                    {!cart.length && <p className="billing-muted">Your basket is empty.</p>}
+                    {!cart.length && <p className="billing-muted">Basket is empty. Add products from the list.</p>}
                   </div>
 
                   <div className="checkout-actions">
-                    <p className="total">Total: INR {subtotal.toFixed(2)}</p>
+                    <p className="total">Total: {currencyDisplayLabel("INR")} {subtotal.toFixed(2)}</p>
                     <button
                       type="button"
                       disabled={!cart.length || !selectedCustomerId}
                       onClick={() => {
                         if (!selectedCustomerId) {
-                          setScreenError("Please select customer.");
+                          setScreenError("Choose a customer in step 1.");
                           return;
                         }
                         if (!cart.length) {
-                          setScreenError("Add at least one item to cart.");
+                          setScreenError("Add at least one item to the basket.");
                           return;
                         }
                         setScreenError("");
                         setCreateStep(3);
                       }}
                     >
-                      Continue to Billing & Print
+                      Continue
+                      <ArrowRight size={16} strokeWidth={2} aria-hidden />
                     </button>
                   </div>
                 </aside>
@@ -813,10 +910,20 @@ export default function BillingPage() {
 
               {createStep === 3 && (
                 <section className="billing-card billing-printCard">
-                  <h2 className="billing-step-title">Billing & Print</h2>
+                  <h2 className="billing-step-title">Review and print</h2>
                   {!lastPlacedOrder ? (
                     <>
-                      <p className="billing-muted">Review final basket and create the bill.</p>
+                      <p className="billing-muted">Check the items and total, then save the bill. You can print after saving.</p>
+                      <div className="billing-deliveryField">
+                        <label htmlFor="expected-delivery-date">Delivery date (optional)</label>
+                        <input
+                          id="expected-delivery-date"
+                          type="date"
+                          value={expectedDeliveryDateInput}
+                          onChange={(e) => setExpectedDeliveryDateInput(e.target.value)}
+                          disabled={isPlacingOrder}
+                        />
+                      </div>
                       <table className="history-items-table">
                         <thead>
                           <tr>
@@ -834,16 +941,16 @@ export default function BillingPage() {
                               <td>{line.serviceName}</td>
                               <td>{line.quantity}</td>
                               <td>
-                                {line.currency} {line.unitPrice.toFixed(2)}
+                                {currencyDisplayLabel(line.currency)} {line.unitPrice.toFixed(2)}
                               </td>
                               <td>
-                                {line.currency} {(line.unitPrice * line.quantity).toFixed(2)}
+                                {currencyDisplayLabel(line.currency)} {(line.unitPrice * line.quantity).toFixed(2)}
                               </td>
                             </tr>
                           ))}
                           {!cart.length && (
                             <tr>
-                              <td colSpan={5}>Cart is empty.</td>
+                              <td colSpan={5}>Basket is empty.</td>
                             </tr>
                           )}
                         </tbody>
@@ -863,7 +970,17 @@ export default function BillingPage() {
                         </p>
                         <p>
                           <span>Total Amount</span>
-                          <strong>INR {subtotal.toFixed(2)}</strong>
+                          <strong>
+                            {currencyDisplayLabel("INR")} {subtotal.toFixed(2)}
+                          </strong>
+                        </p>
+                        <p>
+                          <span>Delivery date</span>
+                          <strong>
+                            {expectedDeliveryDateInput
+                              ? formatOrderDate(`${expectedDeliveryDateInput}T12:00:00`)
+                              : "Not set"}
+                          </strong>
                         </p>
                       </div>
                       <div className="print-actions">
@@ -874,16 +991,24 @@ export default function BillingPage() {
                             setCreateStep(2);
                           }}
                         >
-                          Back to Item Selection
+                          <ArrowLeft size={16} strokeWidth={2} aria-hidden />
+                          Back to items
                         </button>
                         <button type="button" disabled={isPlacingOrder || !cart.length} onClick={placeOrder}>
-                          {isPlacingOrder ? "Creating..." : "Create Bill"}
+                          {isPlacingOrder ? (
+                            "Saving…"
+                          ) : (
+                            <>
+                              <Save size={16} strokeWidth={2} aria-hidden />
+                              Save bill
+                            </>
+                          )}
                         </button>
                       </div>
                     </>
                   ) : (
                     <>
-                      <p className="billing-muted">Order created successfully. You can print the receipt now.</p>
+                      <p className="billing-muted">Bill saved. You can print the receipt below.</p>
                       <div className="print-summary">
                         <p>
                           <span>Order #</span>
@@ -899,12 +1024,19 @@ export default function BillingPage() {
                         </p>
                         <p>
                           <span>Total Amount</span>
-                          <strong>INR {toNumber(lastPlacedOrder?.totalAmount).toFixed(2)}</strong>
+                          <strong>
+                            {currencyDisplayLabel("INR")} {toNumber(lastPlacedOrder?.totalAmount).toFixed(2)}
+                          </strong>
+                        </p>
+                        <p>
+                          <span>Delivery date</span>
+                          <strong>{formatOrderDate(lastPlacedOrder?.deliveryDate ?? null)}</strong>
                         </p>
                       </div>
                       <div className="print-actions">
                         <button type="button" onClick={() => window.print()}>
-                          Print Bill
+                          <Printer size={16} strokeWidth={2} aria-hidden />
+                          Print receipt
                         </button>
                         <button
                           type="button"
@@ -915,9 +1047,11 @@ export default function BillingPage() {
                             setCustomerPhoneInput("");
                             setLastPlacedOrder(null);
                             setCart([]);
+                            setExpectedDeliveryDateInput("");
                           }}
                         >
-                          New Bill
+                          <FilePlus size={16} strokeWidth={2} aria-hidden />
+                          Start another bill
                         </button>
                       </div>
                     </>
@@ -926,56 +1060,75 @@ export default function BillingPage() {
               )}
             </>
           ) : (
-            <section className="billing-card">
+            <section className="billing-card billing-history">
               <div className="history-metrics">
                 <article>
-                  <h4>Total Orders Today</h4>
+                  <div className="history-metric-label">
+                    <CalendarDays size={14} strokeWidth={2} aria-hidden />
+                    <h4>Today</h4>
+                  </div>
                   <p>{todayOrdersCount}</p>
                 </article>
                 <article>
-                  <h4>In Progress</h4>
+                  <div className="history-metric-label">
+                    <Package size={14} strokeWidth={2} aria-hidden />
+                    <h4>In progress</h4>
+                  </div>
                   <p>{inProgressCount}</p>
                 </article>
                 <article>
-                  <h4>Revenue (MTD)</h4>
-                  <p>INR {revenueMtd.toFixed(2)}</p>
+                  <div className="history-metric-label">
+                    <TrendingUp size={14} strokeWidth={2} aria-hidden />
+                    <h4>MTD revenue</h4>
+                  </div>
+                  <p>
+                    {currencyDisplayLabel("INR")} {revenueMtd.toFixed(2)}
+                  </p>
                 </article>
               </div>
               <>
-                  <p style={{ marginBottom: 10 }} className="billing-muted">
-                    Tracking orders for selected branch.
-                  </p>
+                  <p className="billing-history-hint billing-muted">Branch: {selectedBranch?.branchName || "—"}</p>
                   <div className="history-cards">
                     {branchOrders.map((order) => (
                       <article key={order.id} className="history-card">
                         <div className="history-card-head">
-                          <div>
-                            <h3>{order.orderNumber}</h3>
-                            <p>{new Date(order.createdAt).toLocaleString()}</p>
-                          </div>
+                          <h3 className="history-card-orderId">{order.orderNumber}</h3>
+                          <time className="history-card-time" dateTime={order.createdAt}>
+                            {new Date(order.createdAt).toLocaleString()}
+                          </time>
                           <div className="history-chip-wrap">
-                            <span className="history-chip">{order.orderStatus}</span>
-                            <span className="history-chip">{order.paymentStatus}</span>
+                            <span className={`history-chip ${orderStatusChipClass(order.orderStatus)}`}>
+                              {order.orderStatus}
+                            </span>
+                            <span className={`history-chip ${paymentStatusChipClass(order.paymentStatus)}`}>
+                              {order.paymentStatus}
+                            </span>
                           </div>
                         </div>
 
-                        <div className="history-meta-grid">
-                          <div>
-                            <label>Customer</label>
-                            <p>{`${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`}</p>
-                          </div>
-                          <div>
-                            <label>Phone</label>
-                            <p>{order.customer?.customerPhone || "-"}</p>
-                          </div>
-                          <div>
-                            <label>Branch</label>
-                            <p>{order.branch?.branchName || selectedBranch?.branchName || "-"}</p>
-                          </div>
-                          <div>
-                            <label>Items</label>
-                            <p>{order.items?.length || 0}</p>
-                          </div>
+                        <div className="history-meta-inline">
+                          <span className="history-meta-pair">
+                            <span className="history-meta-lbl">Customer</span>
+                            <span className="history-meta-val">
+                              {`${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`}
+                            </span>
+                          </span>
+                          <span className="history-meta-pair">
+                            <span className="history-meta-lbl">Phone</span>
+                            <span className="history-meta-val">{order.customer?.customerPhone || "—"}</span>
+                          </span>
+                          <span className="history-meta-pair">
+                            <span className="history-meta-lbl">Branch</span>
+                            <span className="history-meta-val">{order.branch?.branchName || selectedBranch?.branchName || "—"}</span>
+                          </span>
+                          <span className="history-meta-pair">
+                            <span className="history-meta-lbl">Delivery date</span>
+                            <span className="history-meta-val">{formatOrderDate(order.deliveryDate ?? null)}</span>
+                          </span>
+                          <span className="history-meta-pair">
+                            <span className="history-meta-lbl">Items</span>
+                            <span className="history-meta-val">{order.items?.length ?? 0}</span>
+                          </span>
                         </div>
 
                         <table className="history-items-table">
@@ -994,8 +1147,12 @@ export default function BillingPage() {
                                 <td>{item.product?.productName || "-"}</td>
                                 <td>{item.service?.serviceName || "-"}</td>
                                 <td>{item.quantity}</td>
-                                <td>INR {toNumber(item.unitPrice).toFixed(2)}</td>
-                                <td>INR {toNumber(item.lineTotal).toFixed(2)}</td>
+                                <td>
+                                  {currencyDisplayLabel("INR")} {toNumber(item.unitPrice).toFixed(2)}
+                                </td>
+                                <td>
+                                  {currencyDisplayLabel("INR")} {toNumber(item.lineTotal).toFixed(2)}
+                                </td>
                               </tr>
                             ))}
                             {!order.items?.length && (
@@ -1006,23 +1163,31 @@ export default function BillingPage() {
                           </tbody>
                         </table>
 
-                        <div className="history-total-grid">
-                          <p>
-                            <span>Sub total</span>
-                            <strong>INR {toNumber(order.subTotal).toFixed(2)}</strong>
-                          </p>
-                          <p>
-                            <span>Discount</span>
-                            <strong>INR {toNumber(order.discountAmount).toFixed(2)}</strong>
-                          </p>
-                          <p>
-                            <span>Tax</span>
-                            <strong>INR {toNumber(order.taxAmount).toFixed(2)}</strong>
-                          </p>
-                          <p className="grand-total">
-                            <span>Total</span>
-                            <strong>INR {toNumber(order.totalAmount).toFixed(2)}</strong>
-                          </p>
+                        <div className="history-total-inline">
+                          <span className="history-total-pair">
+                            <span className="history-total-lbl">Sub</span>
+                            <strong className="history-total-amt">
+                              {currencyDisplayLabel("INR")} {toNumber(order.subTotal).toFixed(2)}
+                            </strong>
+                          </span>
+                          <span className="history-total-pair">
+                            <span className="history-total-lbl">Discount</span>
+                            <strong className="history-total-amt">
+                              {currencyDisplayLabel("INR")} {toNumber(order.discountAmount).toFixed(2)}
+                            </strong>
+                          </span>
+                          <span className="history-total-pair">
+                            <span className="history-total-lbl">Tax</span>
+                            <strong className="history-total-amt">
+                              {currencyDisplayLabel("INR")} {toNumber(order.taxAmount).toFixed(2)}
+                            </strong>
+                          </span>
+                          <span className="history-total-pair history-total-pair--grand">
+                            <span className="history-total-lbl">Total</span>
+                            <strong className="history-total-amt">
+                              {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                            </strong>
+                          </span>
                         </div>
                       </article>
                     ))}
@@ -1034,6 +1199,46 @@ export default function BillingPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+function QuantityStepper({
+  value,
+  onChange,
+  min = 1,
+  disabled = false,
+  ariaLabel = "Quantity",
+}: {
+  value: number;
+  onChange: (next: number) => void;
+  min?: number;
+  disabled?: boolean;
+  ariaLabel?: string;
+}) {
+  return (
+    <div className="billing-qtyStepper" role="group" aria-label={ariaLabel}>
+      <button
+        type="button"
+        className="billing-qtyStepper-btn"
+        aria-label="Decrease quantity"
+        disabled={disabled || value <= min}
+        onClick={() => onChange(Math.max(min, value - 1))}
+      >
+        <Minus size={14} strokeWidth={2} aria-hidden />
+      </button>
+      <span className="billing-qtyStepper-value" aria-live="polite">
+        {value}
+      </span>
+      <button
+        type="button"
+        className="billing-qtyStepper-btn"
+        aria-label="Increase quantity"
+        disabled={disabled}
+        onClick={() => onChange(value + 1)}
+      >
+        <Plus size={14} strokeWidth={2} aria-hidden />
+      </button>
+    </div>
   );
 }
 
@@ -1051,14 +1256,13 @@ function CatalogCard({
       <p className="title">{row.productName}</p>
       <p className="subtitle">{row.categoryName || "-"}</p>
       <p className="price">
-        From {row.currency} {toNumber(row.minPrice).toFixed(2)}
+        From {currencyDisplayLabel(row.currency)} {toNumber(row.minPrice).toFixed(2)}
       </p>
       <div className="actions">
-        <input
-          type="number"
-          min={1}
+        <QuantityStepper
           value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+          onChange={setQuantity}
+          ariaLabel={`Quantity for ${row.productName}`}
         />
         <button
           type="button"
@@ -1067,6 +1271,7 @@ function CatalogCard({
             setQuantity(1);
           }}
         >
+          <Plus size={16} strokeWidth={2} aria-hidden />
           Add
         </button>
       </div>

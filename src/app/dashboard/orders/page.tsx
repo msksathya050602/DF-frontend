@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
 import type { Order } from "@/services/api/orders";
 import {
   cancelOrder,
@@ -94,7 +95,9 @@ export default function DashboardOrdersPage() {
                   <option value="REFUNDED">REFUNDED</option>
                 </select>
               </td>
-              <td>INR {toNumber(order.totalAmount).toFixed(2)}</td>
+              <td>
+                {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+              </td>
               <td className="actions-cell">
                 <button type="button" onClick={() => void removeOrder(order.id)} disabled={isActing}>
                   Cancel

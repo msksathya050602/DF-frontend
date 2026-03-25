@@ -37,6 +37,9 @@ export type Order = {
   taxAmount: string | number;
   totalAmount: string | number;
   createdAt: string;
+  pickupDate?: string | null;
+  deliveryDate?: string | null;
+  notes?: string | null;
   customer?: {
     id: string;
     firstName: string;
@@ -65,6 +68,10 @@ export type CreateOrderPayload = {
   }[];
   discountAmount?: number;
   taxAmount?: number;
+  pickupDate?: string;
+  deliveryDate?: string;
+  expectedDeliveryDate?: string;
+  notes?: string;
 };
 
 export type CreateOrderResponse = {

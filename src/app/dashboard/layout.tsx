@@ -3,11 +3,11 @@
 import "./dashboard.scss";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { ROUTES } from "@constants/routes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { getStorageKey, LocalStorage, removeStorageKey } from "@/helpers/storage";
-import { ROUTES } from "@constants/routes";
 import { getCurrentUser } from "@/services/api/auth";
 
 import { normalizeRoles } from "./_lib/utils";

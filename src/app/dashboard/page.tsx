@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ROUTES } from "@constants/routes";
 import Link from "next/link";
 
-import { ROUTES } from "@constants/routes";
+import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
 import type { Branch } from "@/services/api/branches";
 import { getBranches } from "@/services/api/branches";
 import { getPricing } from "@/services/api/catalog";
@@ -135,7 +136,9 @@ export default function DashboardOverviewPage() {
         </article>
         <article className="stat-card">
           <h3>Today Revenue</h3>
-          <p>INR {todaysRevenue.toFixed(2)}</p>
+          <p>
+            {currencyDisplayLabel("INR")} {todaysRevenue.toFixed(2)}
+          </p>
         </article>
         <article className="stat-card">
           <h3>Pending Orders</h3>
@@ -217,7 +220,9 @@ export default function DashboardOverviewPage() {
                 <td>{order.branch?.branchName || "-"}</td>
                 <td>{order.orderStatus}</td>
                 <td>{order.paymentStatus}</td>
-                <td>INR {toNumber(order.totalAmount).toFixed(2)}</td>
+                <td>
+                  {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                </td>
               </tr>
             ))}
             {!recentOrders.length && !isLoading && (

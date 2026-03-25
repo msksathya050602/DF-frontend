@@ -3,6 +3,7 @@
 import "./styles.scss";
 
 import { InputHTMLAttributes } from "react";
+
 import { AppButton, AppText, AppTextInput } from "@/components/common/widgets";
 
 type AuthLoginTemplateProps = {

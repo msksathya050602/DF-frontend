@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 
+import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
 import type { Pricing, Product, Service } from "@/services/api/catalog";
 import {
   createPricing,
@@ -116,7 +117,7 @@ export default function DashboardPricingPage() {
               <td>{item.product?.productName || "-"}</td>
               <td>{item.service?.serviceName || "-"}</td>
               <td>{toNumber(item.price).toFixed(2)}</td>
-              <td>{item.currency}</td>
+              <td>{currencyDisplayLabel(item.currency)}</td>
               <td>{item.isActive ? "Active" : "Inactive"}</td>
               <td className="actions-cell">
                 <button type="button" onClick={() => void editPricing(item)} disabled={isActing}>
