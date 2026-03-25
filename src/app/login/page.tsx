@@ -1,13 +1,12 @@
 "use client";
 
-import "./login.scss";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
+import AuthLoginTemplate from "@/components/auth/AuthLoginTemplate";
 import { LocalStorage, setStorageKey } from "@/helpers/storage";
 import { ROUTES } from "@/routes";
 import { basicAuthLogin } from "@/services/api/auth";
@@ -17,11 +16,31 @@ export default function LoginPage() {
   const router = useRouter();
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const normalizeRoles = (roles: unknown): string[] => {
+    const list = Array.isArray(roles) ? roles : [];
+    return list
+      .flatMap((r) => {
+        const str = String(r ?? "");
+        // If roles were stored/returned as a stringified array, try to parse it.
+        if (str.includes("[") && str.includes("]")) {
+          try {
+            const parsed = JSON.parse(str);
+            if (Array.isArray(parsed)) return parsed;
+          } catch {
+            // ignore
+          }
+        }
+        return [str];
+      })
+      .map((r) => String(r).replace(/[[\]"]/g, "").trim().toLowerCase())
+      .filter(Boolean);
+  };
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<yup.InferType<typeof loginSchema>>({
     resolver: yupResolver(loginSchema),
     mode: "onSubmit",
@@ -37,59 +56,32 @@ export default function LoginPage() {
       });
       setStorageKey(LocalStorage.ACCESS_TOKEN, accessToken);
       setStorageKey(LocalStorage.REFRESH_TOKEN, refreshToken);
-      if (roles?.includes("admin")) {
-        router.push(ROUTES.DASHBOARD);
-        return;
-      }
-
-      setSuccessMessage("Login successful.");
-      reset();
+      normalizeRoles(roles);
+      // Admin and user both use the billing UI.
+      router.push(ROUTES.BILLING);
     } catch (error: any) {
       setServerError(error?.response?.data?.error_message || "Login failed. Please try again.");
     }
   });
 
   return (
-    <main className="login-page">
-      <section className="login-card">
-        <h1 className="login-title">Welcome to Daily Fresh</h1>
-        <p className="login-subtitle">Sign in to continue.</p>
-        <form className="login-form" onSubmit={onSubmit}>
-          <label className="login-label" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            className="login-input"
-            {...register("email")}
-          />
-          {errors.email?.message && <small className="login-error">{errors.email.message}</small>}
-
-          <label className="login-label" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Enter your password"
-            className="login-input"
-            {...register("password")}
-          />
-          {errors.password?.message && (
-            <small className="login-error">{errors.password.message}</small>
-          )}
-
-          <button type="submit" className="login-button" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign In"}
-          </button>
-          {serverError && <small className="login-error">{serverError}</small>}
-          {successMessage && <small className="login-success">{successMessage}</small>}
-        </form>
-      </section>
-    </main>
+    <AuthLoginTemplate
+      title="Sign in"
+      subtitle="Please enter your credentials to continue."
+      emailError={errors.email?.message}
+      passwordError={errors.password?.message}
+      serverError={serverError}
+      successMessage={successMessage}
+      isSubmitting={isSubmitting}
+      isPasswordVisible={isPasswordVisible}
+      onTogglePassword={() => setIsPasswordVisible((value) => !value)}
+      onSignUpClick={() => setServerError("Sign up is not enabled yet. Please contact the admin.")}
+      onForgotPasswordClick={() =>
+        setServerError("Password reset is not enabled yet. Please contact the admin.")
+      }
+      onSubmit={onSubmit}
+      emailInputProps={register("email")}
+      passwordInputProps={register("password")}
+    />
   );
 }

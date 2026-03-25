@@ -1,0 +1,271 @@
+.app-text {
+  margin: 0;
+}
+
+.app-text--default {
+  color: #111827;
+}
+
+.app-text--muted {
+  color: #6b7280;
+}
+
+.app-text--primary {
+  color: #2563eb;
+}
+
+.app-text--success {
+  color: #15803d;
+}
+
+.app-text--danger {
+  color: #be123c;
+}
+
+.app-text--warning {
+  color: #b45309;
+}
+
+.app-text--left {
+  text-align: left;
+}
+
+.app-text--center {
+  text-align: center;
+}
+
+.app-text--right {
+  text-align: right;
+}
+
+.app-text--normal {
+  font-weight: 400;
+}
+
+.app-text--medium {
+  font-weight: 500;
+}
+
+.app-text--semibold {
+  font-weight: 600;
+}
+
+.app-text--bold {
+  font-weight: 700;
+}
+
+.app-button {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.app-button--sm {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.app-button--md {
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.app-button--lg {
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.app-button--full {
+  width: 100%;
+}
+
+.app-button--primary {
+  background: #3b5bfd;
+  color: #ffffff;
+}
+
+.app-button--primary:hover {
+  background: #2f4df5;
+}
+
+.app-button--secondary {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.app-button--secondary:hover {
+  background: #e5e7eb;
+}
+
+.app-button--ghost {
+  background: transparent;
+  color: #2563eb;
+}
+
+.app-button--ghost:hover {
+  background: #eff6ff;
+}
+
+.app-button--danger {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.app-button--danger:hover {
+  background: #b91c1c;
+}
+
+.app-button--success {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.app-button--success:hover {
+  background: #15803d;
+}
+
+.app-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.app-inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.app-fieldLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.app-input {
+  height: 42px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 13px;
+  outline: none;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
+}
+
+.app-input:focus {
+  border-color: rgba(37, 99, 235, 0.6);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.app-input--error {
+  border-color: #be123c;
+}
+
+.app-textarea {
+  min-height: 108px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.app-select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #6b7280 50%), linear-gradient(135deg, #6b7280 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% - 1px), calc(100% - 12px) calc(50% - 1px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.app-inputError {
+  color: #be123c;
+  font-size: 12px;
+}
+
+.app-inputHelper {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.app-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(15, 23, 42, 0.72);
+  font-size: 12px;
+  user-select: none;
+}
+
+.app-checkbox input {
+  width: 14px;
+  height: 14px;
+  accent-color: #2563eb;
+}
+
+.app-linkButton {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.app-linkButton:hover {
+  text-decoration: underline;
+}
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.app-badge--default {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.app-badge--primary {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.app-badge--success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.app-badge--danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.app-badge--warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.app-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.app-divider {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 0;
+}
+
+.app-stack {
+  min-width: 0;
+}

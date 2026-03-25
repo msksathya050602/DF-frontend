@@ -1,5 +1,1 @@
-export enum ROUTES {
-  HOME = "/",
-  LOGIN = "/login",
-  DASHBOARD = "/dashboard",
-}
+export { ROUTES } from "@constants/routes";
