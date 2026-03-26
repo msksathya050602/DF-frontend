@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import SignIn from "@components/SignIn";
+import { ROUTES } from "@constants/routes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import * as yup from "yup";
 
-import AuthLoginTemplate from "@/components/auth/AuthLoginTemplate";
 import { LocalStorage, setStorageKey } from "@/helpers/storage";
-import { ROUTES } from "@/routes";
 import { basicAuthLogin } from "@/services/api/auth";
 import { loginSchema } from "@/utils/schema";
 
-export default function LoginPage() {
+export default function SignInPage() {
   const router = useRouter();
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -23,7 +23,6 @@ export default function LoginPage() {
     return list
       .flatMap((r) => {
         const str = String(r ?? "");
-        // If roles were stored/returned as a stringified array, try to parse it.
         if (str.includes("[") && str.includes("]")) {
           try {
             const parsed = JSON.parse(str);
@@ -37,6 +36,7 @@ export default function LoginPage() {
       .map((r) => String(r).replace(/[[\]"]/g, "").trim().toLowerCase())
       .filter(Boolean);
   };
+
   const {
     register,
     handleSubmit,
@@ -57,7 +57,6 @@ export default function LoginPage() {
       setStorageKey(LocalStorage.ACCESS_TOKEN, accessToken);
       setStorageKey(LocalStorage.REFRESH_TOKEN, refreshToken);
       normalizeRoles(roles);
-      // Admin and user both use the billing UI.
       router.push(ROUTES.BILLING);
     } catch (error: any) {
       setServerError(error?.response?.data?.error_message || "Login failed. Please try again.");
@@ -65,7 +64,7 @@ export default function LoginPage() {
   });
 
   return (
-    <AuthLoginTemplate
+    <SignIn
       title="Sign in"
       subtitle="Please enter your credentials to continue."
       emailError={errors.email?.message}

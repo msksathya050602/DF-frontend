@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import LoginPage from "./login/page";
+import SignInPage from "./sign-in/page";
 
 const queryClient = new QueryClient();
 
@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <main style={{ position: "relative" }}>
       <QueryClientProvider client={queryClient}>
-        <LoginPage />
+        <SignInPage />
       </QueryClientProvider>
     </main>
   );

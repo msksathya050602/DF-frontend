@@ -3,6 +3,7 @@
 import "./billing.scss";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { ROUTES } from "@constants/routes";
 import {
   ArrowLeft,
   ArrowRight,
@@ -28,7 +29,6 @@ import { useRouter } from "next/navigation";
 
 import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
 import { getStorageKey, LocalStorage, removeStorageKey, setStorageKey } from "@/helpers/storage";
-import { ROUTES } from "@/routes";
 import { getCurrentUser } from "@/services/api/auth";
 import { type Branch, getBranches } from "@/services/api/branches";
 import { getPricing,type Pricing } from "@/services/api/catalog";
@@ -294,7 +294,7 @@ export default function BillingPage() {
     const initialize = async () => {
       const token = getStorageKey(LocalStorage.ACCESS_TOKEN);
       if (!token) {
-        router.replace(ROUTES.LOGIN);
+        router.replace(ROUTES.SIGN_IN);
         return;
       }
 
@@ -336,7 +336,7 @@ export default function BillingPage() {
         setReady(true);
       } catch (error: any) {
         setScreenError(error?.response?.data?.error_message || "Failed to load billing data.");
-        router.replace(ROUTES.LOGIN);
+        router.replace(ROUTES.SIGN_IN);
       }
     };
 
@@ -353,7 +353,7 @@ export default function BillingPage() {
     removeStorageKey(LocalStorage.ACCESS_TOKEN);
     removeStorageKey(LocalStorage.REFRESH_TOKEN);
     removeStorageKey(LocalStorage.SELECTED_BRANCH_ID);
-    router.replace(ROUTES.LOGIN);
+    router.replace(ROUTES.SIGN_IN);
   };
 
   const addToCart = (productId: string, quantity: number) => {

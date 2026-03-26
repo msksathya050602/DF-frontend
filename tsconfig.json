@@ -31,7 +31,6 @@
       "@services/*": ["./src/services/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@constants/*": ["./src/constants/*"],
-      "@routes/*": ["./src/routes/*"],
       "@type/*": ["./src/type/*"],
       "@provider/*": ["./src/provider/*"],
       "@store/*": ["./src/store/*"],

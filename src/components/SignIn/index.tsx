@@ -1,12 +1,12 @@
 "use client";
 
-import "./styles.scss";
+import "./signin.scss";
 
 import { InputHTMLAttributes } from "react";
 
 import { AppButton, AppText, AppTextInput } from "@/components/common/widgets";
 
-type AuthLoginTemplateProps = {
+type SignInProps = {
   title: string;
   subtitle: string;
   emailError?: string;
@@ -23,7 +23,7 @@ type AuthLoginTemplateProps = {
   passwordInputProps: InputHTMLAttributes<HTMLInputElement>;
 };
 
-export default function AuthLoginTemplate({
+export default function SignIn({
   title,
   subtitle,
   emailError,
@@ -38,7 +38,7 @@ export default function AuthLoginTemplate({
   onSubmit,
   emailInputProps,
   passwordInputProps,
-}: AuthLoginTemplateProps) {
+}: SignInProps) {
   return (
     <main className="auth-page">
       <div className="auth-shell">
