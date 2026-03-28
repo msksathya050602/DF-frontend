@@ -83,7 +83,7 @@ export function stylize(
       <Link
         key={str}
         href={hyper_match[0].replace("{a}", "").replace("{/a}", "")}
-        style={{ textDecoration: "underline", color: "blue" }}
+        style={{ textDecoration: "underline", color: "#7a8f5e" }}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -135,7 +135,7 @@ export function stylize(
         className="standard-link"
         target={target}
         rel="noopener noreferrer"
-        style={{ textDecoration: "underline", color: "blue" }}
+        style={{ textDecoration: "underline", color: "#7a8f5e" }}
       >
         {link_match[0].replace(linkOpenRegex, "").replace(linkCloseRegex, "")}
       </Link>,

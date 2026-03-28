@@ -1,3 +1,5 @@
+@use "@theme/brand.module.scss" as *;
+
 .app-text {
   margin: 0;
 }
@@ -11,7 +13,7 @@
 }
 
 .app-text--primary {
-  color: #2563eb;
+  color: $brand-olive-dark;
 }
 
 .app-text--success {
@@ -87,12 +89,12 @@
 }
 
 .app-button--primary {
-  background: #3b5bfd;
+  background: $brand-olive;
   color: #ffffff;
 }
 
 .app-button--primary:hover {
-  background: #2f4df5;
+  background: $brand-olive-dark;
 }
 
 .app-button--secondary {
@@ -106,11 +108,11 @@
 
 .app-button--ghost {
   background: transparent;
-  color: #2563eb;
+  color: $brand-olive-dark;
 }
 
 .app-button--ghost:hover {
-  background: #eff6ff;
+  background: rgba(251, 232, 206, 0.65);
 }
 
 .app-button--danger {
@@ -160,8 +162,8 @@
 }
 
 .app-input:focus {
-  border-color: rgba(37, 99, 235, 0.6);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  border-color: rgba(154, 177, 122, 0.75);
+  box-shadow: 0 0 0 4px rgba(154, 177, 122, 0.18);
 }
 
 .app-input--error {
@@ -205,11 +207,11 @@
 .app-checkbox input {
   width: 14px;
   height: 14px;
-  accent-color: #2563eb;
+  accent-color: $brand-olive;
 }
 
 .app-linkButton {
-  color: #2563eb;
+  color: $brand-olive-dark;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -234,8 +236,8 @@
 }
 
 .app-badge--primary {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: $brand-cream;
+  color: $brand-olive-ink;
 }
 
 .app-badge--success {

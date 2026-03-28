@@ -4,27 +4,25 @@ import "./billing.scss";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { ROUTES } from "@constants/routes";
+import AppDropdown from "@library/AppDropdown";
+import { Modal } from "@library/Modal";
 import {
   ArrowLeft,
   ArrowRight,
-  CalendarDays,
   FilePlus,
   History,
   LogOut,
   Minus,
-  Package,
   Plus,
   Printer,
-  Receipt,
   Save,
   Search,
   Settings,
-  ShoppingBasket,
   ShoppingCart,
   Trash2,
-  TrendingUp,
   User,
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
@@ -68,6 +66,17 @@ type CreateStep = 1 | 2 | 3;
 
 const toNumber = (value: string | number | null | undefined) => Number(value || 0);
 
+function userInitialsFromDisplayName(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) return "U";
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+  if (parts.length === 1) {
+    const w = parts[0];
+    return w.slice(0, 2).toUpperCase();
+  }
+  return (parts[0].slice(0, 1) + parts[parts.length - 1].slice(0, 1)).toUpperCase();
+}
+
 /** Local calendar date string (YYYY-MM-DD) to ISO 8601 for the API */
 const dateInputToISO8601 = (value: string): string | undefined => {
   const trimmed = value.trim();
@@ -76,6 +85,34 @@ const dateInputToISO8601 = (value: string): string | undefined => {
   if (Number.isNaN(d.getTime())) return undefined;
   return d.toISOString();
 };
+
+/** Today's date in local timezone as YYYY-MM-DD (for `<input type="date" min>` and comparisons). */
+const localTodayYmd = (): string => {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
+/** Valid delivery date: parses and is today or a future local calendar day. */
+const isDeliveryDateAllowed = (value: string): boolean => {
+  if (!dateInputToISO8601(value)) return false;
+  return value.trim() >= localTodayYmd();
+};
+
+const BILLING_PHONE_DIGITS = 10;
+
+function billingPhoneDigits(value: string): string {
+  return value.replace(/\D/g, "").slice(0, BILLING_PHONE_DIGITS);
+}
+
+function billingPhoneMatchesStored(storedPhone: string | undefined, tenDigits: string): boolean {
+  if (tenDigits.length !== BILLING_PHONE_DIGITS) return false;
+  const digits = (storedPhone || "").replace(/\D/g, "");
+  const comparable = digits.length > BILLING_PHONE_DIGITS ? digits.slice(-BILLING_PHONE_DIGITS) : digits;
+  return comparable === tenDigits;
+}
 
 const formatOrderDate = (value: string | null | undefined): string => {
   if (value == null || value === "") return "-";
@@ -142,18 +179,6 @@ export default function BillingPage() {
   const branchOrders = useMemo(
     () => orders.filter((order) => !selectedBranchId || order.branchId === selectedBranchId),
     [orders, selectedBranchId],
-  );
-  const todayOrdersCount = useMemo(() => {
-    const today = new Date().toDateString();
-    return branchOrders.filter((order) => new Date(order.createdAt).toDateString() === today).length;
-  }, [branchOrders]);
-  const inProgressCount = useMemo(
-    () => branchOrders.filter((order) => String(order.orderStatus || "").toLowerCase().includes("progress")).length,
-    [branchOrders],
-  );
-  const revenueMtd = useMemo(
-    () => branchOrders.reduce((sum, order) => sum + toNumber(order.totalAmount), 0),
-    [branchOrders],
   );
 
   const normalizeRoles = (roles: unknown): string[] => {
@@ -349,6 +374,12 @@ export default function BillingPage() {
     void loadAllOrders();
   }, [ready, selectedTab, selectedBranchId]);
 
+  useEffect(() => {
+    if (createStep !== 3 || lastPlacedOrder) return;
+    const today = localTodayYmd();
+    setExpectedDeliveryDateInput((prev) => (prev && prev < today ? "" : prev));
+  }, [createStep, lastPlacedOrder]);
+
   const logout = () => {
     removeStorageKey(LocalStorage.ACCESS_TOKEN);
     removeStorageKey(LocalStorage.REFRESH_TOKEN);
@@ -448,8 +479,7 @@ export default function BillingPage() {
     setScreenSuccess("");
   };
 
-  const onCustomerChange = async (event: FormEvent<HTMLSelectElement>) => {
-    const nextCustomerId = event.currentTarget.value;
+  const onCustomerChangeById = async (nextCustomerId: string) => {
     setScreenError("");
     setScreenSuccess("");
     setShowOnboardCustomer(false);
@@ -462,19 +492,23 @@ export default function BillingPage() {
   };
 
   const searchCustomerByPhone = async () => {
-    const normalizedPhone = customerPhoneInput.trim();
+    const digits = billingPhoneDigits(customerPhoneInput);
     setScreenError("");
     setScreenSuccess("");
-    if (!normalizedPhone) {
+    if (!digits) {
       setScreenError("Please enter the customer's phone number.");
       return;
     }
-    const matched = customers.find((item) => (item.customerPhone || "").trim() === normalizedPhone);
+    if (digits.length !== BILLING_PHONE_DIGITS) {
+      setScreenError("Enter a 10-digit phone number.");
+      return;
+    }
+    const matched = customers.find((item) => billingPhoneMatchesStored(item.customerPhone, digits));
     if (!matched) {
       setSelectedCustomerId("");
       setOrders([]);
+      setScreenError("");
       setShowOnboardCustomer(true);
-      setScreenError("No customer with this phone. Add their details in the form below.");
       return;
     }
     setShowOnboardCustomer(false);
@@ -483,10 +517,20 @@ export default function BillingPage() {
     setCreateStep(2);
   };
 
+  const closeOnboardModal = () => {
+    setShowOnboardCustomer(false);
+    setScreenError("");
+    setNewFirstName("");
+    setNewLastName("");
+    setNewEmail("");
+    setNewAddress("");
+  };
+
   const onboardCustomer = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!customerPhoneInput.trim() || !newFirstName.trim()) {
-      setScreenError("First name and phone number are required.");
+    const phone = billingPhoneDigits(customerPhoneInput);
+    if (phone.length !== BILLING_PHONE_DIGITS || !newFirstName.trim()) {
+      setScreenError("First name and a 10-digit phone number are required.");
       return;
     }
     try {
@@ -495,7 +539,7 @@ export default function BillingPage() {
       const response = await createCustomer({
         firstName: newFirstName.trim(),
         lastName: newLastName.trim() || undefined,
-        customerPhone: customerPhoneInput.trim(),
+        customerPhone: phone,
         customerEmail: newEmail.trim() || undefined,
         customerAddress: newAddress.trim() || undefined,
       });
@@ -526,14 +570,22 @@ export default function BillingPage() {
       return;
     }
     if (!cart.length) {
-      setScreenError("Add at least one item to the basket.");
+      setScreenError("Add at least one item to the cart.");
+      return;
+    }
+    const expectedISO = dateInputToISO8601(expectedDeliveryDateInput);
+    if (!expectedISO) {
+      setScreenError("Choose a delivery date.");
+      return;
+    }
+    if (!isDeliveryDateAllowed(expectedDeliveryDateInput)) {
+      setScreenError("Delivery date must be today or later.");
       return;
     }
     try {
       setIsPlacingOrder(true);
       setScreenError("");
       setScreenSuccess("");
-      const expectedISO = dateInputToISO8601(expectedDeliveryDateInput);
       const response = await createOrder({
         customerId: selectedCustomerId,
         branchId: selectedBranchId,
@@ -544,7 +596,7 @@ export default function BillingPage() {
         })),
         discountAmount: 0,
         taxAmount: 0,
-        ...(expectedISO ? { expectedDeliveryDate: expectedISO } : {}),
+        expectedDeliveryDate: expectedISO,
       });
       setLastPlacedOrder(response.order || null);
       setCart([]);
@@ -586,29 +638,45 @@ export default function BillingPage() {
                 Branch
               </label>
               <div className="billing-sidebarBranch-box">
-                <select
+                <AppDropdown
                   id="sidebar-branch-select"
-                  className="billing-sidebarBranch-select"
+                  className="appDropdown--fill"
                   value={selectedBranchId}
-                  onChange={(e) => onSelectBranch(e.target.value)}
-                  aria-label="Select branch"
-                >
-                  <option value="">Select branch</option>
-                  {branches.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.branchName}
-                    </option>
-                  ))}
-                </select>
-                <div className="billing-sidebarBranch-display">
-                  <div>
-                    <p className="billing-sidebarBranch-name">{selectedBranch?.branchName || "Select branch"}</p>
-                    <p className="billing-sidebarBranch-sub">
-                      {selectedBranch?.branchAddress?.trim() || (selectedBranch ? "Billing location" : "Choose location")}
-                    </p>
-                  </div>
-                  <span className="billing-sidebarBranch-chevron" aria-hidden />
-                </div>
+                  onChange={onSelectBranch}
+                  listTitle="Select branch"
+                  placeholder="Select branch"
+                  allowEmpty
+                  emptyLabel="Select branch"
+                  menuMinWidth={240}
+                  triggerClassName="billing-sidebarBranch-display"
+                  options={branches.map((item) => ({
+                    value: item.id,
+                    label: item.branchName,
+                    description: item.branchAddress?.trim() || "Billing location",
+                  }))}
+                  renderTrigger={(sel, isOpen) => (
+                    <>
+                      <div className="billing-sidebarBranch-main">
+                        <Image
+                          src="/icons/sidebar/location.svg"
+                          alt=""
+                          width={22}
+                          height={22}
+                          className="billing-sidebarBranch-locationIcon"
+                          aria-hidden
+                          unoptimized
+                        />
+                        <div className="billing-sidebarBranch-text">
+                          <p className="billing-sidebarBranch-name">{sel?.label ?? "Select branch"}</p>
+                          <p className="billing-sidebarBranch-sub">
+                            {sel?.description ?? "Choose location"}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`appDropdown-chevron ${isOpen ? "isOpen" : ""}`} aria-hidden />
+                    </>
+                  )}
+                />
               </div>
             </div>
 
@@ -621,7 +689,15 @@ export default function BillingPage() {
                   setCreateStep(1);
                 }}
               >
-                <Receipt size={18} strokeWidth={2} aria-hidden />
+                <Image
+                  src="/icons/sidebar/bill.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                  className="billing-nav-billIcon"
+                  aria-hidden
+                  unoptimized
+                />
                 New bill
               </button>
               <button type="button" className={selectedTab === "history" ? "active" : ""} onClick={() => setSelectedTab("history")}>
@@ -644,9 +720,9 @@ export default function BillingPage() {
         </aside>
 
         <section className="billing-main">
-          <header className="billing-topbar">
-            <div>
-              <h1>{selectedTab === "create" ? "Create a bill" : "Order history"}</h1>
+          <header className={`billing-topbar${selectedTab === "create" ? " billing-topbar--withSteps" : ""}`}>
+            <div className="billing-topbar-left">
+              <h1>{selectedTab === "create" ? "Billing" : "Order history"}</h1>
               <p className="billing-topbar-sub">
                 {selectedTab === "create"
                   ? "Find the customer, add items, then review and print."
@@ -654,59 +730,75 @@ export default function BillingPage() {
               </p>
             </div>
             {selectedTab === "create" && (
-              <div className="billing-topTabs">
+              <nav className="billing-topTabs" aria-label="Bill steps">
                 <button type="button" className={createStep === 1 ? "active" : ""} onClick={() => setCreateStep(1)}>
                   <User size={14} strokeWidth={2} aria-hidden />
-                  1 Find customer
+                  <span className="billing-topTabs-text">Find customer</span>
                 </button>
                 <button
                   type="button"
                   className={createStep === 2 ? "active" : ""}
+                  disabled={!selectedCustomerId}
                   onClick={() => {
                     if (selectedCustomerId) setCreateStep(2);
                   }}
                 >
                   <ShoppingCart size={14} strokeWidth={2} aria-hidden />
-                  2 Add items
+                  <span className="billing-topTabs-text">Add items</span>
                 </button>
                 <button
                   type="button"
                   className={createStep === 3 ? "active" : ""}
+                  disabled={!lastPlacedOrder}
                   onClick={() => {
                     if (lastPlacedOrder) setCreateStep(3);
                   }}
                 >
                   <Printer size={14} strokeWidth={2} aria-hidden />
-                  3 Review and print
+                  <span className="billing-topTabs-text">Review and print</span>
                 </button>
-              </div>
+              </nav>
             )}
-            <div className="billing-userChip">
-              <span>{userName || "User"}</span>
-              <small>{userEmail || "-"}</small>
+            <div className="billing-topbar-right">
+              <div className="billing-userChip">
+                <span className="billing-userChip-avatar" aria-hidden>
+                  {userInitialsFromDisplayName(userName || "User")}
+                </span>
+                <div className="billing-userChip-text">
+                  <span className="billing-userChip-name">{userName || "User"}</span>
+                  <span
+                    className="billing-userChip-email"
+                    title={userEmail?.trim() ? userEmail.trim() : undefined}
+                  >
+                    {userEmail?.trim() || "—"}
+                  </span>
+                </div>
+              </div>
             </div>
           </header>
 
-          {screenError && <p className="billing-error">{screenError}</p>}
+          {screenError && !showOnboardCustomer && <p className="billing-error">{screenError}</p>}
           {screenSuccess && <p className="billing-success">{screenSuccess}</p>}
 
+          <div className="billing-mainBody">
           {selectedTab === "create" ? (
             <>
               {createStep === 1 && (
+                <>
                 <section className="billing-card">
-                <h2 className="billing-step-title">Find or add a customer</h2>
-                <p className="billing-muted">
-                  Search by phone, or pick a name from the list. If this is a new customer, fill in the form that appears
-                  below.
-                </p>
+                <h2 className="billing-step-title">Enter Customer Phone Number</h2>
+               
 
                 <div className="billing-form-row billing-form-row--customer">
                   <input
-                    type="text"
-                    placeholder="Customer phone number"
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel-national"
+                    maxLength={BILLING_PHONE_DIGITS}
+                    placeholder="10-digit mobile number"
                     value={customerPhoneInput}
                     onChange={(e) => {
-                      setCustomerPhoneInput(e.target.value);
+                      setCustomerPhoneInput(billingPhoneDigits(e.target.value));
                       if (screenError) setScreenError("");
                     }}
                   />
@@ -714,22 +806,25 @@ export default function BillingPage() {
                     <Search size={16} strokeWidth={2} aria-hidden />
                     Search
                   </button>
-                  <select value={selectedCustomerId} onChange={(e) => void onCustomerChange(e)}>
-                    <option value="">— Choose customer —</option>
-                    {customers.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {`${item.firstName}${item.lastName ? ` ${item.lastName}` : ""}${item.customerPhone ? ` (${item.customerPhone})` : ""}`}
-                      </option>
-                    ))}
-                  </select>
+                  <AppDropdown
+                    value={selectedCustomerId}
+                    onChange={(id) => void onCustomerChangeById(id)}
+                    listTitle="Choose customer"
+                    placeholder="— Choose customer —"
+                    allowEmpty
+                    emptyLabel="— Choose customer —"
+                    options={customers.map((item) => ({
+                      value: item.id,
+                      label: `${item.firstName}${item.lastName ? ` ${item.lastName}` : ""}`.trim(),
+                      description: item.customerPhone || undefined,
+                    }))}
+                  />
                 </div>
 
                 {selectedCustomer && (
-                  <p className="billing-context">
-                    Customer:{" "}
-                    <strong>{`${selectedCustomer.firstName}${selectedCustomer.lastName ? ` ${selectedCustomer.lastName}` : ""}`}</strong>
-                    {selectedCustomer.customerPhone ? ` (${selectedCustomer.customerPhone})` : ""}
-                  </p>
+                  <div className="billing-context">
+                    <BillingCustomerDetails customer={selectedCustomer} variant="panel" />
+                  </div>
                 )}
                 {!!selectedCustomerId && createStep === 1 && (
                   <div className="billing-nextAction">
@@ -739,79 +834,117 @@ export default function BillingPage() {
                     </button>
                   </div>
                 )}
+                </section>
 
                 {showOnboardCustomer && (
-                  <form className="onboard-form" onSubmit={(e) => void onboardCustomer(e)}>
-                    <h3>New customer</h3>
-                    <div className="billing-form-row billing-form-row--two">
-                      <input
-                        type="text"
-                        placeholder="First name *"
-                        value={newFirstName}
-                        onChange={(e) => setNewFirstName(e.target.value)}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Last name"
-                        value={newLastName}
-                        onChange={(e) => setNewLastName(e.target.value)}
-                      />
+                  <Modal
+                    isCloseIcon
+                    handleModal={closeOnboardModal}
+                    onBackdropClick={closeOnboardModal}
+                  >
+                    <div
+                      className="billing-onboard-modal"
+                      role="dialog"
+                      aria-modal="true"
+                      aria-labelledby="billing-onboard-modal-title"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="billing-onboard-modal-alert">
+                        No customer with this phone. Add their details to continue.
+                      </div>
+                      {screenError ? <p className="billing-error billing-onboard-modal-error">{screenError}</p> : null}
+                      <h2 id="billing-onboard-modal-title" className="billing-onboard-modal-heading">
+                        New customer
+                      </h2>
+                      <p className="billing-muted billing-onboard-modal-phone">
+                        Phone: <strong>{customerPhoneInput.trim()}</strong>
+                      </p>
+                      <form
+                        className="onboard-form onboard-form--modal"
+                        onSubmit={(e) => void onboardCustomer(e)}
+                        onChange={() => setScreenError("")}
+                      >
+                        <div className="billing-form-row billing-form-row--two">
+                          <input
+                            type="text"
+                            placeholder="First name *"
+                            value={newFirstName}
+                            onChange={(e) => setNewFirstName(e.target.value)}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Last name"
+                            value={newLastName}
+                            onChange={(e) => setNewLastName(e.target.value)}
+                          />
+                        </div>
+                        <div className="billing-form-row billing-form-row--two">
+                          <input
+                            type="email"
+                            placeholder="Email (optional)"
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Address (optional)"
+                            value={newAddress}
+                            onChange={(e) => setNewAddress(e.target.value)}
+                          />
+                        </div>
+                        <div className="billing-onboard-modal-actions">
+                          <button type="submit" disabled={isCreatingCustomer}>
+                            {isCreatingCustomer ? (
+                              "Saving…"
+                            ) : (
+                              <>
+                                <Save size={16} strokeWidth={2} aria-hidden />
+                                Save customer and continue
+                              </>
+                            )}
+                          </button>
+                          <button type="button" className="secondary" onClick={closeOnboardModal}>
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
                     </div>
-                    <div className="billing-form-row billing-form-row--two">
-                      <input
-                        type="email"
-                        placeholder="Email (optional)"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Address (optional)"
-                        value={newAddress}
-                        onChange={(e) => setNewAddress(e.target.value)}
-                      />
-                    </div>
-                    <button type="submit" disabled={isCreatingCustomer}>
-                      {isCreatingCustomer ? (
-                        "Saving…"
-                      ) : (
-                        <>
-                          <Save size={16} strokeWidth={2} aria-hidden />
-                          Save customer and continue
-                        </>
-                      )}
-                    </button>
-                  </form>
+                  </Modal>
                 )}
-                </section>
+                </>
               )}
 
               {createStep === 2 && (
-                <section className="billing-workspace">
+                <section className="billing-workspace billing-workspace--fill">
                 <div className="billing-workspaceLeft billing-card">
                   <div className="billing-form-row billing-form-row--three">
-                    <select
+                    <AppDropdown
                       value={selectedCategoryCode}
-                      onChange={(e) => {
-                        setSelectedCategoryCode(e.target.value);
+                      onChange={(code) => {
+                        setSelectedCategoryCode(code);
                         setSelectedServiceId("");
                       }}
-                    >
-                      <option value="">All categories</option>
-                      {categoryOptions.map((category) => (
-                        <option key={category.id} value={category.categoryCode}>
-                          {category.categoryName}
-                        </option>
-                      ))}
-                    </select>
-                    <select value={selectedServiceId} onChange={(e) => setSelectedServiceId(e.target.value)}>
-                      <option value="">All services</option>
-                      {serviceOptions.map((service) => (
-                        <option key={service.id} value={service.id}>
-                          {service.serviceName}
-                        </option>
-                      ))}
-                    </select>
+                      listTitle="Category"
+                      placeholder="All categories"
+                      allowEmpty
+                      emptyLabel="All categories"
+                      options={categoryOptions.map((category) => ({
+                        value: category.categoryCode,
+                        label: category.categoryName,
+                      }))}
+                    />
+                    <AppDropdown
+                      value={selectedServiceId}
+                      onChange={setSelectedServiceId}
+                      listTitle="Service"
+                      placeholder="All services"
+                      allowEmpty
+                      emptyLabel="All services"
+                      options={serviceOptions.map((service) => ({
+                        value: service.id,
+                        label: service.serviceName,
+                      }))}
+                    />
                     <input
                       type="text"
                       placeholder="Search by product name…"
@@ -820,10 +953,12 @@ export default function BillingPage() {
                     />
                   </div>
 
-                  <div className="billing-catalog-grid">
-                    {catalogProducts.map((row) => (
-                      <CatalogCard key={row.productId} row={row} onAdd={addToCart} />
-                    ))}
+                  <div className="billing-catalog-scroll">
+                    <div className="billing-catalog-grid">
+                      {catalogProducts.map((row) => (
+                        <CatalogCard key={row.productId} row={row} onAdd={addToCart} />
+                      ))}
+                    </div>
                   </div>
                   {!catalogProducts.length && (
                     <p className="billing-muted">Nothing matches your search. Try another category or search word.</p>
@@ -833,53 +968,74 @@ export default function BillingPage() {
                 <aside className="billing-workspaceRight billing-card">
                   <div className="basket-head">
                     <div className="basket-head-title">
-                      <ShoppingBasket size={18} strokeWidth={2} aria-hidden />
-                      <h3>Basket</h3>
+                      <Image
+                        src="/icons/cart.svg"
+                        alt=""
+                        width={18}
+                        height={18}
+                        className="billing-cart-headIcon"
+                        aria-hidden
+                        unoptimized
+                      />
+                      <h3>Cart</h3>
                     </div>
                     <span>{cart.length} items</span>
                   </div>
 
                   <div className="basket-customer">
-                    <p>{selectedCustomer ? `${selectedCustomer.firstName} ${selectedCustomer.lastName || ""}`.trim() : "No customer yet"}</p>
-                    <small>{selectedCustomer?.customerPhone || "Choose a customer in step 1"}</small>
+                    {selectedCustomer ? (
+                      <BillingCustomerDetails customer={selectedCustomer} variant="sidebar" />
+                    ) : (
+                      <>
+                        <p>No customer yet</p>
+                        <small>Choose a customer in step 1</small>
+                      </>
+                    )}
                   </div>
 
                   <div className="basket-lines">
                     {cart.map((line) => (
                       <div key={`${line.productId}-${line.serviceId}`} className="basket-line">
-                        <div>
-                          <p>{line.productName}</p>
+                        <div className="basket-line-top">
+                          <p className="basket-line-title">{line.productName}</p>
+                          <div className="basket-line-service">
+                            <AppDropdown
+                              className="appDropdown--inline"
+                              variant="compact"
+                              value={line.serviceId}
+                              onChange={(sid) => updateLineService(line.productId, line.serviceId, sid)}
+                              listTitle="Service"
+                              menuMinWidth={140}
+                              options={line.availableServices.map((service) => ({
+                                value: service.serviceId,
+                                label: service.serviceName,
+                              }))}
+                            />
+                          </div>
+                        </div>
+                        <div className="basket-line-bottom">
                           <div className="basket-line-qty">
                             <span className="basket-line-qty-label">Qty</span>
                             <QuantityStepper
+                              className="billing-qtyStepper--compact"
                               value={line.quantity}
                               onChange={(next) => updateLineQuantity(line.productId, line.serviceId, next)}
                               ariaLabel={`Quantity for ${line.productName}`}
                             />
                           </div>
-                        </div>
-                        <div className="basket-lineRight">
-                          <select
-                            value={line.serviceId}
-                            onChange={(e) => updateLineService(line.productId, line.serviceId, e.target.value)}
-                          >
-                            {line.availableServices.map((service) => (
-                              <option key={service.serviceId} value={service.serviceId}>
-                                {service.serviceName}
-                              </option>
-                            ))}
-                          </select>
-                          <strong>
-                            {currencyDisplayLabel(line.currency)} {(line.quantity * line.unitPrice).toFixed(2)}
-                          </strong>
-                          <button type="button" onClick={() => removeLine(line.productId, line.serviceId)}>
-                            <Trash2 size={14} strokeWidth={2} aria-hidden />
-                            Remove
-                          </button>
+                          <div className="basket-line-actions">
+                            <strong className="basket-line-price">
+                              {currencyDisplayLabel(line.currency)} {(line.quantity * line.unitPrice).toFixed(2)}
+                            </strong>
+                            <button type="button" onClick={() => removeLine(line.productId, line.serviceId)}>
+                              <Trash2 size={14} strokeWidth={2} aria-hidden />
+                              Remove
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
-                    {!cart.length && <p className="billing-muted">Basket is empty. Add products from the list.</p>}
+                    {!cart.length && <p className="billing-muted">Cart is empty. Add products from the list.</p>}
                   </div>
 
                   <div className="checkout-actions">
@@ -893,7 +1049,7 @@ export default function BillingPage() {
                           return;
                         }
                         if (!cart.length) {
-                          setScreenError("Add at least one item to the basket.");
+                          setScreenError("Add at least one item to the cart.");
                           return;
                         }
                         setScreenError("");
@@ -915,12 +1071,26 @@ export default function BillingPage() {
                     <>
                       <p className="billing-muted">Check the items and total, then save the bill. You can print after saving.</p>
                       <div className="billing-deliveryField">
-                        <label htmlFor="expected-delivery-date">Delivery date (optional)</label>
+                        <label htmlFor="expected-delivery-date">
+                          Delivery date
+                          <abbr className="billing-required-abbr" title="Required">
+                            *
+                          </abbr>
+                        </label>
                         <input
                           id="expected-delivery-date"
                           type="date"
+                          required
+                          min={localTodayYmd()}
                           value={expectedDeliveryDateInput}
-                          onChange={(e) => setExpectedDeliveryDateInput(e.target.value)}
+                          onChange={(e) => {
+                            setExpectedDeliveryDateInput(e.target.value);
+                            setScreenError((prev) =>
+                              prev === "Choose a delivery date." || prev === "Delivery date must be today or later."
+                                ? ""
+                                : prev,
+                            );
+                          }}
                           disabled={isPlacingOrder}
                         />
                       </div>
@@ -950,20 +1120,13 @@ export default function BillingPage() {
                           ))}
                           {!cart.length && (
                             <tr>
-                              <td colSpan={5}>Basket is empty.</td>
+                              <td colSpan={5}>Cart is empty.</td>
                             </tr>
                           )}
                         </tbody>
                       </table>
                       <div className="print-summary">
-                        <p>
-                          <span>Customer</span>
-                          <strong>
-                            {selectedCustomer
-                              ? `${selectedCustomer.firstName}${selectedCustomer.lastName ? ` ${selectedCustomer.lastName}` : ""}`
-                              : "-"}
-                          </strong>
-                        </p>
+                        <BillingCustomerDetails customer={selectedCustomer} variant="print" />
                         <p>
                           <span>Branch</span>
                           <strong>{selectedBranch?.branchName || "-"}</strong>
@@ -979,7 +1142,7 @@ export default function BillingPage() {
                           <strong>
                             {expectedDeliveryDateInput
                               ? formatOrderDate(`${expectedDeliveryDateInput}T12:00:00`)
-                              : "Not set"}
+                              : "—"}
                           </strong>
                         </p>
                       </div>
@@ -994,7 +1157,15 @@ export default function BillingPage() {
                           <ArrowLeft size={16} strokeWidth={2} aria-hidden />
                           Back to items
                         </button>
-                        <button type="button" disabled={isPlacingOrder || !cart.length} onClick={placeOrder}>
+                        <button
+                          type="button"
+                          disabled={
+                            isPlacingOrder ||
+                            !cart.length ||
+                            !isDeliveryDateAllowed(expectedDeliveryDateInput)
+                          }
+                          onClick={placeOrder}
+                        >
                           {isPlacingOrder ? (
                             "Saving…"
                           ) : (
@@ -1014,14 +1185,7 @@ export default function BillingPage() {
                           <span>Order #</span>
                           <strong>{lastPlacedOrder?.orderNumber || "-"}</strong>
                         </p>
-                        <p>
-                          <span>Customer</span>
-                          <strong>
-                            {selectedCustomer
-                              ? `${selectedCustomer.firstName}${selectedCustomer.lastName ? ` ${selectedCustomer.lastName}` : ""}`
-                              : "-"}
-                          </strong>
-                        </p>
+                        <BillingCustomerDetails customer={selectedCustomer} variant="print" />
                         <p>
                           <span>Total Amount</span>
                           <strong>
@@ -1061,31 +1225,6 @@ export default function BillingPage() {
             </>
           ) : (
             <section className="billing-card billing-history">
-              <div className="history-metrics">
-                <article>
-                  <div className="history-metric-label">
-                    <CalendarDays size={14} strokeWidth={2} aria-hidden />
-                    <h4>Today</h4>
-                  </div>
-                  <p>{todayOrdersCount}</p>
-                </article>
-                <article>
-                  <div className="history-metric-label">
-                    <Package size={14} strokeWidth={2} aria-hidden />
-                    <h4>In progress</h4>
-                  </div>
-                  <p>{inProgressCount}</p>
-                </article>
-                <article>
-                  <div className="history-metric-label">
-                    <TrendingUp size={14} strokeWidth={2} aria-hidden />
-                    <h4>MTD revenue</h4>
-                  </div>
-                  <p>
-                    {currencyDisplayLabel("INR")} {revenueMtd.toFixed(2)}
-                  </p>
-                </article>
-              </div>
               <>
                   <p className="billing-history-hint billing-muted">Branch: {selectedBranch?.branchName || "—"}</p>
                   <div className="history-cards">
@@ -1196,9 +1335,99 @@ export default function BillingPage() {
               </>
             </section>
           )}
+          </div>
         </section>
       </div>
     </main>
+  );
+}
+
+function BillingCustomerDetails({
+  customer,
+  variant = "panel",
+}: {
+  customer: Customer | null;
+  variant?: "panel" | "sidebar" | "print";
+}) {
+  if (variant === "print") {
+    if (!customer) {
+      return (
+        <p>
+          <span>Customer</span>
+          <strong>-</strong>
+        </p>
+      );
+    }
+    const fullName = `${customer.firstName}${customer.lastName ? ` ${customer.lastName}` : ""}`.trim();
+    const phone = customer.customerPhone?.trim();
+    const email = customer.customerEmail?.trim();
+    const address = customer.customerAddress?.trim();
+    return (
+      <>
+        <p>
+          <span>Customer</span>
+          <strong>{fullName}</strong>
+        </p>
+        {phone ? (
+          <p>
+            <span>Phone</span>
+            <strong>{phone}</strong>
+          </p>
+        ) : null}
+        {email ? (
+          <p>
+            <span>Email</span>
+            <strong>{email}</strong>
+          </p>
+        ) : null}
+        {address ? (
+          <p>
+            <span>Address</span>
+            <strong>{address}</strong>
+          </p>
+        ) : null}
+      </>
+    );
+  }
+
+  if (!customer) return null;
+
+  const fullName = `${customer.firstName}${customer.lastName ? ` ${customer.lastName}` : ""}`.trim();
+  const phone = customer.customerPhone?.trim();
+  const email = customer.customerEmail?.trim();
+  const address = customer.customerAddress?.trim();
+  const hasContact = !!(phone || email || address);
+  const sidebar = variant === "sidebar";
+
+  return (
+    <div className={`billing-customerDetails${sidebar ? " billing-customerDetails--sidebar" : ""}`}>
+      {!sidebar ? <p className="billing-customerDetails-eyebrow">Customer</p> : null}
+      <p className="billing-customerDetails-name">
+        <strong>{fullName}</strong>
+      </p>
+      {hasContact ? (
+        <dl className="billing-customerDetails-list">
+          {phone ? (
+            <div className="billing-customerDetails-item">
+              <dt>Phone</dt>
+              <dd>{phone}</dd>
+            </div>
+          ) : null}
+          {email ? (
+            <div className="billing-customerDetails-item">
+              <dt>Email</dt>
+              <dd>{email}</dd>
+            </div>
+          ) : null}
+          {address ? (
+            <div className="billing-customerDetails-item">
+              <dt>Address</dt>
+              <dd>{address}</dd>
+            </div>
+          ) : null}
+        </dl>
+      ) : null}
+    </div>
   );
 }
 
@@ -1208,15 +1437,17 @@ function QuantityStepper({
   min = 1,
   disabled = false,
   ariaLabel = "Quantity",
+  className,
 }: {
   value: number;
   onChange: (next: number) => void;
   min?: number;
   disabled?: boolean;
   ariaLabel?: string;
+  className?: string;
 }) {
   return (
-    <div className="billing-qtyStepper" role="group" aria-label={ariaLabel}>
+    <div className={["billing-qtyStepper", className].filter(Boolean).join(" ")} role="group" aria-label={ariaLabel}>
       <button
         type="button"
         className="billing-qtyStepper-btn"
@@ -1256,7 +1487,7 @@ function CatalogCard({
       <p className="title">{row.productName}</p>
       <p className="subtitle">{row.categoryName || "-"}</p>
       <p className="price">
-        From {currencyDisplayLabel(row.currency)} {toNumber(row.minPrice).toFixed(2)}
+        {currencyDisplayLabel(row.currency)} {toNumber(row.minPrice).toFixed(2)}
       </p>
       <div className="actions">
         <QuantityStepper

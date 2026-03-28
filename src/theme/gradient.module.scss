@@ -6,8 +6,8 @@ $bg-gradient-2: linear-gradient(
   $GradientColorPink 4.44%,
   $GradientColorBlue 94%
 );
-$bg-gradient-3: linear-gradient(90deg, #ff9457 0%, #dea5f9 100%);
-$bg-gradient-4: linear-gradient(135deg, #2b1556 0%, #8b6be3 94%);
+$bg-gradient-3: linear-gradient(90deg, #e4dfb5 0%, #9ab17a 100%);
+$bg-gradient-4: linear-gradient(135deg, #677a52 0%, #c3cc9b 94%);
 $GrayShades: linear-gradient(45deg, #c6d6de 0%, #658192 50%, #254156 100%);
 
 // D2C Gradients
@@ -28,7 +28,7 @@ $wavyGrayRose: linear-gradient(
 );
 $VioletToWhite: radial-gradient(
   89.99% 86.14% at 50% 7.63%,
-  #ad00d0 0%,
+  #9ab17a 0%,
   rgba(171, 171, 171, 0) 89.5%
 );
 $WhitishGray: linear-gradient(180deg, #ffffff 52%, #faf7fa 100%);

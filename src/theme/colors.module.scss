@@ -10,28 +10,29 @@ $B7: #434343;
 $B8: #262626;
 $B9: #000000;
 
-$C0: #e1f3fb;
-$C1: #b4e2f4;
-$C2: #82cfed;
-$C3: #4fbce5;
-$C4: #11c5f5;
-$C5: #049fda;
-$C6: #0397d6;
-$C7: #038dd0;
-$C8: #0283cb;
-$C9: #0172c2;
+// Brand ramp (olive / sage / sand / cream — no blue)
+$C0: #fbe8ce;
+$C1: #f3e8c4;
+$C2: #e4dfb5;
+$C3: #d4d4a8;
+$C4: #c3cc9b;
+$C5: #b1bd8a;
+$C6: #9ab17a;
+$C7: #8a9f6b;
+$C8: #7a8f5e;
+$C9: #677a52;
 
-// Navy
-$N0: #e0e9ef;
-$N1: #b3c8d7;
-$N2: #80a4bd;
-$N3: #4d80a3;
-$N4: #26648f;
-$N5: #00497b;
-$N6: #004273;
-$N7: #003968;
-$N8: #00315e;
-$N9: #00214b;
+// Warm neutrals (replacing navy blues)
+$N0: #f4f1e8;
+$N1: #e8e4d6;
+$N2: #d4cfc0;
+$N3: #a8a08e;
+$N4: #7a7468;
+$N5: #5c574c;
+$N6: #4a463d;
+$N7: #3d3a33;
+$N8: #2f2d28;
+$N9: #22211c;
 
 // Success States
 $SS0: #e8f5e6;
@@ -69,17 +70,17 @@ $WS7: #fccf1d;
 $WS8: #fcca17;
 $WS9: #fcc00e;
 
-//  Teal
-$T0: #e1f4f5;
-$T1: #b5e3e7;
-$T2: #84d1d7;
-$T3: #53bfc6;
-$T4: #2eb1ba;
-$T5: #09a3ae;
-$T6: #089ba7;
-$T7: #06919d;
-$T8: #058894;
-$T9: #027784;
+// Primary accent ramp (olive family — replaces teal / cyan)
+$T0: #f5f2e8;
+$T1: #e8e4d0;
+$T2: #d8d4b8;
+$T3: #c3cc9b;
+$T4: #adba88;
+$T5: #9ab17a;
+$T6: #8a9f6b;
+$T7: #7a8f5e;
+$T8: #6b8154;
+$T9: #5c6f49;
 
 // Shades
 $Black16: #000000;
@@ -95,21 +96,21 @@ $White: #ffffff;
 $Atome: #e7ff30;
 $PayPal: #ffc43a;
 
-$PaleBlue: #38b1e990;
-$LightCyan: #f3fafd;
+$PaleBlue: rgba(154, 177, 122, 0.35);
+$LightCyan: #fbe8ce;
 $PastelYellow: #ffe68c;
-$LightCeruleanBlue: #2ba0da;
+$LightCeruleanBlue: #9ab17a;
 $SnowFlurry: #f0ffd6;
 $HalfDutchWhite: #fcf0d3;
 $PaleAqua: #def5f5;
 $Selago: #fbebfe;
-$Solitude: #dde4f6;
+$Solitude: #e4dfb5;
 $WhiteSmoke: #f4f4f4;
 $LightGrayishOrange: #f8f6f2;
 $Transparent: transparent;
 $Green: #3cae2a;
-$SteelBlue: #95a7b0;
-$AliceBlue: #f3fafd;
+$SteelBlue: #8a9278;
+$AliceBlue: #fbe8ce;
 $Alabaster: #f3f3ed;
 $CreamyYellow: #ffeec3;
 $GreenishGray: #515750;
@@ -117,25 +118,25 @@ $DarkCharcoal: #333333;
 $DeepRed: #bd0e09;
 $SaffronOrange: #f8a563;
 $DarkRed: #bd0e09;
-$SkyBlue: #c7d8ed;
+$SkyBlue: #e4dfb5;
 $SemiTransparentBlack: rgba(0, 0, 0, 0.7);
 $Amber: #f57e20;
 $DeepRose: #ef4861;
-$BrightBlue: #49c8f5;
-$LightPurple: #bb99e5;
-$LightSkyBlue: #dbeaf1;
+$BrightBlue: #c3cc9b;
+$LightPurple: #c3cc9b;
+$LightSkyBlue: #fbe8ce;
 $MildGreen: rgba(94, 184, 135, 0.1);
 $SilveringGray: #bad1dc;
 $LightGreen: #5eb887;
 $SimplePink: #f7a0ad;
 $LotusPink: #ead0d6;
-$Purple: #8453bd;
+$Purple: #7a8f5e;
 $PaleGreen: #94cc5c;
-$PastelBlue: #c9efff;
-$DarkNight: #0c103b;
-$NavalNight: #35003d;
+$PastelBlue: #fbe8ce;
+$DarkNight: #2e3724;
+$NavalNight: #3d4a2e;
 $CornSilk: #fff9e5;
-$AquariusBlues: #d7f3ff;
+$AquariusBlues: #e4dfb5;
 $MildPink: #f2ecff;
 $Yellow: hsl(65, 100%, 93%);
 $MildRose: rgba(245, 140, 145, 0.1);
@@ -143,23 +144,23 @@ $LightPink: #f58c91;
 $MildOrange: #ffe9d9;
 $DarkOrange: #dc4d01;
 $Saffron: #f79141;
-$LinkTextColor: #00e;
-$InkBlue: #15c;
-$DnaExpressAtfBg: #b1cbeb;
+$LinkTextColor: #5c6f49;
+$InkBlue: #4a5c38;
+$DnaExpressAtfBg: #e4dfb5;
 $HurryRed: #bd0e09;
 $PureOrange: #fe784f;
-$BlueCue: #6594c6;
+$BlueCue: #9ab17a;
 $ShadeOrange: #fd9666;
 $GradientColorPink: #f7a48b;
-$GradientColorBlue: #6e96c2;
+$GradientColorBlue: #9ab17a;
 $PremiumBundleBg1: #fbd6cb;
 $LeadOrange: #f4761c;
 $SunflowerYellow: #ffea8f;
-$Violet: #9b59b6;
+$Violet: #677a52;
 $PulpOrange: #ff6f61;
-$Gray1: #c6d6de;
-$Gray2: #658192;
-$Gray3: #254156;
+$Gray1: #d4cfc0;
+$Gray2: #8a9278;
+$Gray3: #4a5240;
 
 :export {
   // B&W
@@ -173,7 +174,7 @@ $Gray3: #254156;
   B7: $B7;
   B8: $B8;
   B9: $B9;
-  // Blue
+  // Brand (olive / sage ramp)
   C0: $C0;
   C1: $C1;
   C2: $C2;
@@ -184,7 +185,7 @@ $Gray3: #254156;
   C7: $C7;
   C8: $C8;
   C9: $C9;
-  // Navy
+  // Warm neutrals
   N0: $N0;
   N1: $N1;
   N2: $N2;
@@ -228,7 +229,7 @@ $Gray3: #254156;
   WS7: $WS7;
   WS8: $WS8;
   WS9: $WS9;
-  // Teal
+  // Olive accent ramp
   T0: $T0;
   T1: $T1;
   T2: $T2;

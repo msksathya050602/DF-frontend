@@ -1,0 +1,16 @@
+// Daily Fresh — four core brand swatches (+ darker olive for hover / contrast)
+$brand-olive: #9ab17a;
+$brand-sage: #c3cc9b;
+$brand-sand: #e4dfb5;
+$brand-cream: #fbe8ce;
+$brand-olive-dark: #7a8f5e;
+$brand-olive-ink: #2e3724;
+
+:export {
+  olive: $brand-olive;
+  sage: $brand-sage;
+  sand: $brand-sand;
+  cream: $brand-cream;
+  oliveDark: $brand-olive-dark;
+  oliveInk: $brand-olive-ink;
+}

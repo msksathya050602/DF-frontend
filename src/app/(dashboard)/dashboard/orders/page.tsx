@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import AppDropdown from "@library/AppDropdown";
 
 import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
 import type { Order } from "@/services/api/orders";
@@ -12,12 +13,14 @@ import {
   updatePaymentStatus,
 } from "@/services/api/orders";
 
+import { AdminDeleteModal } from "../_lib/adminModals";
 import { useAdminAction } from "../_lib/useAdminAction";
 import { toNumber } from "../_lib/utils";
 
 export default function DashboardOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
     const data = await getOrders();
@@ -43,12 +46,17 @@ export default function DashboardOrdersPage() {
     await runAction(async () => updateOrderItemStatus(itemId, { itemStatus }), "Order item status updated.");
   };
 
-  const removeOrder = async (id: string) => {
-    if (!window.confirm("Cancel this order?")) return;
+  const closeCancelModal = () => setCancelOrderId(null);
+
+  const confirmCancelOrder = async () => {
+    if (!cancelOrderId) return;
+    const id = cancelOrderId;
+    closeCancelModal();
     await runAction(async () => cancelOrder(id), "Order cancelled successfully.");
   };
 
   return (
+    <>
     <section className="dashboard-card">
       <h2>Orders</h2>
       {actionMessage && <p className="info-text">{actionMessage}</p>}
@@ -73,33 +81,43 @@ export default function DashboardOrdersPage() {
               <td>{`${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`}</td>
               <td>{order.branch?.branchName || "-"}</td>
               <td>
-                <select
+                <AppDropdown
+                  className="appDropdown--inline"
+                  variant="compact"
                   value={order.orderStatus}
-                  onChange={(e) => void patchOrderStatus(order.id, e.target.value)}
+                  onChange={(v) => void patchOrderStatus(order.id, v)}
                   disabled={isActing}
-                >
-                  <option value="CREATED">CREATED</option>
-                  <option value="DELIVERED">DELIVERED</option>
-                  <option value="CANCELLED">CANCELLED</option>
-                </select>
+                  listTitle="Order status"
+                  menuMinWidth={168}
+                  options={[
+                    { value: "CREATED", label: "CREATED" },
+                    { value: "DELIVERED", label: "DELIVERED" },
+                    { value: "CANCELLED", label: "CANCELLED" },
+                  ]}
+                />
               </td>
               <td>
-                <select
+                <AppDropdown
+                  className="appDropdown--inline"
+                  variant="compact"
                   value={order.paymentStatus}
-                  onChange={(e) => void patchPaymentStatus(order.id, e.target.value)}
+                  onChange={(v) => void patchPaymentStatus(order.id, v)}
                   disabled={isActing}
-                >
-                  <option value="PENDING">PENDING</option>
-                  <option value="PAID">PAID</option>
-                  <option value="PARTIAL">PARTIAL</option>
-                  <option value="REFUNDED">REFUNDED</option>
-                </select>
+                  listTitle="Payment"
+                  menuMinWidth={168}
+                  options={[
+                    { value: "PENDING", label: "PENDING" },
+                    { value: "PAID", label: "PAID" },
+                    { value: "PARTIAL", label: "PARTIAL" },
+                    { value: "REFUNDED", label: "REFUNDED" },
+                  ]}
+                />
               </td>
               <td>
                 {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
               </td>
               <td className="actions-cell">
-                <button type="button" onClick={() => void removeOrder(order.id)} disabled={isActing}>
+                <button type="button" onClick={() => setCancelOrderId(order.id)} disabled={isActing}>
                   Cancel
                 </button>
               </td>
@@ -134,16 +152,21 @@ export default function DashboardOrdersPage() {
                   <td>{item.service?.serviceName || "-"}</td>
                   <td>{item.quantity}</td>
                   <td>
-                    <select
+                    <AppDropdown
+                      className="appDropdown--inline"
+                      variant="compact"
                       value={item.itemStatus}
-                      onChange={(e) => void patchOrderItemStatus(item.id, e.target.value)}
+                      onChange={(v) => void patchOrderItemStatus(item.id, v)}
                       disabled={isActing}
-                    >
-                      <option value="RECEIVED">RECEIVED</option>
-                      <option value="PROCESSING">PROCESSING</option>
-                      <option value="DONE">DONE</option>
-                      <option value="DELIVERED">DELIVERED</option>
-                    </select>
+                      listTitle="Item status"
+                      menuMinWidth={168}
+                      options={[
+                        { value: "RECEIVED", label: "RECEIVED" },
+                        { value: "PROCESSING", label: "PROCESSING" },
+                        { value: "DONE", label: "DONE" },
+                        { value: "DELIVERED", label: "DELIVERED" },
+                      ]}
+                    />
                   </td>
                 </tr>
               )),
@@ -157,5 +180,16 @@ export default function DashboardOrdersPage() {
         </table>
       </div>
     </section>
+
+    <AdminDeleteModal
+      isOpen={!!cancelOrderId}
+      title="Cancel this order?"
+      description="This marks the order as cancelled. You can still view it in history depending on your workflow."
+      confirmLabel="Cancel order"
+      isActing={isActing}
+      onClose={closeCancelModal}
+      onConfirm={confirmCancelOrder}
+    />
+    </>
   );
 }
