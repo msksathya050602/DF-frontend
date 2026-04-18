@@ -57,139 +57,139 @@ export default function DashboardOrdersPage() {
 
   return (
     <>
-    <section className="dashboard-card">
-      <h2>Orders</h2>
-      {actionMessage && <p className="info-text">{actionMessage}</p>}
-      {loadError && <p className="error-text">{loadError}</p>}
-      {isLoading && <p className="info-text">Loading…</p>}
-      <table>
-        <thead>
-          <tr>
-            <th>Order #</th>
-            <th>Customer</th>
-            <th>Branch</th>
-            <th>Order Status</th>
-            <th>Payment</th>
-            <th>Total</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order.id}>
-              <td>{order.orderNumber}</td>
-              <td>{`${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`}</td>
-              <td>{order.branch?.branchName || "-"}</td>
-              <td>
-                <AppDropdown
-                  className="appDropdown--inline"
-                  variant="compact"
-                  value={order.orderStatus}
-                  onChange={(v) => void patchOrderStatus(order.id, v)}
-                  disabled={isActing}
-                  listTitle="Order status"
-                  menuMinWidth={168}
-                  options={[
-                    { value: "CREATED", label: "CREATED" },
-                    { value: "DELIVERED", label: "DELIVERED" },
-                    { value: "CANCELLED", label: "CANCELLED" },
-                  ]}
-                />
-              </td>
-              <td>
-                <AppDropdown
-                  className="appDropdown--inline"
-                  variant="compact"
-                  value={order.paymentStatus}
-                  onChange={(v) => void patchPaymentStatus(order.id, v)}
-                  disabled={isActing}
-                  listTitle="Payment"
-                  menuMinWidth={168}
-                  options={[
-                    { value: "PENDING", label: "PENDING" },
-                    { value: "PAID", label: "PAID" },
-                    { value: "PARTIAL", label: "PARTIAL" },
-                    { value: "REFUNDED", label: "REFUNDED" },
-                  ]}
-                />
-              </td>
-              <td>
-                {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
-              </td>
-              <td className="actions-cell">
-                <button type="button" onClick={() => setCancelOrderId(order.id)} disabled={isActing}>
-                  Cancel
-                </button>
-              </td>
-            </tr>
-          ))}
-          {!orders.length && !isLoading && (
-            <tr>
-              <td colSpan={7}>No orders</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-
-      <div style={{ marginTop: 24 }}>
-        <h3 style={{ margin: "0 0 8px" }}>Order line items</h3>
+      <section className="dashboard-card">
+        <h2>Orders</h2>
+        {actionMessage && <p className="info-text">{actionMessage}</p>}
+        {loadError && <p className="error-text">{loadError}</p>}
+        {isLoading && <p className="info-text">Loading…</p>}
         <table>
           <thead>
             <tr>
               <th>Order #</th>
-              <th>Item</th>
-              <th>Service</th>
-              <th>Qty</th>
-              <th>Item status</th>
+              <th>Customer</th>
+              <th>Branch</th>
+              <th>Order Status</th>
+              <th>Payment</th>
+              <th>Total</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {orders.flatMap((order) =>
-              (order.items || []).map((item) => (
-                <tr key={item.id}>
-                  <td>{order.orderNumber}</td>
-                  <td>{item.product?.productName || "-"}</td>
-                  <td>{item.service?.serviceName || "-"}</td>
-                  <td>{item.quantity}</td>
-                  <td>
-                    <AppDropdown
-                      className="appDropdown--inline"
-                      variant="compact"
-                      value={item.itemStatus}
-                      onChange={(v) => void patchOrderItemStatus(item.id, v)}
-                      disabled={isActing}
-                      listTitle="Item status"
-                      menuMinWidth={168}
-                      options={[
-                        { value: "RECEIVED", label: "RECEIVED" },
-                        { value: "PROCESSING", label: "PROCESSING" },
-                        { value: "DONE", label: "DONE" },
-                        { value: "DELIVERED", label: "DELIVERED" },
-                      ]}
-                    />
-                  </td>
-                </tr>
-              )),
-            )}
-            {!orders.some((o) => (o.items || []).length) && !isLoading && (
+            {orders.map((order) => (
+              <tr key={order.id}>
+                <td>{order.orderNumber}</td>
+                <td>{`${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`}</td>
+                <td>{order.branch?.branchName || "-"}</td>
+                <td>
+                  <AppDropdown
+                    className="appDropdown--inline"
+                    variant="compact"
+                    value={order.orderStatus}
+                    onChange={(v) => void patchOrderStatus(order.id, v)}
+                    disabled={isActing}
+                    listTitle="Order status"
+                    menuMinWidth={168}
+                    options={[
+                      { value: "CREATED", label: "CREATED" },
+                      { value: "DELIVERED", label: "DELIVERED" },
+                      { value: "CANCELLED", label: "CANCELLED" },
+                    ]}
+                  />
+                </td>
+                <td>
+                  <AppDropdown
+                    className="appDropdown--inline"
+                    variant="compact"
+                    value={order.paymentStatus}
+                    onChange={(v) => void patchPaymentStatus(order.id, v)}
+                    disabled={isActing}
+                    listTitle="Payment"
+                    menuMinWidth={168}
+                    options={[
+                      { value: "PENDING", label: "PENDING" },
+                      { value: "PAID", label: "PAID" },
+                      { value: "PARTIAL", label: "PARTIAL" },
+                      { value: "REFUNDED", label: "REFUNDED" },
+                    ]}
+                  />
+                </td>
+                <td>
+                  {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                </td>
+                <td className="actions-cell">
+                  <button type="button" onClick={() => setCancelOrderId(order.id)} disabled={isActing}>
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {!orders.length && !isLoading && (
               <tr>
-                <td colSpan={5}>No line items</td>
+                <td colSpan={7}>No orders</td>
               </tr>
             )}
           </tbody>
         </table>
-      </div>
-    </section>
 
-    <AdminDeleteModal
-      isOpen={!!cancelOrderId}
-      title="Cancel this order?"
-      description="This marks the order as cancelled. You can still view it in history depending on your workflow."
-      confirmLabel="Cancel order"
-      isActing={isActing}
-      onClose={closeCancelModal}
-      onConfirm={confirmCancelOrder}
-    />
+        <div style={{ marginTop: 24 }}>
+          <h3 style={{ margin: "0 0 8px" }}>Order line items</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Item</th>
+                <th>Service</th>
+                <th>Qty</th>
+                <th>Item status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.flatMap((order) =>
+                (order.items || []).map((item) => (
+                  <tr key={item.id}>
+                    <td>{order.orderNumber}</td>
+                    <td>{item.product?.productName || "-"}</td>
+                    <td>{item.service?.serviceName || "-"}</td>
+                    <td>{item.quantity}</td>
+                    <td>
+                      <AppDropdown
+                        className="appDropdown--inline"
+                        variant="compact"
+                        value={item.itemStatus}
+                        onChange={(v) => void patchOrderItemStatus(item.id, v)}
+                        disabled={isActing}
+                        listTitle="Item status"
+                        menuMinWidth={168}
+                        options={[
+                          { value: "RECEIVED", label: "RECEIVED" },
+                          { value: "PROCESSING", label: "PROCESSING" },
+                          { value: "DONE", label: "DONE" },
+                          { value: "DELIVERED", label: "DELIVERED" },
+                        ]}
+                      />
+                    </td>
+                  </tr>
+                )),
+              )}
+              {!orders.some((o) => (o.items || []).length) && !isLoading && (
+                <tr>
+                  <td colSpan={5}>No line items</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <AdminDeleteModal
+        isOpen={!!cancelOrderId}
+        title="Cancel this order?"
+        description="This marks the order as cancelled. You can still view it in history depending on your workflow."
+        confirmLabel="Cancel order"
+        isActing={isActing}
+        onClose={closeCancelModal}
+        onConfirm={confirmCancelOrder}
+      />
     </>
   );
 }

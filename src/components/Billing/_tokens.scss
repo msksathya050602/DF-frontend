@@ -1,0 +1,32 @@
+@use "@theme/brand.module.scss" as *;
+
+// Daily Fresh — brand greens / sand / cream + warm neutrals (no blue)
+$bf-ink: #2e3724;
+$bf-ink-soft: #4a5240;
+$bf-muted: #6b7360;
+$bf-subtle: #8a9278;
+
+$bf-line: #e8e4d8;
+$bf-line-soft: #f5f0e6;
+
+$bf-primary: $brand-olive;
+$bf-primary-dark: $brand-olive-dark;
+$bf-primary-50: rgba(251, 232, 206, 0.65);
+$bf-primary-100: $brand-cream;
+$bf-primary-200: $brand-sage;
+
+$bf-success: #5c6f49;
+$bf-success-soft: #e8edd8;
+$bf-success-deep: #4a5c38;
+
+$bf-warning: #b45309;
+$bf-warning-soft: #fef3c7;
+
+$bf-danger: #dc2626;
+$bf-danger-soft: #fee2e2;
+
+$bf-info: $brand-olive-dark;
+$bf-info-soft: $brand-cream;
+$bf-surface: #fbf9f4;
+$bf-elevated: #ffffff;
+$bf-sidebar: #ffffff;

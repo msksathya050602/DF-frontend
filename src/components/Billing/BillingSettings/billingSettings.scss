@@ -1,0 +1,15 @@
+@use "../tokens" as *;
+
+.billing-settings .billing-step-title {
+  margin-top: 0;
+}
+
+.billing-settings-links {
+  margin: 12px 0 0;
+  padding-left: 18px;
+}
+
+.billing-settings-links a {
+  color: $bf-primary;
+  font-weight: 600;
+}

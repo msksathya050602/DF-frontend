@@ -16,6 +16,11 @@ export type CustomersResponse = {
   customers: Customer[];
 };
 
+export type CustomersSearchResponse = {
+  customers: Customer[];
+  count: number;
+};
+
 export type CustomerOrdersResponse = {
   customerId: string;
   orders: Order[];
@@ -36,6 +41,17 @@ export type CreateCustomerResponse = {
 
 export const getCustomers = async (): Promise<CustomersResponse> => {
   const response = await apiClient.get<CustomersResponse>("/customers");
+  return response.data;
+};
+
+/** GET /customers/search?phone=&limit= — `phone` may include formatting; only digits are used server-side. */
+export const searchCustomersByPhone = async (
+  phone: string,
+  limit = 10,
+): Promise<CustomersSearchResponse> => {
+  const response = await apiClient.get<CustomersSearchResponse>("/customers/search", {
+    params: { phone, limit },
+  });
   return response.data;
 };
 

@@ -1,0 +1,93 @@
+@use "../tokens" as *;
+
+.history-card-head-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+
+  .history-chip-wrap {
+    margin-left: 0;
+  }
+}
+
+.history-card-expand {
+  flex-shrink: 0;
+  border: 1px solid $bf-line;
+  border-radius: 8px;
+  background: $bf-elevated;
+  padding: 6px;
+  cursor: pointer;
+  color: $bf-ink-soft;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-card-expand:hover {
+  border-color: #ddd8cc;
+  color: $bf-ink;
+}
+
+.history-card-scheduleRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  align-items: flex-end;
+  margin-bottom: 8px;
+}
+
+.history-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.history-card-field--grow {
+  flex: 1 1 160px;
+  min-width: 160px;
+}
+
+.history-card-field--action {
+  min-width: auto;
+}
+
+.history-card-field-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: $bf-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.history-schedule-input {
+  width: 100%;
+  border: 1px solid $bf-line;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  background: #fff;
+  color: $bf-ink;
+}
+
+.history-schedule-input:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 1px;
+}
+
+.history-schedule-save {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: $bf-primary;
+  color: #fff;
+}
+
+.history-schedule-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

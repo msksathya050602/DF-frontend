@@ -30,6 +30,8 @@ export type Order = {
   orderNumber: string;
   customerId: string;
   branchId: string;
+  /** Staff user id (uuid) who last handled the order, when returned by API */
+  handledBy?: string | null;
   orderStatus: string;
   paymentStatus: string;
   subTotal: string | number;

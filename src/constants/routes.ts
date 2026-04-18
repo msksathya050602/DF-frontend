@@ -9,4 +9,9 @@ export enum ROUTES {
   DASHBOARD_PRICING = "/dashboard/pricing",
   DASHBOARD_ORDERS = "/dashboard/orders",
   BILLING = "/billing",
+  BILLING_NEW = "/billing/new",
+  BILLING_ORDER_HISTORY = "/billing/history",
+  BILLING_TODAY = "/billing/today-schedule",
+  BILLING_SETTINGS = "/billing/settings",
+  TODAY_SCHEDULE = "/billing/today-schedule",
 }
