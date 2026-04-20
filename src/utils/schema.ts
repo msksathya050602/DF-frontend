@@ -9,16 +9,22 @@ export const loginSchema = yup.object({
 });
 
 export const signUpSchema = yup.object({
-  username: yup.string().required("Username is required"),
+  userName: yup
+    .string()
+    .min(2, "Username must be at least 2 characters")
+    .required("Username is required"),
   email: yup
     .string()
     .email("Invalid Email address")
     .required("Email address is required"),
-  mobileNumber: yup.string().required("Mobile number is required"),
-  password: yup.string().required("Password is required"),
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")], "Passwords must match"),
+    .oneOf([yup.ref("password")], "Passwords must match")
+    .required("Confirm your password"),
 });
 
 export const uploadFieldSchema = yup.object().shape({

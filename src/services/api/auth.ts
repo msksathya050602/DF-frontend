@@ -27,6 +27,19 @@ export const basicAuthLogin = async ({
   return response.data;
 };
 
+export const registerUser = async ({
+  userName,
+  email,
+  password,
+}: {
+  userName: string;
+  email: string;
+  password: string;
+}): Promise<LoginResponse> => {
+  const response = await apiClient.post<LoginResponse>("/users", { userName, email, password });
+  return response.data;
+};
+
 export const getCurrentUser = async (): Promise<CurrentUserResponse> => {
   const response = await apiClient.get<CurrentUserResponse>("/users/me");
   return response.data;

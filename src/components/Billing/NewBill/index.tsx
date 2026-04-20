@@ -15,7 +15,9 @@ import {
   Trash2,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
+import { ROUTES } from "@constants/routes";
 import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
 import { getPricing, type Pricing } from "@/services/api/catalog";
 import { createCustomer, type Customer, getCustomerOrders, searchCustomersByPhone } from "@/services/api/customers";
@@ -42,7 +44,11 @@ import { useBillingShell } from "../BillingShellContext";
 
 type CreateStep = 1 | 2 | 3;
 
+const ERR_DELIVERY_DATE_REQUIRED = "Please select the delivery date.";
+const ERR_DELIVERY_DATE_PAST = "Delivery date must be today or later.";
+
 export function NewBill() {
+  const router = useRouter();
   const shell = useBillingShell();
   const { selectedBranchId, selectedBranch, userName, userEmail } = shell;
   const [workspaceReady, setWorkspaceReady] = useState(false);
@@ -473,18 +479,18 @@ export function NewBill() {
     }
     const expectedISO = dateInputToISO8601(expectedDeliveryDateInput);
     if (!expectedISO) {
-      setScreenError("Choose a delivery date.");
+      setScreenError(ERR_DELIVERY_DATE_REQUIRED);
       return;
     }
     if (!isDeliveryDateAllowed(expectedDeliveryDateInput)) {
-      setScreenError("Delivery date must be today or later.");
+      setScreenError(ERR_DELIVERY_DATE_PAST);
       return;
     }
     try {
       setIsPlacingOrder(true);
       setScreenError("");
       setScreenSuccess("");
-      const response = await createOrder({
+      await createOrder({
         customerId: selectedCustomerId,
         branchId: selectedBranchId,
         items: cart.map((line) => ({
@@ -496,20 +502,9 @@ export function NewBill() {
         taxAmount: 0,
         expectedDeliveryDate: expectedISO,
       });
-      setLastPlacedOrder(response.order || null);
       setCart([]);
       setExpectedDeliveryDateInput("");
-      await loadOrders(selectedCustomerId);
-      const latestOrders = await getOrders();
-      setOrders(latestOrders.orders || []);
-      const createdId = response.order?.id;
-      const isVisibleInOrders = !!createdId && (latestOrders.orders || []).some((order) => order.id === createdId);
-      if (!isVisibleInOrders) {
-        setScreenError("Bill saved. Open Order history if the list does not update.");
-      } else {
-        setScreenSuccess(`Bill saved. Order ${response.order.orderNumber}`);
-      }
-      setCreateStep(3);
+      router.push(ROUTES.BILLING_ORDER_HISTORY);
     } catch (error: any) {
       setScreenError(error?.response?.data?.error_message || "Could not save the bill. Try again.");
     } finally {
@@ -917,9 +912,7 @@ export function NewBill() {
                           onChange={(e) => {
                             setExpectedDeliveryDateInput(e.target.value);
                             setScreenError((prev) =>
-                              prev === "Choose a delivery date." || prev === "Delivery date must be today or later."
-                                ? ""
-                                : prev,
+                              prev === ERR_DELIVERY_DATE_REQUIRED || prev === ERR_DELIVERY_DATE_PAST ? "" : prev,
                             );
                           }}
                           disabled={isPlacingOrder}

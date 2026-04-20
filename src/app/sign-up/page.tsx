@@ -2,21 +2,22 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import SignIn from "@components/SignIn";
+import SignUp from "@components/SignUp";
 import { ROUTES } from "@constants/routes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import * as yup from "yup";
 
 import { LocalStorage, setStorageKey } from "@/helpers/storage";
-import { basicAuthLogin } from "@/services/api/auth";
-import { loginSchema } from "@/utils/schema";
+import { registerUser } from "@/services/api/auth";
+import { signUpSchema } from "@/utils/schema";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const router = useRouter();
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const normalizeRoles = (roles: unknown): string[] => {
     const list = Array.isArray(roles) ? roles : [];
@@ -41,8 +42,8 @@ export default function SignInPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<yup.InferType<typeof loginSchema>>({
-    resolver: yupResolver(loginSchema),
+  } = useForm<yup.InferType<typeof signUpSchema>>({
+    resolver: yupResolver(signUpSchema),
     mode: "onSubmit",
   });
 
@@ -50,8 +51,9 @@ export default function SignInPage() {
     setServerError("");
     setSuccessMessage("");
     try {
-      const { accessToken, refreshToken, roles } = await basicAuthLogin({
-        email: data.email,
+      const { accessToken, refreshToken, roles } = await registerUser({
+        userName: data.userName.trim(),
+        email: data.email.trim(),
         password: data.password,
       });
       setStorageKey(LocalStorage.ACCESS_TOKEN, accessToken);
@@ -59,28 +61,34 @@ export default function SignInPage() {
       normalizeRoles(roles);
       router.push(ROUTES.BILLING);
     } catch (error: any) {
-      setServerError(error?.response?.data?.error_message || "Login failed. Please try again.");
+      setServerError(
+        error?.response?.data?.error_message ||
+          "Could not create your account. Please try again.",
+      );
     }
   });
 
   return (
-    <SignIn
-      title="Sign in"
-      subtitle="Please enter your credentials to continue."
+    <SignUp
+      title="Create account"
+      subtitle="Enter your details to register and continue."
+      userNameError={errors.userName?.message}
       emailError={errors.email?.message}
       passwordError={errors.password?.message}
+      confirmPasswordError={errors.confirmPassword?.message}
       serverError={serverError}
       successMessage={successMessage}
       isSubmitting={isSubmitting}
       isPasswordVisible={isPasswordVisible}
+      isConfirmPasswordVisible={isConfirmPasswordVisible}
       onTogglePassword={() => setIsPasswordVisible((value) => !value)}
-      onSignUpClick={() => router.push(ROUTES.SIGN_UP)}
-      onForgotPasswordClick={() =>
-        setServerError("Password reset is not enabled yet. Please contact the admin.")
-      }
+      onToggleConfirmPassword={() => setIsConfirmPasswordVisible((value) => !value)}
+      onSignInClick={() => router.push(ROUTES.SIGN_IN)}
       onSubmit={onSubmit}
+      userNameInputProps={register("userName")}
       emailInputProps={register("email")}
       passwordInputProps={register("password")}
+      confirmPasswordInputProps={register("confirmPassword")}
     />
   );
 }

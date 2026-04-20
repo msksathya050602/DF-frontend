@@ -19,8 +19,10 @@ export type UpdateDeliveryOrderResponse = {
   message: string;
 };
 
-export const getTodayDeliveries = async (): Promise<TodayDeliveriesResponse> => {
-  const response = await apiClient.get<TodayDeliveriesResponse>("/deliveries/today");
+export const getTodayDeliveries = async (branchId?: string): Promise<TodayDeliveriesResponse> => {
+  const response = await apiClient.get<TodayDeliveriesResponse>("/deliveries/today", {
+    params: branchId ? { branchId } : undefined,
+  });
   return response.data;
 };
 

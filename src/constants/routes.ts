@@ -1,6 +1,7 @@
 export enum ROUTES {
   HOME = "/",
   SIGN_IN = "/sign-in",
+  SIGN_UP = "/sign-up",
   DASHBOARD = "/dashboard",
   DASHBOARD_BRANCHES = "/dashboard/branches",
   DASHBOARD_CATEGORIES = "/dashboard/categories",

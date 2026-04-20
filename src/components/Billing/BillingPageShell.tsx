@@ -96,10 +96,14 @@ export function BillingPageShell({
               </span>
             </div>
           </div>
+          {screenError && !hideScreenError ? (
+            <p className="billing-topbar-inlineError" role="alert">
+              {screenError}
+            </p>
+          ) : null}
         </div>
       </header>
 
-      {screenError && !hideScreenError ? <p className="billing-error">{screenError}</p> : null}
       {screenSuccess ? <p className="billing-success">{screenSuccess}</p> : null}
 
       <div className="billing-mainBody">{children}</div>

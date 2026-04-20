@@ -34,7 +34,13 @@ const paymentStatusChipClass = (status: string): string => {
   return "history-chip--tone-warning";
 };
 
-export function TodayScheduleBilling({ branchLabel }: { branchLabel: string }) {
+export function TodayScheduleBilling({
+  branchLabel,
+  branchId,
+}: {
+  branchLabel: string;
+  branchId: string;
+}) {
   const [meta, setMeta] = useState<{
     orderStatuses: string[];
     paymentStatuses: string[];
@@ -65,23 +71,30 @@ export function TodayScheduleBilling({ branchLabel }: { branchLabel: string }) {
   }, []);
 
   const reload = useCallback(async () => {
-    const data = await getTodayDeliveries();
+    if (!branchId.trim()) return;
+    const data = await getTodayDeliveries(branchId.trim());
     applyTodayData(
       data.orders || [],
       data.availableOrderStatuses || [],
       data.availablePaymentStatuses || [],
     );
-  }, [applyTodayData]);
+  }, [branchId, applyTodayData]);
 
   const { isActing, actionMessage, loadError, runAction } = useAdminAction(reload);
 
   useEffect(() => {
+    if (!branchId.trim()) {
+      setOrders([]);
+      setIsLoading(false);
+      setFetchError("");
+      return;
+    }
     let cancelled = false;
     void (async () => {
       setIsLoading(true);
       setFetchError("");
       try {
-        const data = await getTodayDeliveries();
+        const data = await getTodayDeliveries(branchId.trim());
         if (cancelled) return;
         applyTodayData(
           data.orders || [],
@@ -97,7 +110,7 @@ export function TodayScheduleBilling({ branchLabel }: { branchLabel: string }) {
     return () => {
       cancelled = true;
     };
-  }, [applyTodayData]);
+  }, [branchId, applyTodayData]);
 
   const toggleExpand = (id: string) => {
     setExpanded((prev) => {
@@ -150,6 +163,16 @@ export function TodayScheduleBilling({ branchLabel }: { branchLabel: string }) {
       {isLoading && <p className="billing-muted">Loading today&apos;s schedule…</p>}
 
       <p className="billing-history-hint billing-muted">Branch: {branchLabel}</p>
+
+      <div className="history-listHeader history-listHeader--todaySchedule">
+        <span className="history-listHeader-col">Order</span>
+        <span className="history-listHeader-col">Scheduled</span>
+        <div className="history-listHeader-right">
+          <span className="history-listHeader-chipLbl">Order status</span>
+          <span className="history-listHeader-chipLbl">Payment</span>
+        </div>
+        <span className="history-listHeader-expandPad" aria-hidden />
+      </div>
 
       <div className="history-cards">
         {orders.map((order) => {
@@ -332,8 +355,11 @@ export function TodayScheduleBilling({ branchLabel }: { branchLabel: string }) {
           );
         })}
 
-        {!orders.length && !isLoading && (
-          <p className="billing-muted">No deliveries scheduled for today.</p>
+        {!branchId.trim() && !isLoading && (
+          <p className="billing-muted">Select a branch in the sidebar to see today&apos;s deliveries.</p>
+        )}
+        {!!branchId.trim() && !orders.length && !isLoading && (
+          <p className="billing-muted">No deliveries scheduled for today at this branch.</p>
         )}
       </div>
     </section>

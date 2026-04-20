@@ -10,9 +10,9 @@ import { usePathname } from "next/navigation";
 import { useBillingShell } from "./BillingShellContext";
 
 const nav = [
+  { href: ROUTES.BILLING_TODAY, label: "Today schedule", icon: "calendar" as const },
   { href: ROUTES.BILLING_NEW, label: "New bill", icon: "bill" as const },
   { href: ROUTES.BILLING_ORDER_HISTORY, label: "Order history", icon: "history" as const },
-  { href: ROUTES.BILLING_TODAY, label: "Today schedule", icon: "calendar" as const },
   { href: ROUTES.BILLING_SETTINGS, label: "Settings", icon: "settings" as const },
 ];
 

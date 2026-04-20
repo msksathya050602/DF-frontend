@@ -267,6 +267,23 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.billing-topbar-inlineError {
+  margin: 0;
+  flex: 1 1 auto;
+  max-width: min(320px, 46vw);
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: right;
 }
 
 .billing-topbar--withSteps .billing-topbar-right {
@@ -1220,6 +1237,71 @@
 .history-cards {
   display: grid;
   gap: 8px;
+}
+
+/* Column labels above stacked order cards (order history, today schedule) */
+.history-listHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 12px;
+  margin: 0 0 10px;
+  border-bottom: 1px solid $bf-line;
+}
+
+.history-listHeader-chePad {
+  width: 10px;
+  flex-shrink: 0;
+}
+
+.history-listHeader-main {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $bf-muted;
+}
+
+.history-listHeader-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.history-listHeader-chipLbl {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $bf-muted;
+  white-space: nowrap;
+}
+
+.history-listHeader--todaySchedule {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto 42px;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 8px 12px 12px;
+  margin: 0 0 10px;
+  border-bottom: 1px solid $bf-line;
+}
+
+.history-listHeader--todaySchedule .history-listHeader-col {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $bf-muted;
+  min-width: 0;
+}
+
+.history-listHeader-expandPad {
+  width: 42px;
+  flex-shrink: 0;
 }
 
 .history-card {

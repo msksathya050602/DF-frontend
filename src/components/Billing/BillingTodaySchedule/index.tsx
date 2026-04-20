@@ -9,7 +9,7 @@ import { useBillingShell } from "../BillingShellContext";
 
 export function BillingTodaySchedule() {
   const shell = useBillingShell();
-  const { ready, selectedBranch, userName, userEmail } = shell;
+  const { ready, selectedBranch, selectedBranchId, userName, userEmail } = shell;
 
   if (!ready) return null;
 
@@ -20,7 +20,7 @@ export function BillingTodaySchedule() {
       userName={userName || "User"}
       userEmail={userEmail || ""}
     >
-      <TodayScheduleBilling branchLabel={selectedBranch?.branchName || "—"} />
+      <TodayScheduleBilling branchLabel={selectedBranch?.branchName || "—"} branchId={selectedBranchId} />
     </BillingPageShell>
   );
 }
