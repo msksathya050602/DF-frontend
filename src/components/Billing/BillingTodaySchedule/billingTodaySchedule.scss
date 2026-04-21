@@ -91,3 +91,25 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.billing-card.billing-today-schedule {
+  position: relative;
+}
+
+.billing-today-schedule-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(4px);
+  border-radius: inherit;
+}
+
+.billing-today-schedule-loader {
+  width: 100%;
+  min-height: 220px;
+  justify-content: center;
+}
