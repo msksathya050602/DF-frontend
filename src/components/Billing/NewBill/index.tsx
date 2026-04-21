@@ -4,6 +4,7 @@ import './newBill.scss';
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import AppDropdown from '@library/AppDropdown';
+import { Loader } from '@library/Loader';
 import { Modal } from '@library/Modal';
 import { ArrowLeft, ArrowRight, FilePlus, Printer, Save, Search, Trash2 } from 'lucide-react';
 import Image from 'next/image';
@@ -928,7 +929,9 @@ export function NewBill() {
         )}
 
         {createStep === 3 && (
-          <section className="billing-card billing-printCard">
+          <section
+            className={`billing-card billing-printCard${isPlacingOrder && !lastPlacedOrder ? ' billing-printCard--loading' : ''}`}
+          >
             <h2 className="billing-step-title">Review and print</h2>
             {!lastPlacedOrder ? (
               <>
@@ -1016,6 +1019,7 @@ export function NewBill() {
                   <button
                     type="button"
                     className="secondary"
+                    disabled={isPlacingOrder}
                     onClick={() => {
                       setCreateStep(2);
                     }}
@@ -1033,7 +1037,7 @@ export function NewBill() {
                     onClick={placeOrder}
                   >
                     {isPlacingOrder ? (
-                      'Saving…'
+                      'Working…'
                     ) : (
                       <>
                         <Save size={16} strokeWidth={2} aria-hidden />
@@ -1087,6 +1091,18 @@ export function NewBill() {
                 </div>
               </>
             )}
+            {isPlacingOrder && !lastPlacedOrder ? (
+              <div
+                className="billing-printCard-loadingOverlay"
+                role="status"
+                aria-live="polite"
+                aria-busy="true"
+              >
+                <Loader borderSize="5px" width="52px" height="52px" padding="10px">
+                  <span className="billing-muted">Saving bill…</span>
+                </Loader>
+              </div>
+            ) : null}
           </section>
         )}
       </>

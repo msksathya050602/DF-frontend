@@ -1,1 +1,16 @@
 /* /billing/new — shared chrome and catalog styles: ../billing.scss (layout) */
+
+.billing-printCard.billing-printCard--loading {
+  position: relative;
+}
+
+.billing-printCard-loadingOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 16px;
+}
