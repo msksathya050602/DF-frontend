@@ -1,11 +1,7 @@
-@use "@theme/colors.module.scss" as *;
+@use '@theme/colors.module.scss' as *;
 
 $bggradient1: linear-gradient(0deg, $C0 0%, $White 100%);
-$bg-gradient-2: linear-gradient(
-  180deg,
-  $GradientColorPink 4.44%,
-  $GradientColorBlue 94%
-);
+$bg-gradient-2: linear-gradient(180deg, $GradientColorPink 4.44%, $GradientColorBlue 94%);
 $bg-gradient-3: linear-gradient(90deg, #e4dfb5 0%, #9ab17a 100%);
 $bg-gradient-4: linear-gradient(135deg, #677a52 0%, #c3cc9b 94%);
 $GrayShades: linear-gradient(45deg, #c6d6de 0%, #658192 50%, #254156 100%);
@@ -20,12 +16,7 @@ $wavyRose: linear-gradient(
   #f8f0ee 99.51%
 );
 $grayBtnGradient: linear-gradient(90deg, #7a9c9f 0%, #496a71 100%);
-$wavyGrayRose: linear-gradient(
-  90deg,
-  #81a8a4 15.03%,
-  #658789 49.12%,
-  #f1a68f 82.18%
-);
+$wavyGrayRose: linear-gradient(90deg, #81a8a4 15.03%, #658789 49.12%, #f1a68f 82.18%);
 $VioletToWhite: radial-gradient(
   89.99% 86.14% at 50% 7.63%,
   #9ab17a 0%,

@@ -1,7 +1,7 @@
-import "./modal.scss";
+import './modal.scss';
 
-import React, { CSSProperties } from "react";
-import Close from "@assets/icons/close.svg";
+import React, { CSSProperties } from 'react';
+import Close from '@assets/icons/close.svg';
 
 export const Modal = ({
   handleModal,

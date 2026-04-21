@@ -1,20 +1,19 @@
-import "./customInput.scss";
+import './customInput.scss';
 
-import React, { forwardRef } from "react";
-import EyeClose from "@assets/images/library/eyeClose.svg";
-import EyeOpen from "@assets/images/library/eyeOpen.svg";
-import Info from "@assets/images/library/info.svg";
-import { stylize } from "@functions/stylize";
-import { FallbackLine } from "@library/FallbackLine";
-import Tooltip from "@library/Tooltip/tooltip";
-import Typography from "@library/Typography";
+import React, { forwardRef } from 'react';
+import EyeClose from '@assets/images/library/eyeClose.svg';
+import EyeOpen from '@assets/images/library/eyeOpen.svg';
+import Info from '@assets/images/library/info.svg';
+import { stylize } from '@functions/stylize';
+import { FallbackLine } from '@library/FallbackLine';
+import Tooltip from '@library/Tooltip/tooltip';
+import Typography from '@library/Typography';
 
-interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement & HTMLTextAreaElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement & HTMLTextAreaElement> {
   label: string;
   error?: string;
   loading?: boolean;
-  as?: "input" | "textarea";
+  as?: 'input' | 'textarea';
   groupClass?: string;
   labelStyle?: React.CSSProperties;
   info?: string;
@@ -24,14 +23,11 @@ interface InputProps
 }
 
 const CustomInput = forwardRef(
-  (
-    props: InputProps,
-    ref: React.Ref<HTMLInputElement & HTMLTextAreaElement>,
-  ) => {
+  (props: InputProps, ref: React.Ref<HTMLInputElement & HTMLTextAreaElement>) => {
     const {
       label,
       type,
-      as: Element = "input",
+      as: Element = 'input',
       loading,
       defaultValue,
       isRequired,
@@ -56,9 +52,9 @@ const CustomInput = forwardRef(
               weight="regular"
               text={stylize(label)}
               as="strong"
-              className={` custom-label ${isRequired ? "required" : ""}`}
+              className={` custom-label ${isRequired ? 'required' : ''}`}
               style={labelStyle}
-              color={labelStyle?.color || "black"}
+              color={labelStyle?.color || 'black'}
             />
             {info && (
               <Tooltip infoText={info}>
@@ -67,9 +63,7 @@ const CustomInput = forwardRef(
             )}
           </div>
         )}
-        <div
-          className={`form-group ${groupClass || ""}${error ? " error" : ""}`}
-        >
+        <div className={`form-group ${groupClass || ''}${error ? ' error' : ''}`}>
           {!loading ? (
             <Element
               ref={ref}
@@ -77,38 +71,38 @@ const CustomInput = forwardRef(
               defaultValue={defaultValue}
               readOnly={readOnly}
               onClick={onClick}
-              className={`custom-input ${className || ""} ${isRequired ? "required" : ""}`}
+              className={`custom-input ${className || ''} ${isRequired ? 'required' : ''}`}
               {...otherProps}
               onKeyUp={
-                Element === "textarea"
+                Element === 'textarea'
                   ? (element) => {
                       element.currentTarget.style.height =
-                        element.currentTarget.scrollHeight + "px";
+                        element.currentTarget.scrollHeight + 'px';
                     }
                   : () => {}
               }
               onFocusCapture={
-                Element === "textarea"
+                Element === 'textarea'
                   ? (element) => {
                       element.currentTarget.style.height =
-                        element.currentTarget.scrollHeight + "px";
+                        element.currentTarget.scrollHeight + 'px';
                     }
                   : () => {}
               }
             />
           ) : (
             <FallbackLine
-              className={""}
+              className={''}
               containerStyle={{}}
-              lineStyle={{ width: "100%", height: "40px", borderRadius: "5px" }}
+              lineStyle={{ width: '100%', height: '40px', borderRadius: '5px' }}
             />
           )}
           {hasEye && (
             <div className="eye">
-              {originalType === "password" ? (
-                <EyeClose onClick={() => setOriginalType("text")} />
+              {originalType === 'password' ? (
+                <EyeClose onClick={() => setOriginalType('text')} />
               ) : (
-                <EyeOpen onClick={() => setOriginalType("password")} />
+                <EyeOpen onClick={() => setOriginalType('password')} />
               )}
             </div>
           )}
@@ -135,8 +129,8 @@ const CustomInput = forwardRef(
         )}
       </div>
     );
-  },
+  }
 );
-CustomInput.displayName = "CustomInput";
+CustomInput.displayName = 'CustomInput';
 
 export default CustomInput;

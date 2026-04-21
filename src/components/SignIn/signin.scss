@@ -1,4 +1,4 @@
-@use "@theme/brand.module.scss" as *;
+@use '@theme/brand.module.scss' as *;
 
 .auth-page {
   min-height: 100vh;
@@ -240,7 +240,7 @@
 }
 
 .auth-brand::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 140%;
   height: 140%;
@@ -252,14 +252,18 @@
 }
 
 .auth-brand::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 120%;
   height: 120%;
   border-radius: 9999px;
   right: -45%;
   top: -15%;
-  background: radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 60%);
+  background: radial-gradient(
+    circle at 25% 30%,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0) 60%
+  );
 }
 
 .auth-brandInner {

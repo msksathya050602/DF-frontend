@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import "./layout.scss";
+import './layout.scss';
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
-import { DashboardHeader } from "@components/Dashboard/DashboardHeader";
-import { DashboardSidebar } from "@components/Dashboard/Sidebar";
-import { ROUTES } from "@constants/routes";
-import { usePathname, useRouter } from "next/navigation";
+import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { DashboardHeader } from '@components/Dashboard/DashboardHeader';
+import { DashboardSidebar } from '@components/Dashboard/Sidebar';
+import { ROUTES } from '@constants/routes';
+import { usePathname, useRouter } from 'next/navigation';
 
-import { getStorageKey, LocalStorage, removeStorageKey } from "@/helpers/storage";
-import { getCurrentUser } from "@/services/api/auth";
+import { getStorageKey, LocalStorage, removeStorageKey } from '@/helpers/storage';
+import { getCurrentUser } from '@/services/api/auth';
 
-import { normalizeRoles } from "./dashboard/_lib/utils";
+import { normalizeRoles } from './dashboard/_lib/utils';
 
 export default function DashboardRouteGroupLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const initStartedRef = useRef(false);
   const [isReady, setIsReady] = useState(false);
-  const [adminName, setAdminName] = useState("");
-  const [adminEmail, setAdminEmail] = useState("");
+  const [adminName, setAdminName] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
 
   useEffect(() => {
     if (initStartedRef.current) return;
@@ -34,13 +34,13 @@ export default function DashboardRouteGroupLayout({ children }: { children: Reac
     const init = async () => {
       try {
         const meData = await getCurrentUser();
-        const hasAdminRole = normalizeRoles(meData.roles).includes("admin");
+        const hasAdminRole = normalizeRoles(meData.roles).includes('admin');
         if (!hasAdminRole) {
           router.replace(ROUTES.BILLING);
           return;
         }
-        setAdminName(meData.userName || "Admin");
-        setAdminEmail(meData.email || "");
+        setAdminName(meData.userName || 'Admin');
+        setAdminEmail(meData.email || '');
         setIsReady(true);
       } catch {
         router.replace(ROUTES.SIGN_IN);

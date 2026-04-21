@@ -1,11 +1,10 @@
-import "./customCheckBox.scss";
+import './customCheckBox.scss';
 
-import React, { FC, ReactElement } from "react";
-import CustomInput from "@library/CustomInput";
-import Typography from "@library/Typography";
+import React, { FC, ReactElement } from 'react';
+import CustomInput from '@library/CustomInput';
+import Typography from '@library/Typography';
 
-interface CheckboxGroupProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface CheckboxGroupProps extends React.InputHTMLAttributes<HTMLInputElement> {
   options: {
     label: string;
     value: string;
@@ -38,42 +37,27 @@ export const CustomCheckBox: FC<CheckboxGroupProps> = ({
   return (
     <div className="checkbox-group-card">
       <div className="checkbox-group-wrapper">
-        <div className={`info-wrapper ${isRequired ? "required" : ""}`}>
-          {labelElement}
-        </div>
+        <div className={`info-wrapper ${isRequired ? 'required' : ''}`}>{labelElement}</div>
 
         <div className="checkbox-group">
           {options.map((val, index) => (
-            <label
-              key={`checkbox-${index}`}
-              className="checkbox-title-description-wrapper"
-            >
+            <label key={`checkbox-${index}`} className="checkbox-title-description-wrapper">
               <div
-                className={`checkbox-group-item ${checkedValues?.includes(val.value) ? "selected" : ""} ${skipHover ? "skip" : ""}`}
+                className={`checkbox-group-item ${checkedValues?.includes(val.value) ? 'selected' : ''} ${skipHover ? 'skip' : ''}`}
                 style={style}
               >
                 <CustomInput
-                  label={""}
-                  type={allowOne ? "radio" : "checkbox"}
+                  label={''}
+                  type={allowOne ? 'radio' : 'checkbox'}
                   name={allowOne ? label : val.value}
                   {...inputProps}
                   defaultValue={val.value}
                   disabled={val.disabled}
                 />
-                <Typography
-                  type="caption"
-                  weight="light"
-                  text={val.label}
-                  as="span"
-                />
+                <Typography type="caption" weight="light" text={val.label} as="span" />
               </div>
               {val.description && (
-                <Typography
-                  type="p3"
-                  weight="light"
-                  text={val.description}
-                  as="small"
-                />
+                <Typography type="p3" weight="light" text={val.description} as="small" />
               )}
             </label>
           ))}

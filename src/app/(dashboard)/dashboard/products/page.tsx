@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
-import AppDropdown from "@library/AppDropdown";
+import { FormEvent, useCallback, useEffect, useState } from 'react';
+import AppDropdown from '@library/AppDropdown';
 
 import {
   Category,
@@ -11,21 +11,21 @@ import {
   getProducts,
   Product,
   updateProduct,
-} from "@/services/api/catalog";
+} from '@/services/api/catalog';
 
-import { AdminDeleteModal, AdminEditModal } from "../_lib/adminModals";
-import { useAdminAction } from "../_lib/useAdminAction";
+import { AdminDeleteModal, AdminEditModal } from '../_lib/adminModals';
+import { useAdminAction } from '../_lib/useAdminAction';
 
 export default function DashboardProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [productCategoryId, setProductCategoryId] = useState("");
-  const [productName, setProductName] = useState("");
+  const [productCategoryId, setProductCategoryId] = useState('');
+  const [productName, setProductName] = useState('');
   const [editProduct, setEditProduct] = useState<Product | null>(null);
-  const [editName, setEditName] = useState("");
-  const [editCategoryId, setEditCategoryId] = useState("");
-  const [editFormError, setEditFormError] = useState("");
+  const [editName, setEditName] = useState('');
+  const [editCategoryId, setEditCategoryId] = useState('');
+  const [editFormError, setEditFormError] = useState('');
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
@@ -49,22 +49,22 @@ export default function DashboardProductsPage() {
         categoryId: productCategoryId,
         productName: productName.trim(),
       });
-      setProductName("");
-    }, "Product created successfully.");
+      setProductName('');
+    }, 'Product created successfully.');
   };
 
   const openEditModal = (product: Product) => {
-    setEditFormError("");
+    setEditFormError('');
     setEditProduct(product);
     setEditName(product.productName);
-    setEditCategoryId(product.categoryId || "");
+    setEditCategoryId(product.categoryId || '');
   };
 
   const closeEditModal = () => {
     setEditProduct(null);
-    setEditName("");
-    setEditCategoryId("");
-    setEditFormError("");
+    setEditName('');
+    setEditCategoryId('');
+    setEditFormError('');
   };
 
   const submitEditProduct = async (event: FormEvent<HTMLFormElement>) => {
@@ -72,14 +72,14 @@ export default function DashboardProductsPage() {
     if (!editProduct) return;
     const trimmed = editName.trim();
     if (!trimmed) {
-      setEditFormError("Enter a product name.");
+      setEditFormError('Enter a product name.');
       return;
     }
     if (!editCategoryId) {
-      setEditFormError("Select a category.");
+      setEditFormError('Select a category.');
       return;
     }
-    setEditFormError("");
+    setEditFormError('');
     const product = editProduct;
     const nextCategoryId = editCategoryId;
     const categoryMeta = categories.find((c) => c.id === nextCategoryId);
@@ -97,10 +97,10 @@ export default function DashboardProductsPage() {
                 ...updated,
                 category: categoryMeta ?? updated.category,
               }
-            : row,
-        ),
+            : row
+        )
       );
-    }, "Product updated successfully.");
+    }, 'Product updated successfully.');
   };
 
   const closeDeleteModal = () => setDeleteProductId(null);
@@ -109,7 +109,7 @@ export default function DashboardProductsPage() {
     if (!deleteProductId) return;
     const id = deleteProductId;
     closeDeleteModal();
-    await runAction(async () => deleteProduct(id), "Product deleted successfully.");
+    await runAction(async () => deleteProduct(id), 'Product deleted successfully.');
   };
 
   return (
@@ -132,7 +132,11 @@ export default function DashboardProductsPage() {
               label: item.categoryName,
             }))}
           />
-          <input value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="Product name" />
+          <input
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            placeholder="Product name"
+          />
           <button type="submit" disabled={isActing}>
             Create
           </button>
@@ -152,13 +156,17 @@ export default function DashboardProductsPage() {
               <tr key={item.id}>
                 <td>{item.productName}</td>
                 <td>{item.productCode}</td>
-                <td>{item.category?.categoryName || "-"}</td>
-                <td>{item.isActive ? "Active" : "Inactive"}</td>
+                <td>{item.category?.categoryName || '-'}</td>
+                <td>{item.isActive ? 'Active' : 'Inactive'}</td>
                 <td className="actions-cell">
                   <button type="button" onClick={() => openEditModal(item)} disabled={isActing}>
                     Edit
                   </button>
-                  <button type="button" onClick={() => setDeleteProductId(item.id)} disabled={isActing}>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteProductId(item.id)}
+                    disabled={isActing}
+                  >
                     Delete
                   </button>
                 </td>
@@ -196,7 +204,7 @@ export default function DashboardProductsPage() {
             value={editName}
             onChange={(e) => {
               setEditName(e.target.value);
-              if (editFormError) setEditFormError("");
+              if (editFormError) setEditFormError('');
             }}
             placeholder="Product name"
           />
@@ -208,7 +216,7 @@ export default function DashboardProductsPage() {
             value={editCategoryId}
             onChange={(id) => {
               setEditCategoryId(id);
-              if (editFormError) setEditFormError("");
+              if (editFormError) setEditFormError('');
             }}
             listTitle="Category"
             placeholder="Category"

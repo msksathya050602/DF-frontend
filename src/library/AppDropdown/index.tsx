@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import "./appDropdown.scss";
+import './appDropdown.scss';
 
 import {
   type ReactNode,
@@ -10,9 +10,9 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-} from "react";
-import { createPortal } from "react-dom";
-import { Check } from "lucide-react";
+} from 'react';
+import { createPortal } from 'react-dom';
+import { Check } from 'lucide-react';
 
 export type AppDropdownOption = {
   value: string;
@@ -39,7 +39,7 @@ export type AppDropdownProps = {
   allowEmpty?: boolean;
   emptyLabel?: string;
   /** Tighter padding for tables and dense UIs */
-  variant?: "default" | "compact";
+  variant?: 'default' | 'compact';
   /** Include checkmark column */
   showCheckmarks?: boolean;
 };
@@ -52,15 +52,15 @@ export default function AppDropdown({
   onChange,
   options,
   listTitle,
-  placeholder = "Select…",
+  placeholder = 'Select…',
   disabled = false,
-  className = "",
-  triggerClassName = "",
+  className = '',
+  triggerClassName = '',
   menuMinWidth = 200,
   renderTrigger,
   allowEmpty = false,
-  emptyLabel = "— None —",
-  variant = "default",
+  emptyLabel = '— None —',
+  variant = 'default',
   showCheckmarks = true,
 }: AppDropdownProps) {
   const autoId = useId();
@@ -86,7 +86,7 @@ export default function AppDropdown({
     let top = r.bottom + 6;
     const left = r.left;
     const menuHeight = 320;
-    if (typeof window !== "undefined" && top + menuHeight > window.innerHeight - 8) {
+    if (typeof window !== 'undefined' && top + menuHeight > window.innerHeight - 8) {
       top = Math.max(8, r.top - 6 - menuHeight);
     }
     setMenuRect({ top, left, width: w });
@@ -104,21 +104,21 @@ export default function AppDropdown({
     const onResize = () => {
       updateMenuPosition();
     };
-    window.addEventListener("resize", onResize);
-    window.addEventListener("scroll", onResize, true);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('scroll', onResize, true);
     return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onResize, true);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onResize, true);
     };
   }, [open, updateMenuPosition]);
 
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === 'Escape') setOpen(false);
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, [open]);
 
   useEffect(() => {
@@ -128,8 +128,8 @@ export default function AppDropdown({
       if (triggerRef.current?.contains(t) || menuRef.current?.contains(t)) return;
       setOpen(false);
     };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
   }, [open]);
 
   const pick = (next: string) => {
@@ -137,17 +137,17 @@ export default function AppDropdown({
     setOpen(false);
   };
 
-  const compact = variant === "compact";
+  const compact = variant === 'compact';
 
   const defaultTrigger = () => (
     <>
-      <span className={`appDropdown-triggerText ${isEmpty ? "appDropdown-placeholder" : ""}`}>
+      <span className={`appDropdown-triggerText ${isEmpty ? 'appDropdown-placeholder' : ''}`}>
         <span className="appDropdown-triggerLabel">{selected?.label ?? placeholder}</span>
         {selected?.description ? (
           <span className="appDropdown-triggerDesc">{selected.description}</span>
         ) : null}
       </span>
-      <span className={`appDropdown-chevron ${open ? "isOpen" : ""}`} aria-hidden />
+      <span className={`appDropdown-chevron ${open ? 'isOpen' : ''}`} aria-hidden />
     </>
   );
 
@@ -155,7 +155,7 @@ export default function AppDropdown({
     <div
       ref={menuRef}
       id={`${listboxId}-listbox`}
-      className={`appDropdown-menu ${compact ? "appDropdown-menu--compact" : ""}`}
+      className={`appDropdown-menu ${compact ? 'appDropdown-menu--compact' : ''}`}
       style={{
         top: menuRect.top,
         left: menuRect.left,
@@ -171,11 +171,13 @@ export default function AppDropdown({
             type="button"
             role="option"
             aria-selected={isEmpty}
-            className={`appDropdown-item ${compact ? "appDropdown-item--compact" : ""} ${isEmpty ? "isSelected" : ""}`}
-            onClick={() => pick("")}
+            className={`appDropdown-item ${compact ? 'appDropdown-item--compact' : ''} ${isEmpty ? 'isSelected' : ''}`}
+            onClick={() => pick('')}
           >
             {showCheckmarks ? (
-              <span className="appDropdown-check">{isEmpty ? <Check size={16} strokeWidth={2.5} /> : null}</span>
+              <span className="appDropdown-check">
+                {isEmpty ? <Check size={16} strokeWidth={2.5} /> : null}
+              </span>
             ) : null}
             <span className="appDropdown-itemBody">
               <span className="appDropdown-itemLabel">{emptyLabel}</span>
@@ -190,7 +192,7 @@ export default function AppDropdown({
               type="button"
               role="option"
               aria-selected={isSel}
-              className={`appDropdown-item ${compact ? "appDropdown-item--compact" : ""} ${isSel ? "isSelected" : ""}`}
+              className={`appDropdown-item ${compact ? 'appDropdown-item--compact' : ''} ${isSel ? 'isSelected' : ''}`}
               onClick={() => pick(opt.value)}
             >
               {showCheckmarks ? (
@@ -200,7 +202,9 @@ export default function AppDropdown({
               ) : null}
               <span className="appDropdown-itemBody">
                 <span className="appDropdown-itemLabel">{opt.label}</span>
-                {opt.description ? <span className="appDropdown-itemDesc">{opt.description}</span> : null}
+                {opt.description ? (
+                  <span className="appDropdown-itemDesc">{opt.description}</span>
+                ) : null}
               </span>
             </button>
           );
@@ -215,7 +219,7 @@ export default function AppDropdown({
         ref={triggerRef}
         id={listboxId}
         type="button"
-        className={`appDropdown-trigger ${compact ? "appDropdown-trigger--compact" : ""} ${triggerClassName}`.trim()}
+        className={`appDropdown-trigger ${compact ? 'appDropdown-trigger--compact' : ''} ${triggerClassName}`.trim()}
         disabled={disabled}
         aria-expanded={open}
         aria-haspopup="listbox"

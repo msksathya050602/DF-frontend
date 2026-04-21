@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 
 import {
   Category,
@@ -8,18 +8,18 @@ import {
   deleteCategory,
   getCategories,
   updateCategory,
-} from "@/services/api/catalog";
+} from '@/services/api/catalog';
 
-import { AdminDeleteModal, AdminEditModal } from "../_lib/adminModals";
-import { useAdminAction } from "../_lib/useAdminAction";
+import { AdminDeleteModal, AdminEditModal } from '../_lib/adminModals';
+import { useAdminAction } from '../_lib/useAdminAction';
 
 export default function DashboardCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categoryName, setCategoryName] = useState("");
+  const [categoryName, setCategoryName] = useState('');
   const [editCategory, setEditCategory] = useState<Category | null>(null);
-  const [editName, setEditName] = useState("");
-  const [editFormError, setEditFormError] = useState("");
+  const [editName, setEditName] = useState('');
+  const [editFormError, setEditFormError] = useState('');
   const [deleteCategoryId, setDeleteCategoryId] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
@@ -41,20 +41,20 @@ export default function DashboardCategoriesPage() {
       await createCategory({
         categoryName: categoryName.trim(),
       });
-      setCategoryName("");
-    }, "Category created successfully.");
+      setCategoryName('');
+    }, 'Category created successfully.');
   };
 
   const openEditModal = (category: Category) => {
-    setEditFormError("");
+    setEditFormError('');
     setEditCategory(category);
     setEditName(category.categoryName);
   };
 
   const closeEditModal = () => {
     setEditCategory(null);
-    setEditName("");
-    setEditFormError("");
+    setEditName('');
+    setEditFormError('');
   };
 
   const submitEditCategory = async (event: FormEvent<HTMLFormElement>) => {
@@ -62,10 +62,10 @@ export default function DashboardCategoriesPage() {
     if (!editCategory) return;
     const trimmed = editName.trim();
     if (!trimmed) {
-      setEditFormError("Enter a category name.");
+      setEditFormError('Enter a category name.');
       return;
     }
-    setEditFormError("");
+    setEditFormError('');
     const cat = editCategory;
     closeEditModal();
     await runAction(
@@ -73,7 +73,7 @@ export default function DashboardCategoriesPage() {
         updateCategory(cat.id, {
           categoryName: trimmed,
         }),
-      "Category updated successfully.",
+      'Category updated successfully.'
     );
   };
 
@@ -83,7 +83,7 @@ export default function DashboardCategoriesPage() {
     if (!deleteCategoryId) return;
     const id = deleteCategoryId;
     closeDeleteModal();
-    await runAction(async () => deleteCategory(id), "Category deleted successfully.");
+    await runAction(async () => deleteCategory(id), 'Category deleted successfully.');
   };
 
   return (
@@ -93,7 +93,11 @@ export default function DashboardCategoriesPage() {
         {actionMessage && <p className="info-text">{actionMessage}</p>}
         {loadError && <p className="error-text">{loadError}</p>}
         <form className="branch-form" onSubmit={handleCreate}>
-          <input value={categoryName} onChange={(e) => setCategoryName(e.target.value)} placeholder="Category name" />
+          <input
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
+            placeholder="Category name"
+          />
           <button type="submit" disabled={isActing}>
             Create
           </button>
@@ -112,12 +116,16 @@ export default function DashboardCategoriesPage() {
               <tr key={item.id}>
                 <td>{item.categoryName}</td>
                 <td>{item.categoryCode}</td>
-                <td>{item.isActive ? "Active" : "Inactive"}</td>
+                <td>{item.isActive ? 'Active' : 'Inactive'}</td>
                 <td className="actions-cell">
                   <button type="button" onClick={() => openEditModal(item)} disabled={isActing}>
                     Edit
                   </button>
-                  <button type="button" onClick={() => setDeleteCategoryId(item.id)} disabled={isActing}>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteCategoryId(item.id)}
+                    disabled={isActing}
+                  >
                     Delete
                   </button>
                 </td>
@@ -155,7 +163,7 @@ export default function DashboardCategoriesPage() {
             value={editName}
             onChange={(e) => {
               setEditName(e.target.value);
-              if (editFormError) setEditFormError("");
+              if (editFormError) setEditFormError('');
             }}
             placeholder="Category name"
           />

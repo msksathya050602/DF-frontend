@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "format:check": "prettier --check \"{src,scripts,__tests__,.}/**/*.{ts,tsx,scss}\" \"**/*.ts\" \"**/*.json\" \"README.md\" ",
     "format:fix": "prettier --write \"{src,scripts,__tests__,.}/**/*.{ts,tsx,scss}\"  \"**/*.ts\" \"**/*.json\" \"README.md\" ",
-    "prepare": "husky install",
+    "prepare": "husky",
     "docker-local:up": "docker-compose -f local.docker-compose.yml up --build",
     "docker-local:down": "docker-compose -f local.docker-compose.yml down"
   },

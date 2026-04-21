@@ -1,7 +1,7 @@
-import "./loader.scss";
-import colors from "@theme/colors.module.scss";
+import './loader.scss';
+import colors from '@theme/colors.module.scss';
 
-import React from "react";
+import React from 'react';
 
 type LoaderProps = {
   borderTopColor?: string;
@@ -14,9 +14,9 @@ type LoaderProps = {
 };
 
 export const Loader: React.FC<LoaderProps> = ({
-  className = "",
-  padding = "16px",
-  borderSize = "7px",
+  className = '',
+  padding = '16px',
+  borderSize = '7px',
   width,
   height,
   borderTopColor = colors.DotBlue,

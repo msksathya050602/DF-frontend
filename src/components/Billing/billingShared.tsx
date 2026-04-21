@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { useState } from 'react';
+import { Minus, Plus } from 'lucide-react';
 
-import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
-import type { Customer } from "@/services/api/customers";
+import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
+import type { Customer } from '@/services/api/customers';
 
 export type BillingLine = {
   productId: string;
@@ -40,7 +40,7 @@ export const toNumber = (value: string | number | null | undefined) => Number(va
 
 export function userInitialsFromDisplayName(name: string): string {
   const trimmed = name.trim();
-  if (!trimmed) return "U";
+  if (!trimmed) return 'U';
   const parts = trimmed.split(/\s+/).filter(Boolean);
   if (parts.length === 1) {
     const w = parts[0];
@@ -60,8 +60,8 @@ export const dateInputToISO8601 = (value: string): string | undefined => {
 export const localTodayYmd = (): string => {
   const d = new Date();
   const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 };
 
@@ -73,46 +73,55 @@ export const isDeliveryDateAllowed = (value: string): boolean => {
 export const BILLING_PHONE_DIGITS = 10;
 
 export function billingPhoneDigits(value: string): string {
-  return value.replace(/\D/g, "").slice(0, BILLING_PHONE_DIGITS);
+  return value.replace(/\D/g, '').slice(0, BILLING_PHONE_DIGITS);
 }
 
-export function billingPhoneMatchesStored(storedPhone: string | undefined, tenDigits: string): boolean {
+export function billingPhoneMatchesStored(
+  storedPhone: string | undefined,
+  tenDigits: string
+): boolean {
   if (tenDigits.length !== BILLING_PHONE_DIGITS) return false;
-  const digits = (storedPhone || "").replace(/\D/g, "");
-  const comparable = digits.length > BILLING_PHONE_DIGITS ? digits.slice(-BILLING_PHONE_DIGITS) : digits;
+  const digits = (storedPhone || '').replace(/\D/g, '');
+  const comparable =
+    digits.length > BILLING_PHONE_DIGITS ? digits.slice(-BILLING_PHONE_DIGITS) : digits;
   return comparable === tenDigits;
 }
 
 export const formatOrderDate = (value: string | null | undefined): string => {
-  if (value == null || value === "") return "-";
+  if (value == null || value === '') return '-';
   const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "-";
-  return d.toLocaleDateString(undefined, { weekday: "short", year: "numeric", month: "short", day: "numeric" });
+  if (Number.isNaN(d.getTime())) return '-';
+  return d.toLocaleDateString(undefined, {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 };
 
 export const orderStatusChipClass = (status: string): string => {
   const u = String(status).toUpperCase();
-  if (u === "DELIVERED") return "history-chip--tone-success";
-  if (u === "CANCELLED") return "history-chip--tone-danger";
-  return "history-chip--tone-info";
+  if (u === 'DELIVERED') return 'history-chip--tone-success';
+  if (u === 'CANCELLED') return 'history-chip--tone-danger';
+  return 'history-chip--tone-info';
 };
 
 export const paymentStatusChipClass = (status: string): string => {
   const u = String(status).toUpperCase();
-  if (u === "PAID") return "history-chip--tone-success";
-  if (u === "REFUNDED") return "history-chip--tone-muted";
-  if (u === "PARTIAL") return "history-chip--tone-warning";
-  return "history-chip--tone-warning";
+  if (u === 'PAID') return 'history-chip--tone-success';
+  if (u === 'REFUNDED') return 'history-chip--tone-muted';
+  if (u === 'PARTIAL') return 'history-chip--tone-warning';
+  return 'history-chip--tone-warning';
 };
 
 export function BillingCustomerDetails({
   customer,
-  variant = "panel",
+  variant = 'panel',
 }: {
   customer: Customer | null;
-  variant?: "panel" | "sidebar" | "print";
+  variant?: 'panel' | 'sidebar' | 'print';
 }) {
-  if (variant === "print") {
+  if (variant === 'print') {
     if (!customer) {
       return (
         <p>
@@ -121,7 +130,8 @@ export function BillingCustomerDetails({
         </p>
       );
     }
-    const fullName = `${customer.firstName}${customer.lastName ? ` ${customer.lastName}` : ""}`.trim();
+    const fullName =
+      `${customer.firstName}${customer.lastName ? ` ${customer.lastName}` : ''}`.trim();
     const phone = customer.customerPhone?.trim();
     const email = customer.customerEmail?.trim();
     const address = customer.customerAddress?.trim();
@@ -155,15 +165,16 @@ export function BillingCustomerDetails({
 
   if (!customer) return null;
 
-  const fullName = `${customer.firstName}${customer.lastName ? ` ${customer.lastName}` : ""}`.trim();
+  const fullName =
+    `${customer.firstName}${customer.lastName ? ` ${customer.lastName}` : ''}`.trim();
   const phone = customer.customerPhone?.trim();
   const email = customer.customerEmail?.trim();
   const address = customer.customerAddress?.trim();
   const hasContact = !!(phone || email || address);
-  const sidebar = variant === "sidebar";
+  const sidebar = variant === 'sidebar';
 
   return (
-    <div className={`billing-customerDetails${sidebar ? " billing-customerDetails--sidebar" : ""}`}>
+    <div className={`billing-customerDetails${sidebar ? ' billing-customerDetails--sidebar' : ''}`}>
       {!sidebar ? <p className="billing-customerDetails-eyebrow">Customer</p> : null}
       <p className="billing-customerDetails-name">
         <strong>{fullName}</strong>
@@ -199,7 +210,7 @@ export function QuantityStepper({
   onChange,
   min = 1,
   disabled = false,
-  ariaLabel = "Quantity",
+  ariaLabel = 'Quantity',
   className,
 }: {
   value: number;
@@ -210,7 +221,11 @@ export function QuantityStepper({
   className?: string;
 }) {
   return (
-    <div className={["billing-qtyStepper", className].filter(Boolean).join(" ")} role="group" aria-label={ariaLabel}>
+    <div
+      className={['billing-qtyStepper', className].filter(Boolean).join(' ')}
+      role="group"
+      aria-label={ariaLabel}
+    >
       <button
         type="button"
         className="billing-qtyStepper-btn"
@@ -248,7 +263,7 @@ export function CatalogCard({
   return (
     <article className="catalog-item">
       <p className="title">{row.productName}</p>
-      <p className="subtitle">{row.categoryName || "-"}</p>
+      <p className="subtitle">{row.categoryName || '-'}</p>
       <p className="price">
         {currencyDisplayLabel(row.currency)} {toNumber(row.minPrice).toFixed(2)}
       </p>

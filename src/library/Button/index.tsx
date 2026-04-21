@@ -1,13 +1,13 @@
-import "./button.scss";
-import colors from "@theme/colors.module.scss";
+import './button.scss';
+import colors from '@theme/colors.module.scss';
 
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * Is this the principal call to action on the page?
    */
-  buttonType?: "primary" | "secondary" | "warning" | "danger" | "plain";
+  buttonType?: 'primary' | 'secondary' | 'warning' | 'danger' | 'plain';
   /**
    * What background color to use
    */
@@ -37,7 +37,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * How large should the button be?
    */
-  additionalsize?: "small" | "medium" | "large";
+  additionalsize?: 'small' | 'medium' | 'large';
   /**
    * Button contents
    */
@@ -53,13 +53,13 @@ interface CustomStyleButton {
   border?: string;
   color?: string;
   backgroundColor?: string;
-  pointerEvents: "all" | "none";
+  pointerEvents: 'all' | 'none';
 }
 
 export const Button = ({
   buttonType,
   type,
-  additionalsize = "medium",
+  additionalsize = 'medium',
   disable,
   loadingColor,
   isLoading,
@@ -78,28 +78,28 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const customStyle: CustomStyleButton = {
-    width: fullWidth ? "100%" : width,
+    width: fullWidth ? '100%' : width,
     backgroundColor: disable ? colors.B1 : backgroundColor,
     color: disable ? colors.B4 : color,
-    pointerEvents: disable ? "none" : "all",
+    pointerEvents: disable ? 'none' : 'all',
   };
   let mode = className;
   switch (buttonType) {
-    case "primary":
-      mode += " button--primary";
+    case 'primary':
+      mode += ' button--primary';
       break;
-    case "secondary":
-      mode += " button--secondary";
+    case 'secondary':
+      mode += ' button--secondary';
       customStyle.border = `1px solid ${borderColor}`;
       break;
-    case "danger":
-      mode += " button--danger";
+    case 'danger':
+      mode += ' button--danger';
       break;
-    case "warning":
-      mode += " button--warning";
+    case 'warning':
+      mode += ' button--warning';
       break;
-    case "plain":
-      mode += " button--plain";
+    case 'plain':
+      mode += ' button--plain';
       break;
     default:
       mode = className;
@@ -115,9 +115,9 @@ export const Button = ({
     <>
       {props.id && backgroundColorOnHover && <style>{onhover}</style>}
       <button
-        type={type ? type : "button"}
+        type={type ? type : 'button'}
         {...props}
-        className={["button", `button--${additionalsize}`, mode].join(" ")}
+        className={['button', `button--${additionalsize}`, mode].join(' ')}
         style={{ backgroundColor, height, color, borderRadius, ...customStyle }}
       >
         {!isLoading ? (

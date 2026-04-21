@@ -1,4 +1,4 @@
-@use "@theme/brand.module.scss" as *;
+@use '@theme/brand.module.scss' as *;
 
 // Shared custom dropdown — brand hover / focus (no blue)
 .appDropdown {
@@ -103,7 +103,9 @@
   background: #ffffff;
   border-radius: 12px;
   border: 1px solid #e8ecf4;
-  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 12px 40px rgba(15, 23, 42, 0.12),
+    0 4px 12px rgba(15, 23, 42, 0.08);
   padding: 6px 0 8px;
   max-height: min(320px, 70vh);
   display: flex;
@@ -143,7 +145,9 @@
   text-align: left;
   font: inherit;
   color: #0f172a;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
 
   &:hover,
   &:focus-visible {

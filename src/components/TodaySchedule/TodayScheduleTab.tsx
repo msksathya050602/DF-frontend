@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Fragment, useCallback, useEffect, useState } from "react";
-import AppDropdown from "@library/AppDropdown";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import AppDropdown from '@library/AppDropdown';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
-import { toNumber } from "@/app/(dashboard)/dashboard/_lib/utils";
-import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
-import { useAdminAction } from "@/hooks/useAdminAction";
-import { getTodayDeliveries, updateDeliveryOrderStatus } from "@/services/api/deliveries";
-import type { Order } from "@/services/api/orders";
+import { toNumber } from '@/app/(dashboard)/dashboard/_lib/utils';
+import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
+import { useAdminAction } from '@/hooks/useAdminAction';
+import { getTodayDeliveries, updateDeliveryOrderStatus } from '@/services/api/deliveries';
+import type { Order } from '@/services/api/orders';
 
 type RowDraft = {
   orderStatus: string;
@@ -16,8 +16,8 @@ type RowDraft = {
   handledBy: string;
 };
 
-const defaultOrderStatuses = ["PENDING", "DELIVERED", "CANCELLED"];
-const defaultPaymentStatuses = ["PENDING", "PAID", "PARTIAL", "REFUNDED"];
+const defaultOrderStatuses = ['PENDING', 'DELIVERED', 'CANCELLED'];
+const defaultPaymentStatuses = ['PENDING', 'PAID', 'PARTIAL', 'REFUNDED'];
 
 export function TodayScheduleTab() {
   const [meta, setMeta] = useState<{
@@ -28,33 +28,36 @@ export function TodayScheduleTab() {
   const [drafts, setDrafts] = useState<Record<string, RowDraft>>({});
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const [isLoading, setIsLoading] = useState(true);
-  const [fetchError, setFetchError] = useState("");
+  const [fetchError, setFetchError] = useState('');
 
-  const applyTodayData = useCallback((list: Order[], orderStatuses: string[], paymentStatuses: string[]) => {
-    setOrders(list);
-    setMeta({
-      orderStatuses: orderStatuses.length ? orderStatuses : defaultOrderStatuses,
-      paymentStatuses: paymentStatuses.length ? paymentStatuses : defaultPaymentStatuses,
-    });
-    setDrafts((prev) => {
-      const next: Record<string, RowDraft> = {};
-      for (const o of list) {
-        next[o.id] = {
-          orderStatus: o.orderStatus,
-          paymentStatus: o.paymentStatus,
-          handledBy: o.handledBy ?? "",
-        };
-      }
-      return next;
-    });
-  }, []);
+  const applyTodayData = useCallback(
+    (list: Order[], orderStatuses: string[], paymentStatuses: string[]) => {
+      setOrders(list);
+      setMeta({
+        orderStatuses: orderStatuses.length ? orderStatuses : defaultOrderStatuses,
+        paymentStatuses: paymentStatuses.length ? paymentStatuses : defaultPaymentStatuses,
+      });
+      setDrafts((prev) => {
+        const next: Record<string, RowDraft> = {};
+        for (const o of list) {
+          next[o.id] = {
+            orderStatus: o.orderStatus,
+            paymentStatus: o.paymentStatus,
+            handledBy: o.handledBy ?? '',
+          };
+        }
+        return next;
+      });
+    },
+    []
+  );
 
   const reload = useCallback(async () => {
     const data = await getTodayDeliveries();
     applyTodayData(
       data.orders || [],
       data.availableOrderStatuses || [],
-      data.availablePaymentStatuses || [],
+      data.availablePaymentStatuses || []
     );
   }, [applyTodayData]);
 
@@ -64,14 +67,14 @@ export function TodayScheduleTab() {
     let cancelled = false;
     void (async () => {
       setIsLoading(true);
-      setFetchError("");
+      setFetchError('');
       try {
         const data = await getTodayDeliveries();
         if (cancelled) return;
         applyTodayData(
           data.orders || [],
           data.availableOrderStatuses || [],
-          data.availablePaymentStatuses || [],
+          data.availablePaymentStatuses || []
         );
       } catch {
         if (!cancelled) setFetchError("Could not load today's schedule.");
@@ -110,16 +113,16 @@ export function TodayScheduleTab() {
           paymentStatus: d.paymentStatus,
           ...(d.handledBy.trim() ? { handledBy: d.handledBy.trim() } : {}),
         }),
-      "Order updated.",
+      'Order updated.'
     );
   };
 
   const formatDelivery = (o: Order) => {
-    if (!o.deliveryDate) return "—";
+    if (!o.deliveryDate) return '—';
     try {
       return new Date(o.deliveryDate).toLocaleString(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
+        dateStyle: 'medium',
+        timeStyle: 'short',
       });
     } catch {
       return String(o.deliveryDate);
@@ -155,7 +158,7 @@ export function TodayScheduleTab() {
             const isOpen = expanded.has(order.id);
             const customer = order.customer;
             const name =
-              [customer?.firstName, customer?.lastName].filter(Boolean).join(" ").trim() || "—";
+              [customer?.firstName, customer?.lastName].filter(Boolean).join(' ').trim() || '—';
 
             return (
               <Fragment key={order.id}>
@@ -166,7 +169,7 @@ export function TodayScheduleTab() {
                       className="today-schedule-expand-btn"
                       onClick={() => toggleExpand(order.id)}
                       aria-expanded={isOpen}
-                      aria-label={isOpen ? "Hide products" : "Show products"}
+                      aria-label={isOpen ? 'Hide products' : 'Show products'}
                     >
                       {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                     </button>
@@ -174,21 +177,25 @@ export function TodayScheduleTab() {
                   <td>
                     <strong>{order.orderNumber}</strong>
                     <div className="today-schedule-meta">
-                      {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                      {currencyDisplayLabel('INR')} {toNumber(order.totalAmount).toFixed(2)}
                     </div>
                   </td>
                   <td>
                     <div className="today-schedule-customer">
                       <span className="today-schedule-customer-name">{name}</span>
                       {customer?.customerPhone && (
-                        <span className="today-schedule-customer-line">{customer.customerPhone}</span>
+                        <span className="today-schedule-customer-line">
+                          {customer.customerPhone}
+                        </span>
                       )}
                       {customer?.customerEmail && (
-                        <span className="today-schedule-customer-line">{customer.customerEmail}</span>
+                        <span className="today-schedule-customer-line">
+                          {customer.customerEmail}
+                        </span>
                       )}
                     </div>
                   </td>
-                  <td>{order.branch?.branchName ?? "—"}</td>
+                  <td>{order.branch?.branchName ?? '—'}</td>
                   <td>{formatDelivery(order)}</td>
                   <td>
                     {d && (
@@ -223,13 +230,17 @@ export function TodayScheduleTab() {
                       type="text"
                       className="schedule-field-input"
                       placeholder="User UUID"
-                      value={d?.handledBy ?? ""}
+                      value={d?.handledBy ?? ''}
                       onChange={(e) => setDraft(order.id, { handledBy: e.target.value })}
                       disabled={isActing}
                     />
                   </td>
                   <td className="today-schedule-actions-cell">
-                    <button type="button" disabled={isActing} onClick={() => void saveRow(order.id)}>
+                    <button
+                      type="button"
+                      disabled={isActing}
+                      onClick={() => void saveRow(order.id)}
+                    >
                       Save
                     </button>
                   </td>
@@ -238,7 +249,9 @@ export function TodayScheduleTab() {
                   <tr className="today-schedule-products-row">
                     <td colSpan={9}>
                       <div className="today-schedule-products">
-                        <span className="today-schedule-products-title">Products &amp; services</span>
+                        <span className="today-schedule-products-title">
+                          Products &amp; services
+                        </span>
                         {(order.items?.length ?? 0) === 0 ? (
                           <p className="today-schedule-products-empty">No line items</p>
                         ) : (
@@ -246,12 +259,14 @@ export function TodayScheduleTab() {
                             {order.items!.map((item) => (
                               <li key={item.id}>
                                 <span className="today-schedule-product-name">
-                                  {item.product?.productName ?? "Product"}
+                                  {item.product?.productName ?? 'Product'}
                                 </span>
                                 <span className="today-schedule-product-service">
-                                  {item.service?.serviceName ?? "—"} × {item.quantity}
+                                  {item.service?.serviceName ?? '—'} × {item.quantity}
                                 </span>
-                                <span className="today-schedule-product-status">{item.itemStatus}</span>
+                                <span className="today-schedule-product-status">
+                                  {item.itemStatus}
+                                </span>
                               </li>
                             ))}
                           </ul>

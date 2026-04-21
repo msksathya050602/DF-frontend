@@ -1,7 +1,7 @@
-@use "@theme/colors.module.scss" as *;
-@use "@theme/viewport.scss" as *;
-@use "@theme/common.module.scss" as *;
-@use "@theme/gradient.module.scss" as *;
+@use '@theme/colors.module.scss' as *;
+@use '@theme/viewport.scss' as *;
+@use '@theme/common.module.scss' as *;
+@use '@theme/gradient.module.scss' as *;
 
 .form-group-wrapper {
   @include flex-model(column, flex-start, flex-start, 0.5rem);
@@ -23,7 +23,7 @@
 
       &.required {
         &::before {
-          content: "*";
+          content: '*';
           color: red;
         }
       }
@@ -69,12 +69,7 @@
 
   > .fall-back-wrapper {
     > .fall-back-line {
-      background-image: linear-gradient(
-        90deg,
-        #d3d3d3 0px,
-        #c3c3c3 40px,
-        #d3d3d3 80px
-      );
+      background-image: linear-gradient(90deg, #d3d3d3 0px, #c3c3c3 40px, #d3d3d3 80px);
     }
   }
 

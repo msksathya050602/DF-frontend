@@ -1,7 +1,7 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-import { API_SERVICE_URL } from "@/config";
-import { getStorageKey, LocalStorage, removeStorageKey, setStorageKey } from "@/helpers/storage";
+import { API_SERVICE_URL } from '@/config';
+import { getStorageKey, LocalStorage, removeStorageKey, setStorageKey } from '@/helpers/storage';
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
@@ -21,7 +21,7 @@ const refreshClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return config;
   }
 
@@ -35,14 +35,14 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return Promise.reject(error);
     }
 
     const originalRequest = error.config as RetryableRequestConfig | undefined;
     const statusCode = error.response?.status;
-    const requestUrl = originalRequest?.url || "";
-    const isAuthRoute = requestUrl.includes("/login") || requestUrl.includes("/refresh");
+    const requestUrl = originalRequest?.url || '';
+    const isAuthRoute = requestUrl.includes('/login') || requestUrl.includes('/refresh');
 
     if (!originalRequest || statusCode !== 401 || originalRequest._retry || isAuthRoute) {
       return Promise.reject(error);
@@ -60,7 +60,7 @@ apiClient.interceptors.response.use(
       const refreshResponse = await refreshClient.post<{
         accessToken: string;
         refreshToken: string;
-      }>("/refresh", {
+      }>('/refresh', {
         refreshToken,
       });
 
@@ -79,7 +79,7 @@ apiClient.interceptors.response.use(
       removeStorageKey(LocalStorage.REFRESH_TOKEN);
       return Promise.reject(refreshError);
     }
-  },
+  }
 );
 
 export default apiClient;

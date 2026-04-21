@@ -1,4 +1,4 @@
-import apiClient from "@/services/api/client";
+import apiClient from '@/services/api/client';
 
 export type LoginResponse = {
   accessToken: string;
@@ -23,7 +23,7 @@ export const basicAuthLogin = async ({
   email: string;
   password: string;
 }): Promise<LoginResponse> => {
-  const response = await apiClient.post<LoginResponse>("/login", { email, password });
+  const response = await apiClient.post<LoginResponse>('/login', { email, password });
   return response.data;
 };
 
@@ -36,11 +36,11 @@ export const registerUser = async ({
   email: string;
   password: string;
 }): Promise<LoginResponse> => {
-  const response = await apiClient.post<LoginResponse>("/users", { userName, email, password });
+  const response = await apiClient.post<LoginResponse>('/users', { userName, email, password });
   return response.data;
 };
 
 export const getCurrentUser = async (): Promise<CurrentUserResponse> => {
-  const response = await apiClient.get<CurrentUserResponse>("/users/me");
+  const response = await apiClient.get<CurrentUserResponse>('/users/me');
   return response.data;
 };

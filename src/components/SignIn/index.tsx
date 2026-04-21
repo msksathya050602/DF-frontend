@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import "./signin.scss";
+import './signin.scss';
 
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes } from 'react';
 
-import { AppButton, AppText, AppTextInput } from "@/components/common/widgets";
+import { AppButton, AppText, AppTextInput } from '@/components/common/widgets';
 
 type SignInProps = {
   title: string;
@@ -45,7 +45,7 @@ export default function SignIn({
         <header className="auth-topbar">
           <div className="auth-topbar-spacer" />
           <AppText as="p" className="auth-topbar-text">
-            Don&apos;t have an account?{" "}
+            Don&apos;t have an account?{' '}
             <AppButton
               type="button"
               variant="ghost"
@@ -88,7 +88,7 @@ export default function SignIn({
               <div className="auth-passwordRow">
                 <AppTextInput
                   id="password"
-                  type={isPasswordVisible ? "text" : "password"}
+                  type={isPasswordVisible ? 'text' : 'password'}
                   autoComplete="current-password"
                   placeholder="Enter your password"
                   wrapperClassName="auth-inputBlock auth-inputBlock--password"
@@ -101,10 +101,10 @@ export default function SignIn({
                   variant="secondary"
                   size="sm"
                   className="auth-passwordToggle"
-                  aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                  aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
                   onClick={onTogglePassword}
                 >
-                  {isPasswordVisible ? "Hide" : "Show"}
+                  {isPasswordVisible ? 'Hide' : 'Show'}
                 </AppButton>
               </div>
 
@@ -132,7 +132,7 @@ export default function SignIn({
                 className="auth-button"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Signing in..." : "Sign in"}
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
               </AppButton>
 
               {serverError && (

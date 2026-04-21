@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import "./styles.scss";
+import './styles.scss';
 
 import {
   AnchorHTMLAttributes,
@@ -10,46 +10,49 @@ import {
   ReactNode,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
-} from "react";
+} from 'react';
 
 type AppTextProps = {
   as?:
-    | "p"
-    | "span"
-    | "h1"
-    | "h2"
-    | "h3"
-    | "h4"
-    | "h5"
-    | "h6"
-    | "small"
-    | "label"
-    | "strong"
-    | "em"
-    | "div"
-    | "li";
+    | 'p'
+    | 'span'
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6'
+    | 'small'
+    | 'label'
+    | 'strong'
+    | 'em'
+    | 'div'
+    | 'li';
   children: ReactNode;
   className?: string;
-  tone?: "default" | "muted" | "primary" | "success" | "danger" | "warning";
-  align?: "left" | "center" | "right";
-  weight?: "normal" | "medium" | "semibold" | "bold";
+  tone?: 'default' | 'muted' | 'primary' | 'success' | 'danger' | 'warning';
+  align?: 'left' | 'center' | 'right';
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
   htmlFor?: string;
   style?: CSSProperties;
   [key: string]: unknown;
 };
 
 export function AppText({
-  as = "p",
+  as = 'p',
   children,
   className,
-  tone = "default",
-  align = "left",
-  weight = "normal",
+  tone = 'default',
+  align = 'left',
+  weight = 'normal',
   ...props
 }: AppTextProps) {
   const Tag = as;
   return (
-    <Tag className={`app-text app-text--${tone} app-text--${align} app-text--${weight} ${className || ""}`.trim()} {...props}>
+    <Tag
+      className={`app-text app-text--${tone} app-text--${align} app-text--${weight} ${className || ''}`.trim()}
+      {...props}
+    >
       {children}
     </Tag>
   );
@@ -57,8 +60,8 @@ export function AppText({
 
 type AppButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "ghost" | "danger" | "success";
-  size?: "sm" | "md" | "lg";
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
+  size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   loading?: boolean;
 };
@@ -66,8 +69,8 @@ type AppButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export function AppButton({
   children,
   className,
-  variant = "primary",
-  size = "md",
+  variant = 'primary',
+  size = 'md',
   fullWidth = false,
   loading = false,
   disabled,
@@ -75,11 +78,11 @@ export function AppButton({
 }: AppButtonProps) {
   return (
     <button
-      className={`app-button app-button--${variant} app-button--${size} ${fullWidth ? "app-button--full" : ""} ${className || ""}`.trim()}
+      className={`app-button app-button--${variant} app-button--${size} ${fullWidth ? 'app-button--full' : ''} ${className || ''}`.trim()}
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? "Loading..." : children}
+      {loading ? 'Loading...' : children}
     </button>
   );
 }
@@ -101,13 +104,16 @@ export function AppTextInput({
   ...props
 }: AppTextInputProps) {
   return (
-    <div className={`app-inputWrapper ${wrapperClassName || ""}`.trim()}>
+    <div className={`app-inputWrapper ${wrapperClassName || ''}`.trim()}>
       {label && (
         <AppText as="label" className="app-fieldLabel" htmlFor={id}>
           {label}
         </AppText>
       )}
-      <input className={`app-input ${error ? "app-input--error" : ""} ${className || ""}`.trim()} {...props} />
+      <input
+        className={`app-input ${error ? 'app-input--error' : ''} ${className || ''}`.trim()}
+        {...props}
+      />
       {error && <small className="app-inputError">{error}</small>}
       {!error && helperText && <small className="app-inputHelper">{helperText}</small>}
     </div>
@@ -131,14 +137,14 @@ export function AppTextarea({
   ...props
 }: AppTextareaProps) {
   return (
-    <div className={`app-inputWrapper ${wrapperClassName || ""}`.trim()}>
+    <div className={`app-inputWrapper ${wrapperClassName || ''}`.trim()}>
       {label && (
         <AppText as="label" className="app-fieldLabel" htmlFor={id}>
           {label}
         </AppText>
       )}
       <textarea
-        className={`app-input app-textarea ${error ? "app-input--error" : ""} ${className || ""}`.trim()}
+        className={`app-input app-textarea ${error ? 'app-input--error' : ''} ${className || ''}`.trim()}
         id={id}
         {...props}
       />
@@ -167,13 +173,17 @@ export function AppSelect({
   ...props
 }: AppSelectProps) {
   return (
-    <div className={`app-inputWrapper ${wrapperClassName || ""}`.trim()}>
+    <div className={`app-inputWrapper ${wrapperClassName || ''}`.trim()}>
       {label && (
         <AppText as="label" className="app-fieldLabel" htmlFor={id}>
           {label}
         </AppText>
       )}
-      <select className={`app-input app-select ${error ? "app-input--error" : ""} ${className || ""}`.trim()} id={id} {...props}>
+      <select
+        className={`app-input app-select ${error ? 'app-input--error' : ''} ${className || ''}`.trim()}
+        id={id}
+        {...props}
+      >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -186,13 +196,13 @@ export function AppSelect({
   );
 }
 
-type AppCheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & {
+type AppCheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   label: ReactNode;
 };
 
 export function AppCheckbox({ label, className, ...props }: AppCheckboxProps) {
   return (
-    <label className={`app-checkbox ${className || ""}`.trim()}>
+    <label className={`app-checkbox ${className || ''}`.trim()}>
       <input type="checkbox" {...props} />
       <span>{label}</span>
     </label>
@@ -205,7 +215,7 @@ type AppLinkButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
 
 export function AppLinkButton({ children, className, ...props }: AppLinkButtonProps) {
   return (
-    <a className={`app-linkButton ${className || ""}`.trim()} {...props}>
+    <a className={`app-linkButton ${className || ''}`.trim()} {...props}>
       {children}
     </a>
   );
@@ -213,12 +223,14 @@ export function AppLinkButton({ children, className, ...props }: AppLinkButtonPr
 
 type AppBadgeProps = {
   children: ReactNode;
-  tone?: "default" | "primary" | "success" | "danger" | "warning";
+  tone?: 'default' | 'primary' | 'success' | 'danger' | 'warning';
   className?: string;
 };
 
-export function AppBadge({ children, tone = "default", className }: AppBadgeProps) {
-  return <span className={`app-badge app-badge--${tone} ${className || ""}`.trim()}>{children}</span>;
+export function AppBadge({ children, tone = 'default', className }: AppBadgeProps) {
+  return (
+    <span className={`app-badge app-badge--${tone} ${className || ''}`.trim()}>{children}</span>
+  );
 }
 
 type AppCardProps = {
@@ -227,30 +239,36 @@ type AppCardProps = {
 };
 
 export function AppCard({ children, className }: AppCardProps) {
-  return <div className={`app-card ${className || ""}`.trim()}>{children}</div>;
+  return <div className={`app-card ${className || ''}`.trim()}>{children}</div>;
 }
 
 type AppStackProps = {
   children: ReactNode;
-  direction?: "row" | "column";
+  direction?: 'row' | 'column';
   gap?: number;
-  align?: "flex-start" | "center" | "flex-end" | "stretch";
-  justify?: "flex-start" | "center" | "flex-end" | "space-between" | "space-around";
+  align?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
+  justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
   className?: string;
 };
 
 export function AppStack({
   children,
-  direction = "column",
+  direction = 'column',
   gap = 8,
-  align = "stretch",
-  justify = "flex-start",
+  align = 'stretch',
+  justify = 'flex-start',
   className,
 }: AppStackProps) {
   return (
     <div
-      className={`app-stack ${className || ""}`.trim()}
-      style={{ display: "flex", flexDirection: direction, gap: `${gap}px`, alignItems: align, justifyContent: justify }}
+      className={`app-stack ${className || ''}`.trim()}
+      style={{
+        display: 'flex',
+        flexDirection: direction,
+        gap: `${gap}px`,
+        alignItems: align,
+        justifyContent: justify,
+      }}
     >
       {children}
     </div>
@@ -262,5 +280,5 @@ type AppDividerProps = {
 };
 
 export function AppDivider({ className }: AppDividerProps) {
-  return <hr className={`app-divider ${className || ""}`.trim()} />;
+  return <hr className={`app-divider ${className || ''}`.trim()} />;
 }

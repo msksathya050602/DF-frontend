@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 
 import {
   Branch,
@@ -8,22 +8,22 @@ import {
   deleteBranch,
   getBranches,
   updateBranch,
-} from "@/services/api/branches";
+} from '@/services/api/branches';
 
-import { AdminDeleteModal, AdminEditModal } from "../_lib/adminModals";
-import { useAdminAction } from "../_lib/useAdminAction";
+import { AdminDeleteModal, AdminEditModal } from '../_lib/adminModals';
+import { useAdminAction } from '../_lib/useAdminAction';
 
 export default function DashboardBranchesPage() {
   const [branches, setBranches] = useState<Branch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [branchName, setBranchName] = useState("");
-  const [branchAddress, setBranchAddress] = useState("");
-  const [branchPhone, setBranchPhone] = useState("");
+  const [branchName, setBranchName] = useState('');
+  const [branchAddress, setBranchAddress] = useState('');
+  const [branchPhone, setBranchPhone] = useState('');
   const [editBranch, setEditBranch] = useState<Branch | null>(null);
-  const [editName, setEditName] = useState("");
-  const [editAddress, setEditAddress] = useState("");
-  const [editPhone, setEditPhone] = useState("");
-  const [editFormError, setEditFormError] = useState("");
+  const [editName, setEditName] = useState('');
+  const [editAddress, setEditAddress] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editFormError, setEditFormError] = useState('');
   const [deleteBranchId, setDeleteBranchId] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
@@ -47,26 +47,26 @@ export default function DashboardBranchesPage() {
         branchAddress: branchAddress.trim() || undefined,
         branchPhone: branchPhone.trim() || undefined,
       });
-      setBranchName("");
-      setBranchAddress("");
-      setBranchPhone("");
-    }, "Branch created successfully.");
+      setBranchName('');
+      setBranchAddress('');
+      setBranchPhone('');
+    }, 'Branch created successfully.');
   };
 
   const openEditModal = (branch: Branch) => {
-    setEditFormError("");
+    setEditFormError('');
     setEditBranch(branch);
     setEditName(branch.branchName);
-    setEditAddress(branch.branchAddress || "");
-    setEditPhone(branch.branchPhone || "");
+    setEditAddress(branch.branchAddress || '');
+    setEditPhone(branch.branchPhone || '');
   };
 
   const closeEditModal = () => {
     setEditBranch(null);
-    setEditName("");
-    setEditAddress("");
-    setEditPhone("");
-    setEditFormError("");
+    setEditName('');
+    setEditAddress('');
+    setEditPhone('');
+    setEditFormError('');
   };
 
   const submitEditBranch = async (event: FormEvent<HTMLFormElement>) => {
@@ -74,10 +74,10 @@ export default function DashboardBranchesPage() {
     if (!editBranch) return;
     const trimmedName = editName.trim();
     if (!trimmedName) {
-      setEditFormError("Enter a branch name.");
+      setEditFormError('Enter a branch name.');
       return;
     }
-    setEditFormError("");
+    setEditFormError('');
     const br = editBranch;
     const nextAddress = editAddress.trim() || undefined;
     const nextPhone = editPhone.trim() || undefined;
@@ -89,7 +89,7 @@ export default function DashboardBranchesPage() {
           branchAddress: nextAddress,
           branchPhone: nextPhone,
         }),
-      "Branch updated successfully.",
+      'Branch updated successfully.'
     );
   };
 
@@ -99,7 +99,7 @@ export default function DashboardBranchesPage() {
     if (!deleteBranchId) return;
     const id = deleteBranchId;
     closeDeleteModal();
-    await runAction(async () => deleteBranch(id), "Branch deleted successfully.");
+    await runAction(async () => deleteBranch(id), 'Branch deleted successfully.');
   };
 
   return (
@@ -121,7 +121,12 @@ export default function DashboardBranchesPage() {
             value={branchAddress}
             onChange={(e) => setBranchAddress(e.target.value)}
           />
-          <input type="text" placeholder="Branch phone" value={branchPhone} onChange={(e) => setBranchPhone(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Branch phone"
+            value={branchPhone}
+            onChange={(e) => setBranchPhone(e.target.value)}
+          />
           <button type="submit" disabled={isActing}>
             Create
           </button>
@@ -140,18 +145,22 @@ export default function DashboardBranchesPage() {
             {branches.map((row) => (
               <tr key={row.id}>
                 <td>{row.branchName}</td>
-                <td>{row.branchAddress || "-"}</td>
-                <td>{row.branchPhone || "-"}</td>
+                <td>{row.branchAddress || '-'}</td>
+                <td>{row.branchPhone || '-'}</td>
                 <td>
-                  <span className={`status-badge ${row.isActive ? "active" : "inactive"}`}>
-                    {row.isActive ? "Active" : "Inactive"}
+                  <span className={`status-badge ${row.isActive ? 'active' : 'inactive'}`}>
+                    {row.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </td>
                 <td className="actions-cell">
                   <button type="button" onClick={() => openEditModal(row)} disabled={isActing}>
                     Edit
                   </button>
-                  <button type="button" onClick={() => setDeleteBranchId(row.id)} disabled={isActing}>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteBranchId(row.id)}
+                    disabled={isActing}
+                  >
                     Delete
                   </button>
                 </td>
@@ -182,7 +191,7 @@ export default function DashboardBranchesPage() {
             value={editName}
             onChange={(e) => {
               setEditName(e.target.value);
-              if (editFormError) setEditFormError("");
+              if (editFormError) setEditFormError('');
             }}
             placeholder="Branch name"
           />

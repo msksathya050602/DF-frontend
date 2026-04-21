@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { type FormEvent, type ReactNode, useId } from "react";
-import { Modal } from "@library/Modal";
+import { type FormEvent, type ReactNode, useId } from 'react';
+import { Modal } from '@library/Modal';
 
 type AdminDeleteModalProps = {
   isOpen: boolean;
@@ -17,7 +17,7 @@ export function AdminDeleteModal({
   isOpen,
   title,
   description,
-  confirmLabel = "Delete",
+  confirmLabel = 'Delete',
   isActing,
   onClose,
   onConfirm,

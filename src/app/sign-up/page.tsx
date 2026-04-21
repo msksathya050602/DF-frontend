@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import SignUp from "@components/SignUp";
-import { ROUTES } from "@constants/routes";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/navigation";
-import * as yup from "yup";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import SignUp from '@components/SignUp';
+import { ROUTES } from '@constants/routes';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useRouter } from 'next/navigation';
+import * as yup from 'yup';
 
-import { LocalStorage, setStorageKey } from "@/helpers/storage";
-import { registerUser } from "@/services/api/auth";
-import { signUpSchema } from "@/utils/schema";
+import { LocalStorage, setStorageKey } from '@/helpers/storage';
+import { registerUser } from '@/services/api/auth';
+import { signUpSchema } from '@/utils/schema';
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [serverError, setServerError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [serverError, setServerError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
@@ -23,8 +23,8 @@ export default function SignUpPage() {
     const list = Array.isArray(roles) ? roles : [];
     return list
       .flatMap((r) => {
-        const str = String(r ?? "");
-        if (str.includes("[") && str.includes("]")) {
+        const str = String(r ?? '');
+        if (str.includes('[') && str.includes(']')) {
           try {
             const parsed = JSON.parse(str);
             if (Array.isArray(parsed)) return parsed;
@@ -34,7 +34,12 @@ export default function SignUpPage() {
         }
         return [str];
       })
-      .map((r) => String(r).replace(/[[\]"]/g, "").trim().toLowerCase())
+      .map((r) =>
+        String(r)
+          .replace(/[[\]"]/g, '')
+          .trim()
+          .toLowerCase()
+      )
       .filter(Boolean);
   };
 
@@ -44,12 +49,12 @@ export default function SignUpPage() {
     formState: { errors, isSubmitting },
   } = useForm<yup.InferType<typeof signUpSchema>>({
     resolver: yupResolver(signUpSchema),
-    mode: "onSubmit",
+    mode: 'onSubmit',
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    setServerError("");
-    setSuccessMessage("");
+    setServerError('');
+    setSuccessMessage('');
     try {
       const { accessToken, refreshToken, roles } = await registerUser({
         userName: data.userName.trim(),
@@ -62,8 +67,7 @@ export default function SignUpPage() {
       router.push(ROUTES.BILLING);
     } catch (error: any) {
       setServerError(
-        error?.response?.data?.error_message ||
-          "Could not create your account. Please try again.",
+        error?.response?.data?.error_message || 'Could not create your account. Please try again.'
       );
     }
   });
@@ -85,10 +89,10 @@ export default function SignUpPage() {
       onToggleConfirmPassword={() => setIsConfirmPasswordVisible((value) => !value)}
       onSignInClick={() => router.push(ROUTES.SIGN_IN)}
       onSubmit={onSubmit}
-      userNameInputProps={register("userName")}
-      emailInputProps={register("email")}
-      passwordInputProps={register("password")}
-      confirmPasswordInputProps={register("confirmPassword")}
+      userNameInputProps={register('userName')}
+      emailInputProps={register('email')}
+      passwordInputProps={register('password')}
+      confirmPasswordInputProps={register('confirmPassword')}
     />
   );
 }

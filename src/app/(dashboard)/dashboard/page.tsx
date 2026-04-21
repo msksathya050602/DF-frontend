@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ROUTES } from "@constants/routes";
-import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ROUTES } from '@constants/routes';
+import Link from 'next/link';
 
-import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
-import type { Branch } from "@/services/api/branches";
-import { getBranches } from "@/services/api/branches";
-import { getPricing } from "@/services/api/catalog";
-import { getCustomers } from "@/services/api/customers";
-import type { Order } from "@/services/api/orders";
-import { getOrders } from "@/services/api/orders";
+import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
+import type { Branch } from '@/services/api/branches';
+import { getBranches } from '@/services/api/branches';
+import { getPricing } from '@/services/api/catalog';
+import { getCustomers } from '@/services/api/customers';
+import type { Order } from '@/services/api/orders';
+import { getOrders } from '@/services/api/orders';
 
-import { toNumber } from "./_lib/utils";
+import { toNumber } from './_lib/utils';
 
 export default function DashboardOverviewPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
+  const [loadError, setLoadError] = useState('');
   const [branches, setBranches] = useState<Branch[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [customerCount, setCustomerCount] = useState(0);
@@ -24,7 +24,7 @@ export default function DashboardOverviewPage() {
 
   const loadOverview = useCallback(async () => {
     try {
-      setLoadError("");
+      setLoadError('');
       const [branchData, ordersData, customerData, pricingData] = await Promise.all([
         getBranches(),
         getOrders(),
@@ -36,7 +36,7 @@ export default function DashboardOverviewPage() {
       setCustomerCount((customerData.customers || []).length);
       setPricingCount((pricingData.pricing || []).length);
     } catch {
-      setLoadError("Failed to load overview data.");
+      setLoadError('Failed to load overview data.');
     } finally {
       setIsLoading(false);
     }
@@ -55,18 +55,18 @@ export default function DashboardOverviewPage() {
 
   const todaysRevenue = useMemo(
     () => todaysOrders.reduce((sum, order) => sum + toNumber(order.totalAmount), 0),
-    [todaysOrders],
+    [todaysOrders]
   );
 
-  const pendingOrders = useMemo(() => orders.filter((o) => o.orderStatus === "CREATED"), [orders]);
-  const paidOrders = useMemo(() => orders.filter((o) => o.paymentStatus === "PAID"), [orders]);
+  const pendingOrders = useMemo(() => orders.filter((o) => o.orderStatus === 'CREATED'), [orders]);
+  const paidOrders = useMemo(() => orders.filter((o) => o.paymentStatus === 'PAID'), [orders]);
 
   const topServices = useMemo(() => {
     const map = new Map<string, { name: string; qty: number }>();
     for (const order of orders) {
       for (const item of order.items || []) {
         const key = item.service?.id || item.serviceId;
-        const name = item.service?.serviceName || "Unknown service";
+        const name = item.service?.serviceName || 'Unknown service';
         const current = map.get(key);
         map.set(key, { name, qty: current ? current.qty + item.quantity : item.quantity });
       }
@@ -81,7 +81,7 @@ export default function DashboardOverviewPage() {
     for (const order of orders) {
       for (const item of order.items || []) {
         const key = item.product?.id || item.productId;
-        const name = item.product?.productName || "Unknown product";
+        const name = item.product?.productName || 'Unknown product';
         const current = map.get(key);
         map.set(key, { name, qty: current ? current.qty + item.quantity : item.quantity });
       }
@@ -96,7 +96,7 @@ export default function DashboardOverviewPage() {
       [...orders]
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 8),
-    [orders],
+    [orders]
   );
 
   return (
@@ -137,7 +137,7 @@ export default function DashboardOverviewPage() {
         <article className="stat-card">
           <h3>Today Revenue</h3>
           <p>
-            {currencyDisplayLabel("INR")} {todaysRevenue.toFixed(2)}
+            {currencyDisplayLabel('INR')} {todaysRevenue.toFixed(2)}
           </p>
         </article>
         <article className="stat-card">
@@ -163,7 +163,9 @@ export default function DashboardOverviewPage() {
       <section className="dashboard-grid">
         <article className="dashboard-card">
           <h2>Branches</h2>
-          <p style={{ margin: "0 0 12px", color: "#64748b", fontSize: 14 }}>Create, edit, or remove branches.</p>
+          <p style={{ margin: '0 0 12px', color: '#64748b', fontSize: 14 }}>
+            Create, edit, or remove branches.
+          </p>
           <Link href={ROUTES.DASHBOARD_BRANCHES} className="dashboard-inline-link">
             Open Branches →
           </Link>
@@ -216,12 +218,12 @@ export default function DashboardOverviewPage() {
               <tr key={order.id}>
                 <td>{order.orderNumber}</td>
                 <td>{new Date(order.createdAt).toLocaleString()}</td>
-                <td>{`${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`}</td>
-                <td>{order.branch?.branchName || "-"}</td>
+                <td>{`${order.customer?.firstName || '-'}${order.customer?.lastName ? ` ${order.customer.lastName}` : ''}`}</td>
+                <td>{order.branch?.branchName || '-'}</td>
                 <td>{order.orderStatus}</td>
                 <td>{order.paymentStatus}</td>
                 <td>
-                  {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                  {currencyDisplayLabel('INR')} {toNumber(order.totalAmount).toFixed(2)}
                 </td>
               </tr>
             ))}

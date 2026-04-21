@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import "../SignIn/signin.scss";
+import '../SignIn/signin.scss';
 
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes } from 'react';
 
-import { AppButton, AppText, AppTextInput } from "@/components/common/widgets";
+import { AppButton, AppText, AppTextInput } from '@/components/common/widgets';
 
 type SignUpProps = {
   title: string;
@@ -55,7 +55,7 @@ export default function SignUp({
         <header className="auth-topbar">
           <div className="auth-topbar-spacer" />
           <AppText as="p" className="auth-topbar-text">
-            Already have an account?{" "}
+            Already have an account?{' '}
             <AppButton
               type="button"
               variant="ghost"
@@ -112,7 +112,7 @@ export default function SignUp({
               <div className="auth-passwordRow">
                 <AppTextInput
                   id="password"
-                  type={isPasswordVisible ? "text" : "password"}
+                  type={isPasswordVisible ? 'text' : 'password'}
                   autoComplete="new-password"
                   placeholder="Create a password"
                   wrapperClassName="auth-inputBlock auth-inputBlock--password"
@@ -125,10 +125,10 @@ export default function SignUp({
                   variant="secondary"
                   size="sm"
                   className="auth-passwordToggle"
-                  aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                  aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
                   onClick={onTogglePassword}
                 >
-                  {isPasswordVisible ? "Hide" : "Show"}
+                  {isPasswordVisible ? 'Hide' : 'Show'}
                 </AppButton>
               </div>
 
@@ -138,7 +138,7 @@ export default function SignUp({
               <div className="auth-passwordRow">
                 <AppTextInput
                   id="confirmPassword"
-                  type={isConfirmPasswordVisible ? "text" : "password"}
+                  type={isConfirmPasswordVisible ? 'text' : 'password'}
                   autoComplete="new-password"
                   placeholder="Confirm your password"
                   wrapperClassName="auth-inputBlock auth-inputBlock--password"
@@ -151,10 +151,12 @@ export default function SignUp({
                   variant="secondary"
                   size="sm"
                   className="auth-passwordToggle"
-                  aria-label={isConfirmPasswordVisible ? "Hide confirm password" : "Show confirm password"}
+                  aria-label={
+                    isConfirmPasswordVisible ? 'Hide confirm password' : 'Show confirm password'
+                  }
                   onClick={onToggleConfirmPassword}
                 >
-                  {isConfirmPasswordVisible ? "Hide" : "Show"}
+                  {isConfirmPasswordVisible ? 'Hide' : 'Show'}
                 </AppButton>
               </div>
 
@@ -166,7 +168,7 @@ export default function SignUp({
                 className="auth-button"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Creating account..." : "Create account"}
+                {isSubmitting ? 'Creating account...' : 'Create account'}
               </AppButton>
 
               {serverError && (

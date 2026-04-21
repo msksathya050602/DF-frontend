@@ -1,4 +1,4 @@
-@use "./tokens" as *;
+@use './tokens' as *;
 
 .billing-page {
   min-height: 100vh;
@@ -102,7 +102,9 @@
   cursor: pointer;
 }
 
-.billing-sidebarBranch-box .appDropdown .appDropdown-trigger.billing-sidebarBranch-display:focus-visible {
+.billing-sidebarBranch-box
+  .appDropdown
+  .appDropdown-trigger.billing-sidebarBranch-display:focus-visible {
   outline: none;
   border-color: $bf-primary-200;
   box-shadow: 0 0 0 3px $bf-primary-50;
@@ -361,7 +363,7 @@
   max-width: 100%;
   font-size: 11px;
   font-weight: 400;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   color: $bf-muted;
   line-height: 1.35;
   overflow: hidden;
@@ -407,7 +409,10 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .billing-topTabs button:not(.active):disabled {
@@ -437,7 +442,9 @@
   border: 1px solid $bf-line;
   border-radius: 16px;
   padding: 18px;
-  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  box-shadow:
+    0 4px 24px rgba(15, 23, 42, 0.06),
+    0 1px 3px rgba(15, 23, 42, 0.04);
   margin-bottom: 14px;
 }
 
@@ -739,7 +746,7 @@
   margin-top: 4px;
 }
 
-.billing-onboard-modal-actions button[type="submit"] {
+.billing-onboard-modal-actions button[type='submit'] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -840,7 +847,9 @@
   border-radius: 12px;
   padding: 12px;
   background: $bf-elevated;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:hover {
     border-color: $bf-subtle;
@@ -1157,7 +1166,7 @@
     cursor: help;
   }
 
-  input[type="date"] {
+  input[type='date'] {
     width: 100%;
     max-width: 240px;
     border: 1px solid $bf-line;
@@ -1169,7 +1178,7 @@
     box-sizing: border-box;
   }
 
-  input[type="date"]:disabled {
+  input[type='date']:disabled {
     opacity: 0.65;
     cursor: not-allowed;
   }

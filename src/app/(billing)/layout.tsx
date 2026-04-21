@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import "@components/Billing/billing.scss";
+import '@components/Billing/billing.scss';
 
-import { BillingShell } from "@components/Billing/BillingShell";
-import { BillingShellProvider } from "@components/Billing/BillingShellContext";
+import { BillingShell } from '@components/Billing/BillingShell';
+import { BillingShellProvider } from '@components/Billing/BillingShellContext';
 
 export default function BillingGroupLayout({ children }: { children: React.ReactNode }) {
   return (

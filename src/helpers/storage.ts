@@ -1,12 +1,12 @@
 export enum LocalStorage {
-  USER_PREFERENCE_THEME = "user-preference-theme",
-  ACCESS_TOKEN = "accessToken",
-  REFRESH_TOKEN = "refreshToken",
-  SELECTED_BRANCH_ID = "selectedBranchId",
+  USER_PREFERENCE_THEME = 'user-preference-theme',
+  ACCESS_TOKEN = 'accessToken',
+  REFRESH_TOKEN = 'refreshToken',
+  SELECTED_BRANCH_ID = 'selectedBranchId',
 }
 
 export enum SessionStorage {
-  SESSION_Id = "sessionId",
+  SESSION_Id = 'sessionId',
 }
 
 export type Storage = LocalStorage | SessionStorage;
@@ -34,8 +34,8 @@ export const removeStorageKey = (key: Storage): void => {
   }
 };
 
-export const clearStorage = (key: "localStorage" | "sessionStorage"): void => {
-  if (key === "sessionStorage") {
+export const clearStorage = (key: 'localStorage' | 'sessionStorage'): void => {
+  if (key === 'sessionStorage') {
     sessionStorage.clear();
   } else {
     localStorage.clear();

@@ -1,4 +1,4 @@
-import apiClient from "@/services/api/client";
+import apiClient from '@/services/api/client';
 
 export type Branch = {
   id: string;
@@ -36,16 +36,19 @@ export type UpdateBranchResponse = {
 };
 
 export const getBranches = async (): Promise<BranchesResponse> => {
-  const response = await apiClient.get<BranchesResponse>("/branches");
+  const response = await apiClient.get<BranchesResponse>('/branches');
   return response.data;
 };
 
 export const createBranch = async (payload: CreateBranchPayload): Promise<CreateBranchResponse> => {
-  const response = await apiClient.post<CreateBranchResponse>("/branches", payload);
+  const response = await apiClient.post<CreateBranchResponse>('/branches', payload);
   return response.data;
 };
 
-export const updateBranch = async (id: string, payload: UpdateBranchPayload): Promise<UpdateBranchResponse> => {
+export const updateBranch = async (
+  id: string,
+  payload: UpdateBranchPayload
+): Promise<UpdateBranchResponse> => {
   const response = await apiClient.put<UpdateBranchResponse>(`/branches/${id}`, payload);
   return response.data;
 };

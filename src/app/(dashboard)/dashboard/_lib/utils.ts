@@ -4,8 +4,8 @@ export const normalizeRoles = (roles: unknown): string[] => {
   const list = Array.isArray(roles) ? roles : [];
   return list
     .flatMap((role) => {
-      const str = String(role ?? "");
-      if (str.includes("[") && str.includes("]")) {
+      const str = String(role ?? '');
+      if (str.includes('[') && str.includes(']')) {
         try {
           const parsed = JSON.parse(str);
           if (Array.isArray(parsed)) return parsed;
@@ -15,6 +15,11 @@ export const normalizeRoles = (roles: unknown): string[] => {
       }
       return [str];
     })
-    .map((r) => String(r).replace(/[[\]"]/g, "").trim().toLowerCase())
+    .map((r) =>
+      String(r)
+        .replace(/[[\]"]/g, '')
+        .trim()
+        .toLowerCase()
+    )
     .filter(Boolean);
 };

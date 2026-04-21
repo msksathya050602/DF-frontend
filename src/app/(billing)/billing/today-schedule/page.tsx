@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { BillingTodaySchedule } from "@components/Billing/BillingTodaySchedule";
+import { BillingTodaySchedule } from '@components/Billing/BillingTodaySchedule';
 
 export default function TodaySchedulePage() {
   return <BillingTodaySchedule />;

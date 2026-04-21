@@ -1,5 +1,5 @@
-import type { Order } from "@/services/api/orders";
-import apiClient from "@/services/api/client";
+import type { Order } from '@/services/api/orders';
+import apiClient from '@/services/api/client';
 
 export type TodayDeliveriesResponse = {
   orders: Order[];
@@ -20,7 +20,7 @@ export type UpdateDeliveryOrderResponse = {
 };
 
 export const getTodayDeliveries = async (branchId?: string): Promise<TodayDeliveriesResponse> => {
-  const response = await apiClient.get<TodayDeliveriesResponse>("/deliveries/today", {
+  const response = await apiClient.get<TodayDeliveriesResponse>('/deliveries/today', {
     params: branchId ? { branchId } : undefined,
   });
   return response.data;
@@ -28,11 +28,11 @@ export const getTodayDeliveries = async (branchId?: string): Promise<TodayDelive
 
 export const updateDeliveryOrderStatus = async (
   orderId: string,
-  payload: UpdateDeliveryOrderPayload,
+  payload: UpdateDeliveryOrderPayload
 ): Promise<UpdateDeliveryOrderResponse> => {
   const response = await apiClient.patch<UpdateDeliveryOrderResponse>(
     `/deliveries/orders/${orderId}/status`,
-    payload,
+    payload
   );
   return response.data;
 };

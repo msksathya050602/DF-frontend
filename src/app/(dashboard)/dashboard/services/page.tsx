@@ -1,19 +1,25 @@
-"use client";
+'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 
-import { createService, deleteService, getServices, Service, updateService } from "@/services/api/catalog";
+import {
+  createService,
+  deleteService,
+  getServices,
+  Service,
+  updateService,
+} from '@/services/api/catalog';
 
-import { AdminDeleteModal, AdminEditModal } from "../_lib/adminModals";
-import { useAdminAction } from "../_lib/useAdminAction";
+import { AdminDeleteModal, AdminEditModal } from '../_lib/adminModals';
+import { useAdminAction } from '../_lib/useAdminAction';
 
 export default function DashboardServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [serviceName, setServiceName] = useState("");
+  const [serviceName, setServiceName] = useState('');
   const [editService, setEditService] = useState<Service | null>(null);
-  const [editName, setEditName] = useState("");
-  const [editFormError, setEditFormError] = useState("");
+  const [editName, setEditName] = useState('');
+  const [editFormError, setEditFormError] = useState('');
   const [deleteServiceId, setDeleteServiceId] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
@@ -35,20 +41,20 @@ export default function DashboardServicesPage() {
       await createService({
         serviceName: serviceName.trim(),
       });
-      setServiceName("");
-    }, "Service created successfully.");
+      setServiceName('');
+    }, 'Service created successfully.');
   };
 
   const openEditModal = (service: Service) => {
-    setEditFormError("");
+    setEditFormError('');
     setEditService(service);
     setEditName(service.serviceName);
   };
 
   const closeEditModal = () => {
     setEditService(null);
-    setEditName("");
-    setEditFormError("");
+    setEditName('');
+    setEditFormError('');
   };
 
   const submitEditService = async (event: FormEvent<HTMLFormElement>) => {
@@ -56,10 +62,10 @@ export default function DashboardServicesPage() {
     if (!editService) return;
     const trimmed = editName.trim();
     if (!trimmed) {
-      setEditFormError("Enter a service name.");
+      setEditFormError('Enter a service name.');
       return;
     }
-    setEditFormError("");
+    setEditFormError('');
     const svc = editService;
     closeEditModal();
     await runAction(
@@ -67,7 +73,7 @@ export default function DashboardServicesPage() {
         updateService(svc.id, {
           serviceName: trimmed,
         }),
-      "Service updated successfully.",
+      'Service updated successfully.'
     );
   };
 
@@ -77,7 +83,7 @@ export default function DashboardServicesPage() {
     if (!deleteServiceId) return;
     const id = deleteServiceId;
     closeDeleteModal();
-    await runAction(async () => deleteService(id), "Service deleted successfully.");
+    await runAction(async () => deleteService(id), 'Service deleted successfully.');
   };
 
   return (
@@ -87,7 +93,11 @@ export default function DashboardServicesPage() {
         {actionMessage && <p className="info-text">{actionMessage}</p>}
         {loadError && <p className="error-text">{loadError}</p>}
         <form className="branch-form" onSubmit={handleCreate}>
-          <input value={serviceName} onChange={(e) => setServiceName(e.target.value)} placeholder="Service name" />
+          <input
+            value={serviceName}
+            onChange={(e) => setServiceName(e.target.value)}
+            placeholder="Service name"
+          />
           <button type="submit" disabled={isActing}>
             Create
           </button>
@@ -104,12 +114,16 @@ export default function DashboardServicesPage() {
             {services.map((item) => (
               <tr key={item.id}>
                 <td>{item.serviceName}</td>
-                <td>{item.isActive ? "Active" : "Inactive"}</td>
+                <td>{item.isActive ? 'Active' : 'Inactive'}</td>
                 <td className="actions-cell">
                   <button type="button" onClick={() => openEditModal(item)} disabled={isActing}>
                     Edit
                   </button>
-                  <button type="button" onClick={() => setDeleteServiceId(item.id)} disabled={isActing}>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteServiceId(item.id)}
+                    disabled={isActing}
+                  >
                     Delete
                   </button>
                 </td>
@@ -140,7 +154,7 @@ export default function DashboardServicesPage() {
             value={editName}
             onChange={(e) => {
               setEditName(e.target.value);
-              if (editFormError) setEditFormError("");
+              if (editFormError) setEditFormError('');
             }}
             placeholder="Service name"
           />

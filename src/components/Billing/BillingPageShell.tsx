@@ -1,13 +1,9 @@
-"use client";
+'use client';
 
-import type { ReactNode } from "react";
-import {
-  Printer,
-  ShoppingCart,
-  User,
-} from "lucide-react";
+import type { ReactNode } from 'react';
+import { Printer, ShoppingCart, User } from 'lucide-react';
 
-import { userInitialsFromDisplayName } from "./billingShared";
+import { userInitialsFromDisplayName } from './billingShared';
 
 export type BillingPageShellProps = {
   title: string;
@@ -33,7 +29,7 @@ export function BillingPageShell({
   subtitle,
   userName,
   userEmail,
-  topbarExtraClass = "",
+  topbarExtraClass = '',
   stepTabs,
   screenError,
   screenSuccess,
@@ -42,7 +38,7 @@ export function BillingPageShell({
 }: BillingPageShellProps) {
   return (
     <section className="billing-main">
-      <header className={`billing-topbar${topbarExtraClass ? ` ${topbarExtraClass}` : ""}`}>
+      <header className={`billing-topbar${topbarExtraClass ? ` ${topbarExtraClass}` : ''}`}>
         <div className="billing-topbar-left">
           <h1>{title}</h1>
           <p className="billing-topbar-sub">{subtitle}</p>
@@ -51,7 +47,7 @@ export function BillingPageShell({
           <nav className="billing-topTabs" aria-label="Bill steps">
             <button
               type="button"
-              className={stepTabs.createStep === 1 ? "active" : ""}
+              className={stepTabs.createStep === 1 ? 'active' : ''}
               onClick={() => stepTabs.setCreateStep(1)}
             >
               <User size={14} strokeWidth={2} aria-hidden />
@@ -59,7 +55,7 @@ export function BillingPageShell({
             </button>
             <button
               type="button"
-              className={stepTabs.createStep === 2 ? "active" : ""}
+              className={stepTabs.createStep === 2 ? 'active' : ''}
               disabled={!stepTabs.selectedCustomerId}
               onClick={() => {
                 if (stepTabs.selectedCustomerId) stepTabs.setCreateStep(2);
@@ -70,7 +66,7 @@ export function BillingPageShell({
             </button>
             <button
               type="button"
-              className={stepTabs.createStep === 3 ? "active" : ""}
+              className={stepTabs.createStep === 3 ? 'active' : ''}
               disabled={!stepTabs.hasCompletedOrderForStep3}
               onClick={() => {
                 if (stepTabs.hasCompletedOrderForStep3) stepTabs.setCreateStep(3);
@@ -84,15 +80,15 @@ export function BillingPageShell({
         <div className="billing-topbar-right">
           <div className="billing-userChip">
             <span className="billing-userChip-avatar" aria-hidden>
-              {userInitialsFromDisplayName(userName || "User")}
+              {userInitialsFromDisplayName(userName || 'User')}
             </span>
             <div className="billing-userChip-text">
-              <span className="billing-userChip-name">{userName || "User"}</span>
+              <span className="billing-userChip-name">{userName || 'User'}</span>
               <span
                 className="billing-userChip-email"
                 title={userEmail?.trim() ? userEmail.trim() : undefined}
               >
-                {userEmail?.trim() || "—"}
+                {userEmail?.trim() || '—'}
               </span>
             </div>
           </div>

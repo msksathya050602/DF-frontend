@@ -1,4 +1,4 @@
-"use client";
+'use client';
 export const CONVO_AGENT_ID = process.env.NEXT_PUBLIC_CONVO_AGENT_ID;
 export const CONVO_API_KEY = process.env.NEXT_PUBLIC_CONVO_API_KEY;
 export const HEYGEN_API_KEY = process.env.NEXT_PUBLIC_HEYGEN_API_KEY;
@@ -13,8 +13,8 @@ export const API_SERVICE_URL = process.env.NEXT_PUBLIC_API_SERVICE_URL;
 
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
-export const APP_ENV = process.env.NEXT_PUBLIC_APP_ENV || "development";
+export const APP_ENV = process.env.NEXT_PUBLIC_APP_ENV || 'development';
 
-export const unAuthorizedEvent = "unAuthorizedEvent";
+export const unAuthorizedEvent = 'unAuthorizedEvent';
 
 export const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;

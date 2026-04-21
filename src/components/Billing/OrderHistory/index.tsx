@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import "./orderHistory.scss";
+import './orderHistory.scss';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
-import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
-import { getOrders, type Order } from "@/services/api/orders";
+import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
+import { getOrders, type Order } from '@/services/api/orders';
 
-import { BillingPageShell } from "../BillingPageShell";
-import { formatOrderDate, toNumber } from "../billingShared";
-import { useBillingShell } from "../BillingShellContext";
+import { BillingPageShell } from '../BillingPageShell';
+import { formatOrderDate, toNumber } from '../billingShared';
+import { useBillingShell } from '../BillingShellContext';
 
 export function OrderHistory() {
   const shell = useBillingShell();
@@ -20,7 +20,7 @@ export function OrderHistory() {
 
   const branchOrders = useMemo(
     () => orders.filter((order) => !selectedBranchId || order.branchId === selectedBranchId),
-    [orders, selectedBranchId],
+    [orders, selectedBranchId]
   );
 
   useEffect(() => {
@@ -55,12 +55,14 @@ export function OrderHistory() {
   return (
     <BillingPageShell
       title="Order history"
-      subtitle={`Orders at ${selectedBranch?.branchName || "the branch you selected"}.`}
-      userName={userName || "User"}
-      userEmail={userEmail || ""}
+      subtitle={`Orders at ${selectedBranch?.branchName || 'the branch you selected'}.`}
+      userName={userName || 'User'}
+      userEmail={userEmail || ''}
     >
       <section className="billing-card billing-history billing-history--minimal">
-        <p className="billing-history-hint billing-muted">Branch: {selectedBranch?.branchName || "—"}</p>
+        <p className="billing-history-hint billing-muted">
+          Branch: {selectedBranch?.branchName || '—'}
+        </p>
         <div className="history-listHeader">
           <span className="history-listHeader-chePad" aria-hidden />
           <span className="history-listHeader-main">Order</span>
@@ -72,7 +74,7 @@ export function OrderHistory() {
         <div className="history-cards">
           {branchOrders.map((order) => {
             const open = expandedIds.has(order.id);
-            const customerLabel = `${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`;
+            const customerLabel = `${order.customer?.firstName || '-'}${order.customer?.lastName ? ` ${order.customer.lastName}` : ''}`;
             const itemCount = order.items?.length ?? 0;
 
             return (
@@ -83,7 +85,7 @@ export function OrderHistory() {
                   aria-expanded={open}
                   onClick={() => toggleOrder(order.id)}
                 >
-                  <span className={`history-card-chevron ${open ? "is-open" : ""}`} aria-hidden />
+                  <span className={`history-card-chevron ${open ? 'is-open' : ''}`} aria-hidden />
                   <span className="history-card-summary-inner">
                     <span className="history-card-head">
                       <span className="history-card-orderId">{order.orderNumber}</span>
@@ -91,17 +93,21 @@ export function OrderHistory() {
                         {new Date(order.createdAt).toLocaleString()}
                       </time>
                       <span className="history-chip-wrap">
-                        <span className="history-chip history-chip--plain">{order.orderStatus}</span>
-                        <span className="history-chip history-chip--plain">{order.paymentStatus}</span>
+                        <span className="history-chip history-chip--plain">
+                          {order.orderStatus}
+                        </span>
+                        <span className="history-chip history-chip--plain">
+                          {order.paymentStatus}
+                        </span>
                       </span>
                     </span>
                     {!open && (
                       <span className="history-card-preview">
                         {customerLabel}
                         <span className="history-card-preview-sep">·</span>
-                        {itemCount} item{itemCount === 1 ? "" : "s"}
+                        {itemCount} item{itemCount === 1 ? '' : 's'}
                         <span className="history-card-preview-sep">·</span>
-                        {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                        {currencyDisplayLabel('INR')} {toNumber(order.totalAmount).toFixed(2)}
                       </span>
                     )}
                   </span>
@@ -116,15 +122,21 @@ export function OrderHistory() {
                       </span>
                       <span className="history-meta-pair">
                         <span className="history-meta-lbl">Phone</span>
-                        <span className="history-meta-val">{order.customer?.customerPhone || "—"}</span>
+                        <span className="history-meta-val">
+                          {order.customer?.customerPhone || '—'}
+                        </span>
                       </span>
                       <span className="history-meta-pair">
                         <span className="history-meta-lbl">Branch</span>
-                        <span className="history-meta-val">{order.branch?.branchName || selectedBranch?.branchName || "—"}</span>
+                        <span className="history-meta-val">
+                          {order.branch?.branchName || selectedBranch?.branchName || '—'}
+                        </span>
                       </span>
                       <span className="history-meta-pair">
                         <span className="history-meta-lbl">Delivery date</span>
-                        <span className="history-meta-val">{formatOrderDate(order.deliveryDate ?? null)}</span>
+                        <span className="history-meta-val">
+                          {formatOrderDate(order.deliveryDate ?? null)}
+                        </span>
                       </span>
                       <span className="history-meta-pair">
                         <span className="history-meta-lbl">Items</span>
@@ -146,14 +158,14 @@ export function OrderHistory() {
                         <tbody>
                           {(order.items || []).map((item) => (
                             <tr key={item.id}>
-                              <td>{item.product?.productName || "-"}</td>
-                              <td>{item.service?.serviceName || "-"}</td>
+                              <td>{item.product?.productName || '-'}</td>
+                              <td>{item.service?.serviceName || '-'}</td>
                               <td>{item.quantity}</td>
                               <td>
-                                {currencyDisplayLabel("INR")} {toNumber(item.unitPrice).toFixed(2)}
+                                {currencyDisplayLabel('INR')} {toNumber(item.unitPrice).toFixed(2)}
                               </td>
                               <td>
-                                {currencyDisplayLabel("INR")} {toNumber(item.lineTotal).toFixed(2)}
+                                {currencyDisplayLabel('INR')} {toNumber(item.lineTotal).toFixed(2)}
                               </td>
                             </tr>
                           ))}
@@ -170,25 +182,25 @@ export function OrderHistory() {
                       <span className="history-total-pair">
                         <span className="history-total-lbl">Sub</span>
                         <strong className="history-total-amt">
-                          {currencyDisplayLabel("INR")} {toNumber(order.subTotal).toFixed(2)}
+                          {currencyDisplayLabel('INR')} {toNumber(order.subTotal).toFixed(2)}
                         </strong>
                       </span>
                       <span className="history-total-pair">
                         <span className="history-total-lbl">Discount</span>
                         <strong className="history-total-amt">
-                          {currencyDisplayLabel("INR")} {toNumber(order.discountAmount).toFixed(2)}
+                          {currencyDisplayLabel('INR')} {toNumber(order.discountAmount).toFixed(2)}
                         </strong>
                       </span>
                       <span className="history-total-pair">
                         <span className="history-total-lbl">Tax</span>
                         <strong className="history-total-amt">
-                          {currencyDisplayLabel("INR")} {toNumber(order.taxAmount).toFixed(2)}
+                          {currencyDisplayLabel('INR')} {toNumber(order.taxAmount).toFixed(2)}
                         </strong>
                       </span>
                       <span className="history-total-pair history-total-pair--grand">
                         <span className="history-total-lbl">Total</span>
                         <strong className="history-total-amt">
-                          {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                          {currencyDisplayLabel('INR')} {toNumber(order.totalAmount).toFixed(2)}
                         </strong>
                       </span>
                     </div>
@@ -197,7 +209,9 @@ export function OrderHistory() {
               </article>
             );
           })}
-          {!branchOrders.length && <p className="billing-muted">No orders found for selected branch.</p>}
+          {!branchOrders.length && (
+            <p className="billing-muted">No orders found for selected branch.</p>
+          )}
         </div>
       </section>
     </BillingPageShell>

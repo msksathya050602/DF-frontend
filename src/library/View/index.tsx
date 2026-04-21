@@ -1,6 +1,6 @@
-import "./view.scss";
+import './view.scss';
 
-import React, { CSSProperties, ElementType, ReactNode } from "react";
+import React, { CSSProperties, ElementType, ReactNode } from 'react';
 
 interface ViewProps {
   children: ReactNode;
@@ -16,13 +16,13 @@ export const View: React.FC<ViewProps> = ({
   className,
   id,
   style,
-  as: Element = "div",
+  as: Element = 'div',
   noIndex,
 }) => {
   return (
     <Element
       id={id}
-      className={`view-wrapper ${className ?? ""} ${noIndex ? "no-index" : "index"}`}
+      className={`view-wrapper ${className ?? ''} ${noIndex ? 'no-index' : 'index'}`}
       style={style}
     >
       {children}

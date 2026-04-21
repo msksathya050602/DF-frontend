@@ -1,12 +1,20 @@
-"use client";
+'use client';
 
-import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { ROUTES } from "@constants/routes";
-import { useRouter } from "next/navigation";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { ROUTES } from '@constants/routes';
+import { useRouter } from 'next/navigation';
 
-import { getStorageKey, LocalStorage, removeStorageKey, setStorageKey } from "@/helpers/storage";
-import { getCurrentUser } from "@/services/api/auth";
-import { type Branch, getBranches } from "@/services/api/branches";
+import { getStorageKey, LocalStorage, removeStorageKey, setStorageKey } from '@/helpers/storage';
+import { getCurrentUser } from '@/services/api/auth';
+import { type Branch, getBranches } from '@/services/api/branches';
 
 export type BillingShellContextValue = {
   ready: boolean;
@@ -24,7 +32,7 @@ const BillingShellContext = createContext<BillingShellContextValue | null>(null)
 export function useBillingShell(): BillingShellContextValue {
   const ctx = useContext(BillingShellContext);
   if (!ctx) {
-    throw new Error("useBillingShell must be used within BillingShellProvider");
+    throw new Error('useBillingShell must be used within BillingShellProvider');
   }
   return ctx;
 }
@@ -33,8 +41,8 @@ function normalizeRoles(roles: unknown): string[] {
   const list = Array.isArray(roles) ? roles : [];
   return list
     .flatMap((r) => {
-      const str = String(r ?? "");
-      if (str.includes("[") && str.includes("]")) {
+      const str = String(r ?? '');
+      if (str.includes('[') && str.includes(']')) {
         try {
           const parsed = JSON.parse(str);
           if (Array.isArray(parsed)) return parsed;
@@ -44,7 +52,12 @@ function normalizeRoles(roles: unknown): string[] {
       }
       return [str];
     })
-    .map((r) => String(r).replace(/[[\]"]/g, "").trim().toLowerCase())
+    .map((r) =>
+      String(r)
+        .replace(/[[\]"]/g, '')
+        .trim()
+        .toLowerCase()
+    )
     .filter(Boolean);
 }
 
@@ -52,13 +65,13 @@ export function BillingShellProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [branches, setBranches] = useState<Branch[]>([]);
-  const [selectedBranchId, setSelectedBranchId] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
+  const [selectedBranchId, setSelectedBranchId] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
   const selectedBranch = useMemo(
     () => branches.find((item) => item.id === selectedBranchId) || null,
-    [branches, selectedBranchId],
+    [branches, selectedBranchId]
   );
 
   const selectBranch = useCallback((branchId: string) => {
@@ -84,8 +97,8 @@ export function BillingShellProvider({ children }: { children: ReactNode }) {
       try {
         const me = await getCurrentUser();
         normalizeRoles(me.roles);
-        setUserName(me.userName || "User");
-        setUserEmail(me.email || "");
+        setUserName(me.userName || 'User');
+        setUserEmail(me.email || '');
 
         const branchResult = await getBranches();
         const activeBranches = (branchResult.branches || []).filter((item) => item.isActive);

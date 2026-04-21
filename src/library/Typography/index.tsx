@@ -1,31 +1,31 @@
-import "./typography.scss";
-import colors from "@theme/colors.module.scss";
+import './typography.scss';
+import colors from '@theme/colors.module.scss';
 
-import React, { ElementType, ReactElement, ReactNode } from "react";
+import React, { ElementType, ReactElement, ReactNode } from 'react';
 
 interface TypographyProps extends React.HTMLAttributes<HTMLSpanElement> {
   /**
    * Typography type
    */
   type:
-    | "p1"
-    | "p2"
-    | "p3"
-    | "caption"
-    | "mini"
-    | "h1"
-    | "h2"
-    | "h3"
-    | "h4"
-    | "d1"
-    | "d2"
-    | "d3"
-    | "d4"
-    | "d5";
+    | 'p1'
+    | 'p2'
+    | 'p3'
+    | 'caption'
+    | 'mini'
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'd1'
+    | 'd2'
+    | 'd3'
+    | 'd4'
+    | 'd5';
   /**
    * Typography type
    */
-  weight: "light" | "regular" | "semiboldItalic" | "semibold" | "black";
+  weight: 'light' | 'regular' | 'semiboldItalic' | 'semibold' | 'black';
   /**
    * The text to display
    */
@@ -41,7 +41,7 @@ interface TypographyProps extends React.HTMLAttributes<HTMLSpanElement> {
    * Font color
    */
   color?:
-    | "black"
+    | 'black'
     | typeof colors.B9
     | typeof colors.B4
     | typeof colors.B5
@@ -53,15 +53,15 @@ const Typography = ({
   type,
   weight,
   text,
-  color = "black",
+  color = 'black',
   style,
-  as: Tag = "span",
+  as: Tag = 'span',
   ...props
 }: TypographyProps) => {
   const { className, ...rest } = { ...props };
   return (
     <Tag
-      className={["typography", type, weight, className].join(" ")}
+      className={['typography', type, weight, className].join(' ')}
       style={{ color, ...style }}
       {...rest}
     >

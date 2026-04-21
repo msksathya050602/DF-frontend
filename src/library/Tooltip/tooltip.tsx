@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import "./tooltip.scss";
+import './tooltip.scss';
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState } from 'react';
 
 interface TooltipProps {
   infoText: React.ReactNode;
   children: React.ReactNode;
-  position?: "top" | "bottom" | "left" | "right";
+  position?: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
   isLongPressed?: boolean;
   backgroundColor?: string;
@@ -16,7 +16,7 @@ interface TooltipProps {
 const Tooltip = ({
   infoText,
   children,
-  position = "bottom",
+  position = 'bottom',
   className,
   isLongPressed,
   backgroundColor,
@@ -80,15 +80,15 @@ const Tooltip = ({
     >
       {children}
       <div
-        className={`tooltip ${position || ""} ${showTooltip ? "open" : ""}`}
-        style={{ backgroundColor: backgroundColor || "black" }}
+        className={`tooltip ${position || ''} ${showTooltip ? 'open' : ''}`}
+        style={{ backgroundColor: backgroundColor || 'black' }}
       >
         {infoText}
         <div
-          className={`tooltip-arrow ${position || ""}`}
+          className={`tooltip-arrow ${position || ''}`}
           style={
             {
-              "--tooltip-bg": backgroundColor || "black",
+              '--tooltip-bg': backgroundColor || 'black',
             } as React.CSSProperties
           }
         />

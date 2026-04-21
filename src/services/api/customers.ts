@@ -1,6 +1,6 @@
-import apiClient from "@/services/api/client";
+import apiClient from '@/services/api/client';
 
-import type { Order } from "./orders";
+import type { Order } from './orders';
 
 export type Customer = {
   id: string;
@@ -40,16 +40,16 @@ export type CreateCustomerResponse = {
 };
 
 export const getCustomers = async (): Promise<CustomersResponse> => {
-  const response = await apiClient.get<CustomersResponse>("/customers");
+  const response = await apiClient.get<CustomersResponse>('/customers');
   return response.data;
 };
 
 /** GET /customers/search?phone=&limit= — `phone` may include formatting; only digits are used server-side. */
 export const searchCustomersByPhone = async (
   phone: string,
-  limit = 10,
+  limit = 10
 ): Promise<CustomersSearchResponse> => {
-  const response = await apiClient.get<CustomersSearchResponse>("/customers/search", {
+  const response = await apiClient.get<CustomersSearchResponse>('/customers/search', {
     params: { phone, limit },
   });
   return response.data;
@@ -60,7 +60,9 @@ export const getCustomerOrders = async (customerId: string): Promise<CustomerOrd
   return response.data;
 };
 
-export const createCustomer = async (payload: CreateCustomerPayload): Promise<CreateCustomerResponse> => {
-  const response = await apiClient.post<CreateCustomerResponse>("/customers", payload);
+export const createCustomer = async (
+  payload: CreateCustomerPayload
+): Promise<CreateCustomerResponse> => {
+  const response = await apiClient.post<CreateCustomerResponse>('/customers', payload);
   return response.data;
 };

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import "./billingSettings.scss";
+import './billingSettings.scss';
 
-import { ROUTES } from "@constants/routes";
-import Link from "next/link";
+import { ROUTES } from '@constants/routes';
+import Link from 'next/link';
 
-import { BillingPageShell } from "../BillingPageShell";
-import { useBillingShell } from "../BillingShellContext";
+import { BillingPageShell } from '../BillingPageShell';
+import { useBillingShell } from '../BillingShellContext';
 
 export function BillingSettings() {
   const shell = useBillingShell();
@@ -18,12 +18,14 @@ export function BillingSettings() {
     <BillingPageShell
       title="Settings"
       subtitle="Admin tools and catalogue management."
-      userName={userName || "User"}
-      userEmail={userEmail || ""}
+      userName={userName || 'User'}
+      userEmail={userEmail || ''}
     >
       <section className="billing-card billing-settings">
         <h2 className="billing-step-title">Settings</h2>
-        <p className="billing-muted">Open the admin dashboard to manage branches, catalogue, pricing, and orders.</p>
+        <p className="billing-muted">
+          Open the admin dashboard to manage branches, catalogue, pricing, and orders.
+        </p>
         <ul className="billing-settings-links">
           <li>
             <Link href={ROUTES.DASHBOARD}>Dashboard home</Link>

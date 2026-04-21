@@ -1,4 +1,4 @@
-import { isAxiosError } from "axios";
+import { isAxiosError } from 'axios';
 
 export function isAPIError(error: any): boolean {
   if (isAxiosError(error)) {

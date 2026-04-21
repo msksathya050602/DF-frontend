@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import AppDropdown from "@library/AppDropdown";
+import { useCallback, useEffect, useState } from 'react';
+import AppDropdown from '@library/AppDropdown';
 
-import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
-import type { Order } from "@/services/api/orders";
+import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
+import type { Order } from '@/services/api/orders';
 import {
   cancelOrder,
   getOrders,
   updateOrderItemStatus,
   updateOrderStatus,
   updatePaymentStatus,
-} from "@/services/api/orders";
+} from '@/services/api/orders';
 
-import { AdminDeleteModal } from "../_lib/adminModals";
-import { useAdminAction } from "../_lib/useAdminAction";
-import { toNumber } from "../_lib/utils";
+import { AdminDeleteModal } from '../_lib/adminModals';
+import { useAdminAction } from '../_lib/useAdminAction';
+import { toNumber } from '../_lib/utils';
 
 export default function DashboardOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -35,15 +35,24 @@ export default function DashboardOrdersPage() {
   const { isActing, actionMessage, loadError, runAction } = useAdminAction(reload);
 
   const patchOrderStatus = async (orderId: string, orderStatus: string) => {
-    await runAction(async () => updateOrderStatus(orderId, { orderStatus }), "Order status updated.");
+    await runAction(
+      async () => updateOrderStatus(orderId, { orderStatus }),
+      'Order status updated.'
+    );
   };
 
   const patchPaymentStatus = async (orderId: string, paymentStatus: string) => {
-    await runAction(async () => updatePaymentStatus(orderId, { paymentStatus }), "Payment status updated.");
+    await runAction(
+      async () => updatePaymentStatus(orderId, { paymentStatus }),
+      'Payment status updated.'
+    );
   };
 
   const patchOrderItemStatus = async (itemId: string, itemStatus: string) => {
-    await runAction(async () => updateOrderItemStatus(itemId, { itemStatus }), "Order item status updated.");
+    await runAction(
+      async () => updateOrderItemStatus(itemId, { itemStatus }),
+      'Order item status updated.'
+    );
   };
 
   const closeCancelModal = () => setCancelOrderId(null);
@@ -52,7 +61,7 @@ export default function DashboardOrdersPage() {
     if (!cancelOrderId) return;
     const id = cancelOrderId;
     closeCancelModal();
-    await runAction(async () => cancelOrder(id), "Order cancelled successfully.");
+    await runAction(async () => cancelOrder(id), 'Order cancelled successfully.');
   };
 
   return (
@@ -78,8 +87,8 @@ export default function DashboardOrdersPage() {
             {orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.orderNumber}</td>
-                <td>{`${order.customer?.firstName || "-"}${order.customer?.lastName ? ` ${order.customer.lastName}` : ""}`}</td>
-                <td>{order.branch?.branchName || "-"}</td>
+                <td>{`${order.customer?.firstName || '-'}${order.customer?.lastName ? ` ${order.customer.lastName}` : ''}`}</td>
+                <td>{order.branch?.branchName || '-'}</td>
                 <td>
                   <AppDropdown
                     className="appDropdown--inline"
@@ -90,9 +99,9 @@ export default function DashboardOrdersPage() {
                     listTitle="Order status"
                     menuMinWidth={168}
                     options={[
-                      { value: "CREATED", label: "CREATED" },
-                      { value: "DELIVERED", label: "DELIVERED" },
-                      { value: "CANCELLED", label: "CANCELLED" },
+                      { value: 'CREATED', label: 'CREATED' },
+                      { value: 'DELIVERED', label: 'DELIVERED' },
+                      { value: 'CANCELLED', label: 'CANCELLED' },
                     ]}
                   />
                 </td>
@@ -106,18 +115,22 @@ export default function DashboardOrdersPage() {
                     listTitle="Payment"
                     menuMinWidth={168}
                     options={[
-                      { value: "PENDING", label: "PENDING" },
-                      { value: "PAID", label: "PAID" },
-                      { value: "PARTIAL", label: "PARTIAL" },
-                      { value: "REFUNDED", label: "REFUNDED" },
+                      { value: 'PENDING', label: 'PENDING' },
+                      { value: 'PAID', label: 'PAID' },
+                      { value: 'PARTIAL', label: 'PARTIAL' },
+                      { value: 'REFUNDED', label: 'REFUNDED' },
                     ]}
                   />
                 </td>
                 <td>
-                  {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                  {currencyDisplayLabel('INR')} {toNumber(order.totalAmount).toFixed(2)}
                 </td>
                 <td className="actions-cell">
-                  <button type="button" onClick={() => setCancelOrderId(order.id)} disabled={isActing}>
+                  <button
+                    type="button"
+                    onClick={() => setCancelOrderId(order.id)}
+                    disabled={isActing}
+                  >
                     Cancel
                   </button>
                 </td>
@@ -132,7 +145,7 @@ export default function DashboardOrdersPage() {
         </table>
 
         <div style={{ marginTop: 24 }}>
-          <h3 style={{ margin: "0 0 8px" }}>Order line items</h3>
+          <h3 style={{ margin: '0 0 8px' }}>Order line items</h3>
           <table>
             <thead>
               <tr>
@@ -148,8 +161,8 @@ export default function DashboardOrdersPage() {
                 (order.items || []).map((item) => (
                   <tr key={item.id}>
                     <td>{order.orderNumber}</td>
-                    <td>{item.product?.productName || "-"}</td>
-                    <td>{item.service?.serviceName || "-"}</td>
+                    <td>{item.product?.productName || '-'}</td>
+                    <td>{item.service?.serviceName || '-'}</td>
                     <td>{item.quantity}</td>
                     <td>
                       <AppDropdown
@@ -161,15 +174,15 @@ export default function DashboardOrdersPage() {
                         listTitle="Item status"
                         menuMinWidth={168}
                         options={[
-                          { value: "RECEIVED", label: "RECEIVED" },
-                          { value: "PROCESSING", label: "PROCESSING" },
-                          { value: "DONE", label: "DONE" },
-                          { value: "DELIVERED", label: "DELIVERED" },
+                          { value: 'RECEIVED', label: 'RECEIVED' },
+                          { value: 'PROCESSING', label: 'PROCESSING' },
+                          { value: 'DONE', label: 'DONE' },
+                          { value: 'DELIVERED', label: 'DELIVERED' },
                         ]}
                       />
                     </td>
                   </tr>
-                )),
+                ))
               )}
               {!orders.some((o) => (o.items || []).length) && !isLoading && (
                 <tr>

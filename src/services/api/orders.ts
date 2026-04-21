@@ -1,4 +1,4 @@
-import apiClient from "@/services/api/client";
+import apiClient from '@/services/api/client';
 
 export type OrderItem = {
   id: string;
@@ -93,18 +93,18 @@ export type UpdateOrderItemStatusPayload = {
 };
 
 export const getOrders = async (): Promise<OrdersResponse> => {
-  const response = await apiClient.get<OrdersResponse>("/orders");
+  const response = await apiClient.get<OrdersResponse>('/orders');
   return response.data;
 };
 
 export const createOrder = async (payload: CreateOrderPayload): Promise<CreateOrderResponse> => {
-  const response = await apiClient.post<CreateOrderResponse>("/orders", payload);
+  const response = await apiClient.post<CreateOrderResponse>('/orders', payload);
   return response.data;
 };
 
 export const updateOrderStatus = async (
   id: string,
-  payload: UpdateOrderStatusPayload,
+  payload: UpdateOrderStatusPayload
 ): Promise<{ order: Order }> => {
   const response = await apiClient.patch<{ order: Order }>(`/orders/${id}/status`, payload);
   return response.data;
@@ -112,7 +112,7 @@ export const updateOrderStatus = async (
 
 export const updatePaymentStatus = async (
   id: string,
-  payload: UpdatePaymentStatusPayload,
+  payload: UpdatePaymentStatusPayload
 ): Promise<{ order: Order }> => {
   const response = await apiClient.patch<{ order: Order }>(`/orders/${id}/payment-status`, payload);
   return response.data;
@@ -120,7 +120,7 @@ export const updatePaymentStatus = async (
 
 export const updateOrderItemStatus = async (
   id: string,
-  payload: UpdateOrderItemStatusPayload,
+  payload: UpdateOrderItemStatusPayload
 ): Promise<{ item: OrderItem }> => {
   const response = await apiClient.patch<{ item: OrderItem }>(`/order-items/${id}/status`, payload);
   return response.data;

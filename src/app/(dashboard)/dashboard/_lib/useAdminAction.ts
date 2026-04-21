@@ -1,1 +1,1 @@
-export { useAdminAction } from "@/hooks/useAdminAction";
+export { useAdminAction } from '@/hooks/useAdminAction';

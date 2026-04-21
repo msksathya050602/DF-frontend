@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import AppDropdown from "@library/AppDropdown";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { useCallback, useEffect, useState } from 'react';
+import AppDropdown from '@library/AppDropdown';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
-import { toNumber } from "@/app/(dashboard)/dashboard/_lib/utils";
-import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
-import { useAdminAction } from "@/hooks/useAdminAction";
-import { getTodayDeliveries, updateDeliveryOrderStatus } from "@/services/api/deliveries";
-import type { Order } from "@/services/api/orders";
+import { toNumber } from '@/app/(dashboard)/dashboard/_lib/utils';
+import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
+import { useAdminAction } from '@/hooks/useAdminAction';
+import { getTodayDeliveries, updateDeliveryOrderStatus } from '@/services/api/deliveries';
+import type { Order } from '@/services/api/orders';
 
 type RowDraft = {
   orderStatus: string;
@@ -16,22 +16,22 @@ type RowDraft = {
   handledBy: string;
 };
 
-const defaultOrderStatuses = ["PENDING", "DELIVERED", "CANCELLED"];
-const defaultPaymentStatuses = ["PENDING", "PAID", "PARTIAL", "REFUNDED"];
+const defaultOrderStatuses = ['PENDING', 'DELIVERED', 'CANCELLED'];
+const defaultPaymentStatuses = ['PENDING', 'PAID', 'PARTIAL', 'REFUNDED'];
 
 const orderStatusChipClass = (status: string): string => {
   const u = String(status).toUpperCase();
-  if (u === "DELIVERED") return "history-chip--tone-success";
-  if (u === "CANCELLED") return "history-chip--tone-danger";
-  return "history-chip--tone-info";
+  if (u === 'DELIVERED') return 'history-chip--tone-success';
+  if (u === 'CANCELLED') return 'history-chip--tone-danger';
+  return 'history-chip--tone-info';
 };
 
 const paymentStatusChipClass = (status: string): string => {
   const u = String(status).toUpperCase();
-  if (u === "PAID") return "history-chip--tone-success";
-  if (u === "REFUNDED") return "history-chip--tone-muted";
-  if (u === "PARTIAL") return "history-chip--tone-warning";
-  return "history-chip--tone-warning";
+  if (u === 'PAID') return 'history-chip--tone-success';
+  if (u === 'REFUNDED') return 'history-chip--tone-muted';
+  if (u === 'PARTIAL') return 'history-chip--tone-warning';
+  return 'history-chip--tone-warning';
 };
 
 export function TodayScheduleBilling({
@@ -49,26 +49,29 @@ export function TodayScheduleBilling({
   const [drafts, setDrafts] = useState<Record<string, RowDraft>>({});
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const [isLoading, setIsLoading] = useState(true);
-  const [fetchError, setFetchError] = useState("");
+  const [fetchError, setFetchError] = useState('');
 
-  const applyTodayData = useCallback((list: Order[], orderStatuses: string[], paymentStatuses: string[]) => {
-    setOrders(list);
-    setMeta({
-      orderStatuses: orderStatuses.length ? orderStatuses : defaultOrderStatuses,
-      paymentStatuses: paymentStatuses.length ? paymentStatuses : defaultPaymentStatuses,
-    });
-    setDrafts((prev) => {
-      const next: Record<string, RowDraft> = {};
-      for (const o of list) {
-        next[o.id] = {
-          orderStatus: o.orderStatus,
-          paymentStatus: o.paymentStatus,
-          handledBy: o.handledBy ?? "",
-        };
-      }
-      return next;
-    });
-  }, []);
+  const applyTodayData = useCallback(
+    (list: Order[], orderStatuses: string[], paymentStatuses: string[]) => {
+      setOrders(list);
+      setMeta({
+        orderStatuses: orderStatuses.length ? orderStatuses : defaultOrderStatuses,
+        paymentStatuses: paymentStatuses.length ? paymentStatuses : defaultPaymentStatuses,
+      });
+      setDrafts((prev) => {
+        const next: Record<string, RowDraft> = {};
+        for (const o of list) {
+          next[o.id] = {
+            orderStatus: o.orderStatus,
+            paymentStatus: o.paymentStatus,
+            handledBy: o.handledBy ?? '',
+          };
+        }
+        return next;
+      });
+    },
+    []
+  );
 
   const reload = useCallback(async () => {
     if (!branchId.trim()) return;
@@ -76,7 +79,7 @@ export function TodayScheduleBilling({
     applyTodayData(
       data.orders || [],
       data.availableOrderStatuses || [],
-      data.availablePaymentStatuses || [],
+      data.availablePaymentStatuses || []
     );
   }, [branchId, applyTodayData]);
 
@@ -86,20 +89,20 @@ export function TodayScheduleBilling({
     if (!branchId.trim()) {
       setOrders([]);
       setIsLoading(false);
-      setFetchError("");
+      setFetchError('');
       return;
     }
     let cancelled = false;
     void (async () => {
       setIsLoading(true);
-      setFetchError("");
+      setFetchError('');
       try {
         const data = await getTodayDeliveries(branchId.trim());
         if (cancelled) return;
         applyTodayData(
           data.orders || [],
           data.availableOrderStatuses || [],
-          data.availablePaymentStatuses || [],
+          data.availablePaymentStatuses || []
         );
       } catch {
         if (!cancelled) setFetchError("Could not load today's schedule.");
@@ -138,16 +141,16 @@ export function TodayScheduleBilling({
           paymentStatus: d.paymentStatus,
           ...(d.handledBy.trim() ? { handledBy: d.handledBy.trim() } : {}),
         }),
-      "Order updated.",
+      'Order updated.'
     );
   };
 
   const formatDelivery = (o: Order) => {
-    if (!o.deliveryDate) return "—";
+    if (!o.deliveryDate) return '—';
     try {
       return new Date(o.deliveryDate).toLocaleString(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
+        dateStyle: 'medium',
+        timeStyle: 'short',
       });
     } catch {
       return String(o.deliveryDate);
@@ -180,20 +183,25 @@ export function TodayScheduleBilling({
           const isOpen = expanded.has(order.id);
           const customer = order.customer;
           const name =
-            [customer?.firstName, customer?.lastName].filter(Boolean).join(" ").trim() || "—";
+            [customer?.firstName, customer?.lastName].filter(Boolean).join(' ').trim() || '—';
 
           return (
             <article key={order.id} className="history-card">
               <div className="history-card-head">
                 <h3 className="history-card-orderId">{order.orderNumber}</h3>
-                <time className="history-card-time" dateTime={order.deliveryDate || order.createdAt}>
+                <time
+                  className="history-card-time"
+                  dateTime={order.deliveryDate || order.createdAt}
+                >
                   {formatDelivery(order)}
                 </time>
                 <div className="history-card-head-end">
                   <div className="history-chip-wrap">
                     {d && (
                       <>
-                        <span className={`history-chip ${orderStatusChipClass(d.orderStatus)}`}>{d.orderStatus}</span>
+                        <span className={`history-chip ${orderStatusChipClass(d.orderStatus)}`}>
+                          {d.orderStatus}
+                        </span>
                         <span className={`history-chip ${paymentStatusChipClass(d.paymentStatus)}`}>
                           {d.paymentStatus}
                         </span>
@@ -205,7 +213,7 @@ export function TodayScheduleBilling({
                     className="history-card-expand"
                     onClick={() => toggleExpand(order.id)}
                     aria-expanded={isOpen}
-                    aria-label={isOpen ? "Hide line items" : "Show line items"}
+                    aria-label={isOpen ? 'Hide line items' : 'Show line items'}
                   >
                     {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                   </button>
@@ -219,16 +227,18 @@ export function TodayScheduleBilling({
                 </span>
                 <span className="history-meta-pair">
                   <span className="history-meta-lbl">Phone</span>
-                  <span className="history-meta-val">{customer?.customerPhone || "—"}</span>
+                  <span className="history-meta-val">{customer?.customerPhone || '—'}</span>
                 </span>
                 <span className="history-meta-pair">
                   <span className="history-meta-lbl">Branch</span>
-                  <span className="history-meta-val">{order.branch?.branchName ?? branchLabel}</span>
+                  <span className="history-meta-val">
+                    {order.branch?.branchName ?? branchLabel}
+                  </span>
                 </span>
                 <span className="history-meta-pair">
                   <span className="history-meta-lbl">Total</span>
                   <span className="history-meta-val">
-                    {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                    {currencyDisplayLabel('INR')} {toNumber(order.totalAmount).toFixed(2)}
                   </span>
                 </span>
                 <span className="history-meta-pair">
@@ -281,7 +291,12 @@ export function TodayScheduleBilling({
                       <span className="history-card-field-lbl" aria-hidden>
                         &nbsp;
                       </span>
-                      <button type="button" className="history-schedule-save" disabled={isActing} onClick={() => void saveRow(order.id)}>
+                      <button
+                        type="button"
+                        className="history-schedule-save"
+                        disabled={isActing}
+                        onClick={() => void saveRow(order.id)}
+                      >
                         Save
                       </button>
                     </div>
@@ -304,14 +319,14 @@ export function TodayScheduleBilling({
                     <tbody>
                       {(order.items || []).map((item) => (
                         <tr key={item.id}>
-                          <td>{item.product?.productName || "—"}</td>
-                          <td>{item.service?.serviceName || "—"}</td>
+                          <td>{item.product?.productName || '—'}</td>
+                          <td>{item.service?.serviceName || '—'}</td>
                           <td>{item.quantity}</td>
                           <td>
-                            {currencyDisplayLabel("INR")} {toNumber(item.unitPrice).toFixed(2)}
+                            {currencyDisplayLabel('INR')} {toNumber(item.unitPrice).toFixed(2)}
                           </td>
                           <td>
-                            {currencyDisplayLabel("INR")} {toNumber(item.lineTotal).toFixed(2)}
+                            {currencyDisplayLabel('INR')} {toNumber(item.lineTotal).toFixed(2)}
                           </td>
                         </tr>
                       ))}
@@ -327,25 +342,25 @@ export function TodayScheduleBilling({
                     <span className="history-total-pair">
                       <span className="history-total-lbl">Sub</span>
                       <strong className="history-total-amt">
-                        {currencyDisplayLabel("INR")} {toNumber(order.subTotal).toFixed(2)}
+                        {currencyDisplayLabel('INR')} {toNumber(order.subTotal).toFixed(2)}
                       </strong>
                     </span>
                     <span className="history-total-pair">
                       <span className="history-total-lbl">Discount</span>
                       <strong className="history-total-amt">
-                        {currencyDisplayLabel("INR")} {toNumber(order.discountAmount).toFixed(2)}
+                        {currencyDisplayLabel('INR')} {toNumber(order.discountAmount).toFixed(2)}
                       </strong>
                     </span>
                     <span className="history-total-pair">
                       <span className="history-total-lbl">Tax</span>
                       <strong className="history-total-amt">
-                        {currencyDisplayLabel("INR")} {toNumber(order.taxAmount).toFixed(2)}
+                        {currencyDisplayLabel('INR')} {toNumber(order.taxAmount).toFixed(2)}
                       </strong>
                     </span>
                     <span className="history-total-pair history-total-pair--grand">
                       <span className="history-total-lbl">Total</span>
                       <strong className="history-total-amt">
-                        {currencyDisplayLabel("INR")} {toNumber(order.totalAmount).toFixed(2)}
+                        {currencyDisplayLabel('INR')} {toNumber(order.totalAmount).toFixed(2)}
                       </strong>
                     </span>
                   </div>
@@ -356,7 +371,9 @@ export function TodayScheduleBilling({
         })}
 
         {!branchId.trim() && !isLoading && (
-          <p className="billing-muted">Select a branch in the sidebar to see today&apos;s deliveries.</p>
+          <p className="billing-muted">
+            Select a branch in the sidebar to see today&apos;s deliveries.
+          </p>
         )}
         {!!branchId.trim() && !orders.length && !isLoading && (
           <p className="billing-muted">No deliveries scheduled for today at this branch.</p>

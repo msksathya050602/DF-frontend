@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
-import AppDropdown from "@library/AppDropdown";
+import { FormEvent, useCallback, useEffect, useState } from 'react';
+import AppDropdown from '@library/AppDropdown';
 
-import { currencyDisplayLabel } from "@/helpers/currencyDisplay";
-import type { Pricing, Product, Service } from "@/services/api/catalog";
+import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
+import type { Pricing, Product, Service } from '@/services/api/catalog';
 import {
   createPricing,
   deletePricing,
@@ -12,26 +12,26 @@ import {
   getProducts,
   getServices,
   updatePricing,
-} from "@/services/api/catalog";
+} from '@/services/api/catalog';
 
-import { AdminDeleteModal, AdminEditModal } from "../_lib/adminModals";
-import { useAdminAction } from "../_lib/useAdminAction";
-import { toNumber } from "../_lib/utils";
+import { AdminDeleteModal, AdminEditModal } from '../_lib/adminModals';
+import { useAdminAction } from '../_lib/useAdminAction';
+import { toNumber } from '../_lib/utils';
 
 export default function DashboardPricingPage() {
   const [pricingRows, setPricingRows] = useState<Pricing[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pricingProductId, setPricingProductId] = useState("");
-  const [pricingServiceId, setPricingServiceId] = useState("");
-  const [pricingPrice, setPricingPrice] = useState("");
-  const [pricingCurrency, setPricingCurrency] = useState("INR");
+  const [pricingProductId, setPricingProductId] = useState('');
+  const [pricingServiceId, setPricingServiceId] = useState('');
+  const [pricingPrice, setPricingPrice] = useState('');
+  const [pricingCurrency, setPricingCurrency] = useState('INR');
   const [pricingDeleteId, setPricingDeleteId] = useState<string | null>(null);
   const [editRow, setEditRow] = useState<Pricing | null>(null);
-  const [editPrice, setEditPrice] = useState("");
-  const [editCurrency, setEditCurrency] = useState("");
-  const [editFormError, setEditFormError] = useState("");
+  const [editPrice, setEditPrice] = useState('');
+  const [editCurrency, setEditCurrency] = useState('');
+  const [editFormError, setEditFormError] = useState('');
 
   const reload = useCallback(async () => {
     const [pr, prod, svc] = await Promise.all([getPricing(), getProducts(), getServices()]);
@@ -55,24 +55,24 @@ export default function DashboardPricingPage() {
         productId: pricingProductId,
         serviceId: pricingServiceId,
         price: Number(pricingPrice),
-        currency: pricingCurrency.trim() || "INR",
+        currency: pricingCurrency.trim() || 'INR',
       });
-      setPricingPrice("");
-    }, "Pricing created successfully.");
+      setPricingPrice('');
+    }, 'Pricing created successfully.');
   };
 
   const openEditModal = (row: Pricing) => {
-    setEditFormError("");
+    setEditFormError('');
     setEditRow(row);
     setEditPrice(String(row.price));
-    setEditCurrency(row.currency || "INR");
+    setEditCurrency(row.currency || 'INR');
   };
 
   const closeEditModal = () => {
     setEditRow(null);
-    setEditPrice("");
-    setEditCurrency("");
-    setEditFormError("");
+    setEditPrice('');
+    setEditCurrency('');
+    setEditFormError('');
   };
 
   const submitEditPricing = async (event: FormEvent<HTMLFormElement>) => {
@@ -80,10 +80,10 @@ export default function DashboardPricingPage() {
     if (!editRow) return;
     const priceNum = Number(editPrice);
     if (!editPrice.trim() || Number.isNaN(priceNum)) {
-      setEditFormError("Enter a valid price.");
+      setEditFormError('Enter a valid price.');
       return;
     }
-    setEditFormError("");
+    setEditFormError('');
     const row = editRow;
     const currency = editCurrency.trim().toUpperCase() || row.currency;
     closeEditModal();
@@ -93,7 +93,7 @@ export default function DashboardPricingPage() {
           price: priceNum,
           currency,
         }),
-      "Pricing updated successfully.",
+      'Pricing updated successfully.'
     );
   };
 
@@ -103,7 +103,7 @@ export default function DashboardPricingPage() {
     if (!pricingDeleteId) return;
     const id = pricingDeleteId;
     closeDeleteModal();
-    await runAction(async () => deletePricing(id), "Pricing deleted successfully.");
+    await runAction(async () => deletePricing(id), 'Pricing deleted successfully.');
   };
 
   return (
@@ -133,8 +133,16 @@ export default function DashboardPricingPage() {
             emptyLabel="Service"
             options={services.map((item) => ({ value: item.id, label: item.serviceName }))}
           />
-          <input value={pricingPrice} onChange={(e) => setPricingPrice(e.target.value)} placeholder="Price" />
-          <input value={pricingCurrency} onChange={(e) => setPricingCurrency(e.target.value)} placeholder="Currency" />
+          <input
+            value={pricingPrice}
+            onChange={(e) => setPricingPrice(e.target.value)}
+            placeholder="Price"
+          />
+          <input
+            value={pricingCurrency}
+            onChange={(e) => setPricingCurrency(e.target.value)}
+            placeholder="Currency"
+          />
           <button type="submit" disabled={isActing}>
             Create
           </button>
@@ -153,16 +161,20 @@ export default function DashboardPricingPage() {
           <tbody>
             {pricingRows.map((item) => (
               <tr key={item.id}>
-                <td>{item.product?.productName || "-"}</td>
-                <td>{item.service?.serviceName || "-"}</td>
+                <td>{item.product?.productName || '-'}</td>
+                <td>{item.service?.serviceName || '-'}</td>
                 <td>{toNumber(item.price).toFixed(2)}</td>
                 <td>{currencyDisplayLabel(item.currency)}</td>
-                <td>{item.isActive ? "Active" : "Inactive"}</td>
+                <td>{item.isActive ? 'Active' : 'Inactive'}</td>
                 <td className="actions-cell">
                   <button type="button" onClick={() => openEditModal(item)} disabled={isActing}>
                     Edit
                   </button>
-                  <button type="button" onClick={() => setPricingDeleteId(item.id)} disabled={isActing}>
+                  <button
+                    type="button"
+                    onClick={() => setPricingDeleteId(item.id)}
+                    disabled={isActing}
+                  >
                     Delete
                   </button>
                 </td>
@@ -183,9 +195,9 @@ export default function DashboardPricingPage() {
         subtitle={
           editRow ? (
             <p className="dashboard-editModal-meta">
-              <strong>{editRow.product?.productName || "—"}</strong>
+              <strong>{editRow.product?.productName || '—'}</strong>
               <span className="dashboard-editModal-meta-sep">·</span>
-              <span>{editRow.service?.serviceName || "—"}</span>
+              <span>{editRow.service?.serviceName || '—'}</span>
             </p>
           ) : null
         }
@@ -203,7 +215,7 @@ export default function DashboardPricingPage() {
             value={editPrice}
             onChange={(e) => {
               setEditPrice(e.target.value);
-              if (editFormError) setEditFormError("");
+              if (editFormError) setEditFormError('');
             }}
             placeholder="0.00"
           />

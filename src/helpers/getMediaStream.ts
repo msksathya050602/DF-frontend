@@ -15,12 +15,10 @@ export async function getAudioStream(): Promise<MediaStream> {
         navigator,
         { audio: true },
         (stream: MediaStream) => resolve(stream),
-        (err: any) => reject(err),
+        (err: any) => reject(err)
       );
     });
   }
 
-  return Promise.reject(
-    new Error("getUserMedia is not supported in this browser"),
-  );
+  return Promise.reject(new Error('getUserMedia is not supported in this browser'));
 }

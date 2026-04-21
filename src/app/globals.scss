@@ -1,7 +1,7 @@
-@use "@theme/colors.module.scss" as *;
-@use "@theme/viewport.scss" as *;
-@use "@theme/common.module.scss" as *;
-@use "@theme/gradient.module.scss" as *;
+@use '@theme/colors.module.scss' as *;
+@use '@theme/viewport.scss' as *;
+@use '@theme/common.module.scss' as *;
+@use '@theme/gradient.module.scss' as *;
 
 * {
   box-sizing: border-box;
@@ -44,12 +44,12 @@ a {
 input,
 button {
   border: none;
-  font-family: "DM Sans" !important;
+  font-family: 'DM Sans' !important;
 }
 
 input,
 textarea {
-  font-family: "DM Sans" !important;
+  font-family: 'DM Sans' !important;
   padding-left: 2.3rem;
   font-size: 1rem;
   font-weight: 400 !important;
@@ -58,7 +58,7 @@ textarea {
 
   &::placeholder,
   &::-webkit-input-placeholder {
-    font-family: "DM Sans" !important;
+    font-family: 'DM Sans' !important;
     font-size: 0.9rem;
   }
 }
@@ -73,7 +73,7 @@ textarea {
   margin-top: 1rem;
 
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: 0;
     left: 0;
@@ -85,7 +85,7 @@ textarea {
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     bottom: 0;
     left: 0;

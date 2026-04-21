@@ -1,4 +1,4 @@
-import apiClient from "@/services/api/client";
+import apiClient from '@/services/api/client';
 
 export type Category = {
   id: string;
@@ -78,21 +78,26 @@ export type CreatePricingPayload = {
 export type UpdatePricingPayload = Partial<CreatePricingPayload> & { isActive?: boolean };
 
 export const getPricing = async (): Promise<PricingResponse> => {
-  const response = await apiClient.get<PricingResponse>("/pricing");
+  const response = await apiClient.get<PricingResponse>('/pricing');
   return response.data;
 };
 
 export const getCategories = async (): Promise<CategoriesResponse> => {
-  const response = await apiClient.get<CategoriesResponse>("/categories");
+  const response = await apiClient.get<CategoriesResponse>('/categories');
   return response.data;
 };
 
-export const createCategory = async (payload: CreateCategoryPayload): Promise<{ category: Category }> => {
-  const response = await apiClient.post<{ category: Category }>("/categories", payload);
+export const createCategory = async (
+  payload: CreateCategoryPayload
+): Promise<{ category: Category }> => {
+  const response = await apiClient.post<{ category: Category }>('/categories', payload);
   return response.data;
 };
 
-export const updateCategory = async (id: string, payload: UpdateCategoryPayload): Promise<{ category: Category }> => {
+export const updateCategory = async (
+  id: string,
+  payload: UpdateCategoryPayload
+): Promise<{ category: Category }> => {
   const response = await apiClient.put<{ category: Category }>(`/categories/${id}`, payload);
   return response.data;
 };
@@ -103,16 +108,21 @@ export const deleteCategory = async (id: string): Promise<{ message: string }> =
 };
 
 export const getProducts = async (): Promise<ProductsResponse> => {
-  const response = await apiClient.get<ProductsResponse>("/products");
+  const response = await apiClient.get<ProductsResponse>('/products');
   return response.data;
 };
 
-export const createProduct = async (payload: CreateProductPayload): Promise<{ product: Product }> => {
-  const response = await apiClient.post<{ product: Product }>("/products", payload);
+export const createProduct = async (
+  payload: CreateProductPayload
+): Promise<{ product: Product }> => {
+  const response = await apiClient.post<{ product: Product }>('/products', payload);
   return response.data;
 };
 
-export const updateProduct = async (id: string, payload: UpdateProductPayload): Promise<{ product: Product }> => {
+export const updateProduct = async (
+  id: string,
+  payload: UpdateProductPayload
+): Promise<{ product: Product }> => {
   const response = await apiClient.put<{ product: Product }>(`/products/${id}`, payload);
   return response.data;
 };
@@ -123,16 +133,21 @@ export const deleteProduct = async (id: string): Promise<{ message: string }> =>
 };
 
 export const getServices = async (): Promise<ServicesResponse> => {
-  const response = await apiClient.get<ServicesResponse>("/services");
+  const response = await apiClient.get<ServicesResponse>('/services');
   return response.data;
 };
 
-export const createService = async (payload: CreateServicePayload): Promise<{ service: Service }> => {
-  const response = await apiClient.post<{ service: Service }>("/services", payload);
+export const createService = async (
+  payload: CreateServicePayload
+): Promise<{ service: Service }> => {
+  const response = await apiClient.post<{ service: Service }>('/services', payload);
   return response.data;
 };
 
-export const updateService = async (id: string, payload: UpdateServicePayload): Promise<{ service: Service }> => {
+export const updateService = async (
+  id: string,
+  payload: UpdateServicePayload
+): Promise<{ service: Service }> => {
   const response = await apiClient.put<{ service: Service }>(`/services/${id}`, payload);
   return response.data;
 };
@@ -142,12 +157,17 @@ export const deleteService = async (id: string): Promise<{ message: string }> =>
   return response.data;
 };
 
-export const createPricing = async (payload: CreatePricingPayload): Promise<{ pricing: Pricing }> => {
-  const response = await apiClient.post<{ pricing: Pricing }>("/pricing", payload);
+export const createPricing = async (
+  payload: CreatePricingPayload
+): Promise<{ pricing: Pricing }> => {
+  const response = await apiClient.post<{ pricing: Pricing }>('/pricing', payload);
   return response.data;
 };
 
-export const updatePricing = async (id: string, payload: UpdatePricingPayload): Promise<{ pricing: Pricing }> => {
+export const updatePricing = async (
+  id: string,
+  payload: UpdatePricingPayload
+): Promise<{ pricing: Pricing }> => {
   const response = await apiClient.put<{ pricing: Pricing }>(`/pricing/${id}`, payload);
   return response.data;
 };

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import "./billingTodaySchedule.scss";
+import './billingTodaySchedule.scss';
 
-import { TodayScheduleBilling } from "@components/TodaySchedule/TodayScheduleBilling";
+import { TodayScheduleBilling } from '@components/TodaySchedule/TodayScheduleBilling';
 
-import { BillingPageShell } from "../BillingPageShell";
-import { useBillingShell } from "../BillingShellContext";
+import { BillingPageShell } from '../BillingPageShell';
+import { useBillingShell } from '../BillingShellContext';
 
 export function BillingTodaySchedule() {
   const shell = useBillingShell();
@@ -16,11 +16,14 @@ export function BillingTodaySchedule() {
   return (
     <BillingPageShell
       title="Today schedule"
-      subtitle={`Today’s delivery orders at ${selectedBranch?.branchName || "your branch"}.`}
-      userName={userName || "User"}
-      userEmail={userEmail || ""}
+      subtitle={`Today’s delivery orders at ${selectedBranch?.branchName || 'your branch'}.`}
+      userName={userName || 'User'}
+      userEmail={userEmail || ''}
     >
-      <TodayScheduleBilling branchLabel={selectedBranch?.branchName || "—"} branchId={selectedBranchId} />
+      <TodayScheduleBilling
+        branchLabel={selectedBranch?.branchName || '—'}
+        branchId={selectedBranchId}
+      />
     </BillingPageShell>
   );
 }
