@@ -4,7 +4,7 @@ import './newBill.scss';
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import AppDropdown from '@library/AppDropdown';
-import { Loader } from '@library/Loader';
+import { ProgressIndicator } from '@library/ProgressIndicator';
 import { Modal } from '@library/Modal';
 import { ArrowLeft, ArrowRight, FilePlus, Printer, Save, Search, Trash2 } from 'lucide-react';
 import Image from 'next/image';
@@ -1098,9 +1098,9 @@ export function NewBill() {
                 aria-live="polite"
                 aria-busy="true"
               >
-                <Loader borderSize="5px" width="52px" height="52px" padding="10px">
-                  <span className="billing-muted">Saving bill…</span>
-                </Loader>
+                <div className="billing-printCard-loadingOverlay-inner">
+                  <ProgressIndicator label="Saving bill…" />
+                </div>
               </div>
             ) : null}
           </section>

@@ -2,7 +2,7 @@
 
 import { ROUTES } from '@constants/routes';
 import AppDropdown from '@library/AppDropdown';
-import { Calendar, FilePlus, History, LogOut, Settings } from 'lucide-react';
+import { BarChart3, Calendar, FilePlus, History, LogOut, Settings } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -13,6 +13,7 @@ const nav = [
   { href: ROUTES.BILLING_TODAY, label: 'Today schedule', icon: 'calendar' as const },
   { href: ROUTES.BILLING_NEW, label: 'New bill', icon: 'bill' as const },
   { href: ROUTES.BILLING_ORDER_HISTORY, label: 'Order history', icon: 'history' as const },
+  { href: ROUTES.BILLING_ANALYTICS, label: 'Analytics', icon: 'analytics' as const },
   { href: ROUTES.BILLING_SETTINGS, label: 'Settings', icon: 'settings' as const },
 ];
 
@@ -98,6 +99,7 @@ export function BillingShell() {
                 )}
                 {item.icon === 'history' && <History size={18} strokeWidth={2} aria-hidden />}
                 {item.icon === 'calendar' && <Calendar size={18} strokeWidth={2} aria-hidden />}
+                {item.icon === 'analytics' && <BarChart3 size={18} strokeWidth={2} aria-hidden />}
                 {item.icon === 'settings' && <Settings size={18} strokeWidth={2} aria-hidden />}
                 {item.label}
               </Link>

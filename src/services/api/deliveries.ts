@@ -19,9 +19,16 @@ export type UpdateDeliveryOrderResponse = {
   message: string;
 };
 
-export const getTodayDeliveries = async (branchId?: string): Promise<TodayDeliveriesResponse> => {
+/** @param dateYmd Optional local calendar day `YYYY-MM-DD`; defaults to today on the server when omitted. */
+export const getTodayDeliveries = async (
+  branchId?: string,
+  dateYmd?: string
+): Promise<TodayDeliveriesResponse> => {
+  const params: Record<string, string> = {};
+  if (branchId?.trim()) params.branchId = branchId.trim();
+  if (dateYmd?.trim()) params.date = dateYmd.trim();
   const response = await apiClient.get<TodayDeliveriesResponse>('/deliveries/today', {
-    params: branchId ? { branchId } : undefined,
+    params: Object.keys(params).length ? params : undefined,
   });
   return response.data;
 };

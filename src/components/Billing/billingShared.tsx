@@ -65,6 +65,33 @@ export const localTodayYmd = (): string => {
   return `${y}-${m}-${day}`;
 };
 
+/** Parse `YYYY-MM-DD` as a local calendar date (no timezone shift). */
+export const ymdToLocalDate = (ymd: string): Date => {
+  const [y, m, d] = ymd.split('-').map(Number);
+  return new Date(y, m - 1, d);
+};
+
+/** Shift a `YYYY-MM-DD` string by integer days in local time. */
+export const ymdAddDays = (ymd: string, deltaDays: number): string => {
+  const dt = ymdToLocalDate(ymd);
+  dt.setDate(dt.getDate() + deltaDays);
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, '0');
+  const day = String(dt.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+
+/** e.g. Wed 20 May 2026 */
+export const formatYmdLong = (ymd: string): string => {
+  const dt = ymdToLocalDate(ymd);
+  return dt.toLocaleDateString(undefined, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
 export const isDeliveryDateAllowed = (value: string): boolean => {
   if (!dateInputToISO8601(value)) return false;
   return value.trim() >= localTodayYmd();

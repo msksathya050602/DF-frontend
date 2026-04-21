@@ -60,6 +60,22 @@ export type OrdersResponse = {
   orders: Order[];
 };
 
+/** Mirrors `Customer` from `./customers` — kept local to avoid circular imports. */
+export type OrdersByPhoneCustomer = {
+  id: string;
+  firstName: string;
+  lastName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  customerAddress?: string;
+  isActive?: boolean;
+};
+
+export type OrdersByPhoneResponse = {
+  customers: OrdersByPhoneCustomer[];
+  orders: Order[];
+};
+
 export type CreateOrderPayload = {
   customerId: string;
   branchId: string;
@@ -94,6 +110,13 @@ export type UpdateOrderItemStatusPayload = {
 
 export const getOrders = async (): Promise<OrdersResponse> => {
   const response = await apiClient.get<OrdersResponse>('/orders');
+  return response.data;
+};
+
+export const searchOrdersByPhone = async (phone: string): Promise<OrdersByPhoneResponse> => {
+  const response = await apiClient.get<OrdersByPhoneResponse>('/orders/search', {
+    params: { phone },
+  });
   return response.data;
 };
 

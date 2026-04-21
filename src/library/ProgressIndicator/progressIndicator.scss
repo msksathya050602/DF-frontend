@@ -1,0 +1,52 @@
+@use '@theme/colors.module.scss' as *;
+
+.progress-indicator {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.progress-indicator-track {
+  position: relative;
+  height: 4px;
+  width: 100%;
+  border-radius: 999px;
+  background: $N1;
+  overflow: hidden;
+}
+
+.progress-indicator-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 35%;
+  border-radius: 999px;
+  background: $C7;
+  animation: progress-indicator-slide 1.15s ease-in-out infinite;
+}
+
+@keyframes progress-indicator-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.progress-indicator-label {
+  font-size: 13px;
+  color: $N5;
+  text-align: center;
+}
+
+.progress-indicator--compact .progress-indicator-track {
+  height: 3px;
+}
+
+.progress-indicator--compact .progress-indicator-label {
+  font-size: 12px;
+}

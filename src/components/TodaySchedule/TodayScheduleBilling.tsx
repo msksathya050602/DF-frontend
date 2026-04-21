@@ -2,14 +2,16 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import AppDropdown from '@library/AppDropdown';
-import { Loader } from '@library/Loader';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ProgressIndicator } from '@library/ProgressIndicator';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { toNumber } from '@/app/(dashboard)/dashboard/_lib/utils';
 import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
 import { useAdminAction } from '@/hooks/useAdminAction';
 import { getTodayDeliveries, updateDeliveryOrderStatus } from '@/services/api/deliveries';
 import type { Order } from '@/services/api/orders';
+
+import { formatYmdLong, localTodayYmd, ymdAddDays } from '../Billing/billingShared';
 
 type RowDraft = {
   orderStatus: string;
@@ -38,9 +40,13 @@ const paymentStatusChipClass = (status: string): string => {
 export function TodayScheduleBilling({
   branchLabel,
   branchId,
+  scheduleDateYmd,
+  onScheduleDateYmdChange,
 }: {
   branchLabel: string;
   branchId: string;
+  scheduleDateYmd: string;
+  onScheduleDateYmdChange: (ymd: string) => void;
 }) {
   const [meta, setMeta] = useState<{
     orderStatuses: string[];
@@ -76,13 +82,13 @@ export function TodayScheduleBilling({
 
   const reload = useCallback(async () => {
     if (!branchId.trim()) return;
-    const data = await getTodayDeliveries(branchId.trim());
+    const data = await getTodayDeliveries(branchId.trim(), scheduleDateYmd);
     applyTodayData(
       data.orders || [],
       data.availableOrderStatuses || [],
       data.availablePaymentStatuses || []
     );
-  }, [branchId, applyTodayData]);
+  }, [branchId, scheduleDateYmd, applyTodayData]);
 
   const { isActing, actionMessage, loadError, runAction } = useAdminAction(reload);
 
@@ -98,7 +104,7 @@ export function TodayScheduleBilling({
       setIsLoading(true);
       setFetchError('');
       try {
-        const data = await getTodayDeliveries(branchId.trim());
+        const data = await getTodayDeliveries(branchId.trim(), scheduleDateYmd);
         if (cancelled) return;
         applyTodayData(
           data.orders || [],
@@ -114,7 +120,7 @@ export function TodayScheduleBilling({
     return () => {
       cancelled = true;
     };
-  }, [branchId, applyTodayData]);
+  }, [branchId, scheduleDateYmd, applyTodayData]);
 
   const toggleExpand = (id: string) => {
     setExpanded((prev) => {
@@ -165,7 +171,54 @@ export function TodayScheduleBilling({
       {actionMessage && <p className="billing-success">{actionMessage}</p>}
       {bannerError && <p className="billing-error">{bannerError}</p>}
 
-      <p className="billing-history-hint billing-muted">Branch: {branchLabel}</p>
+      <div className="billing-schedule-toolbar">
+        <div className="billing-schedule-dateNav" role="group" aria-label="Schedule date">
+          <button
+            type="button"
+            className="billing-schedule-dateNav-arrow"
+            aria-label="Previous day"
+            disabled={isLoading}
+            onClick={() => onScheduleDateYmdChange(ymdAddDays(scheduleDateYmd, -1))}
+          >
+            <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+          </button>
+          <label className="billing-schedule-dateNav-picker">
+            <span className="billing-schedule-dateNav-display">
+              {formatYmdLong(scheduleDateYmd)}
+            </span>
+            <input
+              type="date"
+              className="billing-schedule-dateNav-input"
+              value={scheduleDateYmd}
+              disabled={isLoading}
+              onChange={(e) => {
+                const v = e.target.value;
+                if (v) onScheduleDateYmdChange(v);
+              }}
+              aria-label="Pick a date"
+            />
+          </label>
+          <button
+            type="button"
+            className="billing-schedule-dateNav-arrow billing-schedule-dateNav-next"
+            aria-label="Next day"
+            disabled={isLoading}
+            onClick={() => onScheduleDateYmdChange(ymdAddDays(scheduleDateYmd, 1))}
+          >
+            <ChevronRight size={20} strokeWidth={2} aria-hidden />
+          </button>
+          <button
+            type="button"
+            className="billing-schedule-dateNav-today secondary"
+            disabled={isLoading || scheduleDateYmd === localTodayYmd()}
+            onClick={() => onScheduleDateYmdChange(localTodayYmd())}
+          >
+            Today
+          </button>
+        </div>
+
+        <p className="billing-schedule-branchHint billing-muted">Branch: {branchLabel}</p>
+      </div>
 
       <div className="history-listHeader history-listHeader--todaySchedule">
         <span className="history-listHeader-col">Order</span>
@@ -179,9 +232,11 @@ export function TodayScheduleBilling({
 
       <div className="history-cards">
         {isLoading ? (
-          <Loader className="billing-today-schedule-loader">
-            <p className="billing-muted">Loading today&apos;s schedule…</p>
-          </Loader>
+          <div className="billing-today-schedule-loader">
+            <div className="billing-today-schedule-progressInner">
+              <ProgressIndicator label="Loading schedule…" />
+            </div>
+          </div>
         ) : (
           orders.map((order) => {
             const d = drafts[order.id];
@@ -384,7 +439,7 @@ export function TodayScheduleBilling({
           </p>
         )}
         {!!branchId.trim() && !orders.length && !isLoading && (
-          <p className="billing-muted">No deliveries scheduled for today at this branch.</p>
+          <p className="billing-muted">No deliveries scheduled for this date at this branch.</p>
         )}
       </div>
 
@@ -395,9 +450,9 @@ export function TodayScheduleBilling({
           aria-live="polite"
           aria-busy="true"
         >
-          <Loader borderSize="5px" width="52px" height="52px" padding="10px">
-            <span className="billing-muted">Updating order…</span>
-          </Loader>
+          <div className="billing-today-schedule-progressInner">
+            <ProgressIndicator label="Updating order…" />
+          </div>
         </div>
       )}
     </section>
