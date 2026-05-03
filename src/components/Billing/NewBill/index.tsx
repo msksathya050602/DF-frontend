@@ -59,6 +59,8 @@ export function NewBill() {
   const [screenError, setScreenError] = useState('');
   const [screenSuccess, setScreenSuccess] = useState('');
   const [customerPhoneInput, setCustomerPhoneInput] = useState('');
+  /** Drives debounced phone autocomplete only; cleared when user picks a suggestion so we do not refetch and reopen the list. */
+  const [phoneAutocompleteQuery, setPhoneAutocompleteQuery] = useState('');
   const [selectedCategoryCode, setSelectedCategoryCode] = useState('');
   const [selectedServiceId, setSelectedServiceId] = useState('');
   const [productSearch, setProductSearch] = useState('');
@@ -238,7 +240,7 @@ export function NewBill() {
       setPhoneSuggestLoading(false);
       return;
     }
-    const digits = billingPhoneDigits(customerPhoneInput);
+    const digits = billingPhoneDigits(phoneAutocompleteQuery);
     if (digits.length < 2) {
       setPhoneSuggestList([]);
       setPhoneSuggestOpen(false);
@@ -265,7 +267,7 @@ export function NewBill() {
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [customerPhoneInput, createStep]);
+  }, [phoneAutocompleteQuery, createStep]);
 
   const addToCart = (productId: string, quantity: number) => {
     const serviceOptions = servicesByProduct.get(productId) || [];
@@ -367,6 +369,11 @@ export function NewBill() {
     setScreenError('');
     setScreenSuccess('');
     setShowOnboardCustomer(false);
+    phoneSearchSeqRef.current += 1;
+    setPhoneSuggestOpen(false);
+    setPhoneSuggestList([]);
+    setPhoneSuggestHighlight(-1);
+    setPhoneAutocompleteQuery('');
     setSelectedCustomerId(nextCustomerId);
     if (nextCustomerId) {
       await loadOrders(nextCustomerId);
@@ -376,6 +383,7 @@ export function NewBill() {
   };
 
   const pickPhoneSuggestion = async (c: Customer) => {
+    phoneSearchSeqRef.current += 1;
     setShowOnboardCustomer(false);
     setScreenError('');
     setScreenSuccess('');
@@ -388,6 +396,7 @@ export function NewBill() {
         ? stored.slice(-BILLING_PHONE_DIGITS)
         : billingPhoneDigits(customerPhoneInput);
     setCustomerPhoneInput(ten);
+    setPhoneAutocompleteQuery('');
     setCustomers((prev) => {
       const byId = new Map(prev.map((x) => [x.id, x]));
       byId.set(c.id, c);
@@ -430,6 +439,7 @@ export function NewBill() {
       setShowOnboardCustomer(false);
       setSelectedCustomerId(matched.id);
       await loadOrders(matched.id);
+      setPhoneAutocompleteQuery('');
       setCreateStep(2);
     } catch {
       setScreenError('Could not search customers. Try again.');
@@ -471,6 +481,7 @@ export function NewBill() {
       setNewEmail('');
       setNewAddress('');
       setOrders([]);
+      setPhoneAutocompleteQuery('');
       setCreateStep(2);
     } catch (error: any) {
       setScreenError(
@@ -566,7 +577,9 @@ export function NewBill() {
                     placeholder="Type at least 2 digits…"
                     value={customerPhoneInput}
                     onChange={(e) => {
-                      setCustomerPhoneInput(billingPhoneDigits(e.target.value));
+                      const d = billingPhoneDigits(e.target.value);
+                      setCustomerPhoneInput(d);
+                      setPhoneAutocompleteQuery(d);
                       if (screenError) setScreenError('');
                     }}
                     onFocus={() => {
@@ -1080,6 +1093,7 @@ export function NewBill() {
                       setCreateStep(1);
                       setSelectedCustomerId('');
                       setCustomerPhoneInput('');
+                      setPhoneAutocompleteQuery('');
                       setLastPlacedOrder(null);
                       setCart([]);
                       setExpectedDeliveryDateInput('');

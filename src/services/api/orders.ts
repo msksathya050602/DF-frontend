@@ -34,11 +34,15 @@ export type Order = {
   handledBy?: string | null;
   orderStatus: string;
   paymentStatus: string;
+  /** INR amount collected; set when PAID (full total) or PARTIAL (portion paid). */
+  amountPaid?: string | number | null;
   subTotal: string | number;
   discountAmount: string | number;
   taxAmount: string | number;
   totalAmount: string | number;
   createdAt: string;
+  /** Last modification time (status, payment, amounts, etc.). */
+  updatedAt?: string;
   pickupDate?: string | null;
   deliveryDate?: string | null;
   notes?: string | null;
@@ -69,6 +73,8 @@ export type OrdersByPhoneCustomer = {
   customerEmail?: string;
   customerAddress?: string;
   isActive?: boolean;
+  /** Sum of unpaid balances on active non-cancelled orders from search results (INR). */
+  outstandingBalance?: number;
 };
 
 export type OrdersByPhoneResponse = {
@@ -102,7 +108,33 @@ export type UpdateOrderStatusPayload = {
 
 export type UpdatePaymentStatusPayload = {
   paymentStatus: string;
+  /** Required when `paymentStatus` is `PARTIAL`. */
+  amountPaid?: number;
 };
+
+const round2 = (n: number) => Math.round(n * 100) / 100;
+
+/** Remaining amount owed on the order (ignores cancelled orders). */
+export function orderBalanceDue(order: Order): number {
+  const total = round2(Number(order.totalAmount ?? 0));
+  if (order.orderStatus === 'CANCELLED') return 0;
+  switch (order.paymentStatus) {
+    case 'PAID':
+    case 'REFUNDED':
+      return 0;
+    case 'PENDING':
+      return total;
+    case 'PARTIAL': {
+      const paid =
+        order.amountPaid === undefined || order.amountPaid === null
+          ? 0
+          : round2(Number(order.amountPaid));
+      return Math.max(0, round2(total - paid));
+    }
+    default:
+      return total;
+  }
+}
 
 export type UpdateOrderItemStatusPayload = {
   itemStatus: string;
@@ -113,10 +145,11 @@ export const getOrders = async (): Promise<OrdersResponse> => {
   return response.data;
 };
 
-export const searchOrdersByPhone = async (phone: string): Promise<OrdersByPhoneResponse> => {
-  const response = await apiClient.get<OrdersByPhoneResponse>('/orders/search', {
-    params: { phone },
-  });
+export const searchOrders = async (params: {
+  phone?: string;
+  name?: string;
+}): Promise<OrdersByPhoneResponse> => {
+  const response = await apiClient.get<OrdersByPhoneResponse>('/orders/search', { params });
   return response.data;
 };
 

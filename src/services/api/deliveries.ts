@@ -11,6 +11,8 @@ export type TodayDeliveriesResponse = {
 export type UpdateDeliveryOrderPayload = {
   orderStatus?: string;
   paymentStatus?: string;
+  /** Required when saving `PARTIAL` payment on delivery schedule. */
+  amountPaid?: number;
   handledBy?: string;
 };
 

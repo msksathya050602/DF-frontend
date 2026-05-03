@@ -44,15 +44,30 @@ export const getCustomers = async (): Promise<CustomersResponse> => {
   return response.data;
 };
 
+/** GET /customers/search — provide either `phone` or `name` (not both). Cached well with TanStack Query. */
+export const searchCustomers = async (params: {
+  phone?: string;
+  name?: string;
+  limit?: number;
+}): Promise<CustomersSearchResponse> => {
+  const response = await apiClient.get<CustomersSearchResponse>('/customers/search', {
+    params: {
+      ...(params.phone != null && String(params.phone).trim() !== ''
+        ? { phone: params.phone }
+        : {}),
+      ...(params.name != null && String(params.name).trim() !== '' ? { name: params.name } : {}),
+      ...(params.limit != null ? { limit: params.limit } : {}),
+    },
+  });
+  return response.data;
+};
+
 /** GET /customers/search?phone=&limit= — `phone` may include formatting; only digits are used server-side. */
 export const searchCustomersByPhone = async (
   phone: string,
   limit = 10
 ): Promise<CustomersSearchResponse> => {
-  const response = await apiClient.get<CustomersSearchResponse>('/customers/search', {
-    params: { phone, limit },
-  });
-  return response.data;
+  return searchCustomers({ phone, limit });
 };
 
 export const getCustomerOrders = async (customerId: string): Promise<CustomerOrdersResponse> => {

@@ -231,3 +231,25 @@
 .billing-today-schedule-progressInner {
   width: min(340px, 92%);
 }
+
+.today-schedule-paymentCell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.today-schedule-partialLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.today-schedule-partialLbl {
+  color: #64748b;
+}
+
+.today-schedule-partialInput {
+  width: 96px;
+}

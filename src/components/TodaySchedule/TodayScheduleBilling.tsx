@@ -8,7 +8,11 @@ import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toNumber } from '@/app/(dashboard)/dashboard/_lib/utils';
 import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
 import { useAdminAction } from '@/hooks/useAdminAction';
-import { getTodayDeliveries, updateDeliveryOrderStatus } from '@/services/api/deliveries';
+import {
+  getTodayDeliveries,
+  updateDeliveryOrderStatus,
+  type UpdateDeliveryOrderPayload,
+} from '@/services/api/deliveries';
 import type { Order } from '@/services/api/orders';
 
 import { formatYmdLong, localTodayYmd, ymdAddDays } from '../Billing/billingShared';
@@ -17,6 +21,8 @@ type RowDraft = {
   orderStatus: string;
   paymentStatus: string;
   handledBy: string;
+  /** Local input when payment is PARTIAL (INR). */
+  amountPaidStr: string;
 };
 
 const defaultOrderStatuses = ['PENDING', 'DELIVERED', 'CANCELLED'];
@@ -72,6 +78,13 @@ export function TodayScheduleBilling({
             orderStatus: o.orderStatus,
             paymentStatus: o.paymentStatus,
             handledBy: o.handledBy ?? '',
+            amountPaidStr:
+              o.paymentStatus === 'PARTIAL' &&
+              o.amountPaid !== undefined &&
+              o.amountPaid !== null &&
+              o.amountPaid !== ''
+                ? String(toNumber(o.amountPaid))
+                : '',
           };
         }
         return next;
@@ -140,16 +153,25 @@ export function TodayScheduleBilling({
 
   const saveRow = async (orderId: string) => {
     const d = drafts[orderId];
-    if (!d) return;
-    await runAction(
-      async () =>
-        updateDeliveryOrderStatus(orderId, {
-          orderStatus: d.orderStatus,
-          paymentStatus: d.paymentStatus,
-          ...(d.handledBy.trim() ? { handledBy: d.handledBy.trim() } : {}),
-        }),
-      'Order updated.'
-    );
+    const order = orders.find((o) => o.id === orderId);
+    if (!d || !order) return;
+    const total = toNumber(order.totalAmount);
+    const payload: UpdateDeliveryOrderPayload = {
+      orderStatus: d.orderStatus,
+      paymentStatus: d.paymentStatus,
+      ...(d.handledBy.trim() ? { handledBy: d.handledBy.trim() } : {}),
+    };
+    if (d.paymentStatus === 'PARTIAL') {
+      const amt = Number(String(d.amountPaidStr).replace(/,/g, ''));
+      if (!Number.isFinite(amt) || amt <= 0 || amt >= total) {
+        window.alert(
+          `Enter amount paid: greater than 0 and less than ${currencyDisplayLabel('INR')} ${total.toFixed(2)}`
+        );
+        return;
+      }
+      payload.amountPaid = amt;
+    }
+    await runAction(async () => updateDeliveryOrderStatus(orderId, payload), 'Order updated.');
   };
 
   const formatDelivery = (o: Order) => {
@@ -307,6 +329,18 @@ export function TodayScheduleBilling({
                     <span className="history-meta-lbl">Items</span>
                     <span className="history-meta-val">{order.items?.length ?? 0}</span>
                   </span>
+                  {d?.paymentStatus === 'PARTIAL' &&
+                    Number.isFinite(Number(d.amountPaidStr)) &&
+                    Number(d.amountPaidStr) > 0 &&
+                    Number(d.amountPaidStr) < toNumber(order.totalAmount) && (
+                      <span className="history-meta-pair">
+                        <span className="history-meta-lbl">Balance</span>
+                        <span className="history-meta-val">
+                          {currencyDisplayLabel('INR')}{' '}
+                          {(toNumber(order.totalAmount) - Number(d.amountPaidStr)).toFixed(2)}
+                        </span>
+                      </span>
+                    )}
                 </div>
 
                 <div className="history-card-scheduleRow">
@@ -331,13 +365,33 @@ export function TodayScheduleBilling({
                           className="appDropdown--inline"
                           variant="compact"
                           value={d.paymentStatus}
-                          onChange={(v) => setDraft(order.id, { paymentStatus: v })}
+                          onChange={(v) =>
+                            setDraft(order.id, {
+                              paymentStatus: v,
+                              ...(v !== 'PARTIAL' ? { amountPaidStr: '' } : {}),
+                            })
+                          }
                           disabled={isActing}
                           listTitle="Payment"
                           menuMinWidth={168}
                           options={meta.paymentStatuses.map((value) => ({ value, label: value }))}
                         />
                       </div>
+                      {d.paymentStatus === 'PARTIAL' && (
+                        <div className="history-card-field">
+                          <span className="history-card-field-lbl">Amount paid</span>
+                          <input
+                            type="number"
+                            className="history-schedule-input"
+                            min={0.01}
+                            step={0.01}
+                            placeholder="INR"
+                            value={d.amountPaidStr}
+                            onChange={(e) => setDraft(order.id, { amountPaidStr: e.target.value })}
+                            disabled={isActing}
+                          />
+                        </div>
+                      )}
                       <div className="history-card-field history-card-field--grow">
                         <span className="history-card-field-lbl">Handled by</span>
                         <input

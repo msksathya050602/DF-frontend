@@ -7,13 +7,18 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { toNumber } from '@/app/(dashboard)/dashboard/_lib/utils';
 import { currencyDisplayLabel } from '@/helpers/currencyDisplay';
 import { useAdminAction } from '@/hooks/useAdminAction';
-import { getTodayDeliveries, updateDeliveryOrderStatus } from '@/services/api/deliveries';
+import {
+  getTodayDeliveries,
+  updateDeliveryOrderStatus,
+  type UpdateDeliveryOrderPayload,
+} from '@/services/api/deliveries';
 import type { Order } from '@/services/api/orders';
 
 type RowDraft = {
   orderStatus: string;
   paymentStatus: string;
   handledBy: string;
+  amountPaidStr: string;
 };
 
 const defaultOrderStatuses = ['PENDING', 'DELIVERED', 'CANCELLED'];
@@ -44,6 +49,13 @@ export function TodayScheduleTab() {
             orderStatus: o.orderStatus,
             paymentStatus: o.paymentStatus,
             handledBy: o.handledBy ?? '',
+            amountPaidStr:
+              o.paymentStatus === 'PARTIAL' &&
+              o.amountPaid !== undefined &&
+              o.amountPaid !== null &&
+              o.amountPaid !== ''
+                ? String(toNumber(o.amountPaid))
+                : '',
           };
         }
         return next;
@@ -105,16 +117,23 @@ export function TodayScheduleTab() {
 
   const saveRow = async (orderId: string) => {
     const d = drafts[orderId];
-    if (!d) return;
-    await runAction(
-      async () =>
-        updateDeliveryOrderStatus(orderId, {
-          orderStatus: d.orderStatus,
-          paymentStatus: d.paymentStatus,
-          ...(d.handledBy.trim() ? { handledBy: d.handledBy.trim() } : {}),
-        }),
-      'Order updated.'
-    );
+    const order = orders.find((o) => o.id === orderId);
+    if (!d || !order) return;
+    const total = toNumber(order.totalAmount);
+    const payload: UpdateDeliveryOrderPayload = {
+      orderStatus: d.orderStatus,
+      paymentStatus: d.paymentStatus,
+      ...(d.handledBy.trim() ? { handledBy: d.handledBy.trim() } : {}),
+    };
+    if (d.paymentStatus === 'PARTIAL') {
+      const amt = Number(String(d.amountPaidStr).replace(/,/g, ''));
+      if (!Number.isFinite(amt) || amt <= 0 || amt >= total) {
+        window.alert(`Enter a valid amount paid (0 < amount < ${total.toFixed(2)}).`);
+        return;
+      }
+      payload.amountPaid = amt;
+    }
+    await runAction(async () => updateDeliveryOrderStatus(orderId, payload), 'Order updated.');
   };
 
   const formatDelivery = (o: Order) => {
@@ -213,16 +232,40 @@ export function TodayScheduleTab() {
                   </td>
                   <td>
                     {d && (
-                      <AppDropdown
-                        className="appDropdown--inline"
-                        variant="compact"
-                        value={d.paymentStatus}
-                        onChange={(v) => setDraft(order.id, { paymentStatus: v })}
-                        disabled={isActing}
-                        listTitle="Payment"
-                        menuMinWidth={168}
-                        options={meta.paymentStatuses.map((value) => ({ value, label: value }))}
-                      />
+                      <div className="today-schedule-paymentCell">
+                        <AppDropdown
+                          className="appDropdown--inline"
+                          variant="compact"
+                          value={d.paymentStatus}
+                          onChange={(v) =>
+                            setDraft(order.id, {
+                              paymentStatus: v,
+                              ...(v !== 'PARTIAL' ? { amountPaidStr: '' } : {}),
+                            })
+                          }
+                          disabled={isActing}
+                          listTitle="Payment"
+                          menuMinWidth={168}
+                          options={meta.paymentStatuses.map((value) => ({ value, label: value }))}
+                        />
+                        {d.paymentStatus === 'PARTIAL' && (
+                          <label className="today-schedule-partialLabel">
+                            <span className="today-schedule-partialLbl">Paid</span>
+                            <input
+                              type="number"
+                              className="schedule-field-input today-schedule-partialInput"
+                              min={0.01}
+                              step={0.01}
+                              placeholder="Amount"
+                              value={d.amountPaidStr}
+                              onChange={(e) =>
+                                setDraft(order.id, { amountPaidStr: e.target.value })
+                              }
+                              disabled={isActing}
+                            />
+                          </label>
+                        )}
+                      </div>
                     )}
                   </td>
                   <td>
